@@ -1,4 +1,4 @@
-package data
+package model
 
 import (
 	"encoding/json"
@@ -13,15 +13,9 @@ type Patient struct {
 	Name         string             `bson:"name" json:"name"`
 	Surname      string             `bson:"surname,omitempty" json:"surname"`
 	PhoneNumbers []string           `bson:"phoneNumbers,omitempty" json:"phoneNumbers"`
-	Address      Address            `bson:"address,omitempty" json:"address"`
-	Anamnesis    []Anamnesis        `bson:"anamnesis,omitempty" json:"anamnesis"`
-	Therapy      []Therapy          `bson:"therapy,omitempty" json:"therapy"`
-}
-
-type Address struct {
-	Street  string `bson:"street,omitempty" json:"street"`
-	City    string `bson:"city,omitempty" json:"city"`
-	Country string `bson:"country,omitempty" json:"country"`
+	Address
+	Anamnesis []Anamnesis `bson:"anamnesis,omitempty" json:"anamnesis"`
+	Therapy   []Therapy   `bson:"therapy,omitempty" json:"therapy"`
 }
 
 type Anamnesis struct {

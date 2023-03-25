@@ -21,6 +21,8 @@ services:
     # in order to avoid that problem, we specify that it depends on mongo service
     # which defines the order of starting the containers
     # Additionaly we specify that mongo service needs to pass a healthcheck
+    volumes:
+      - './airbnb/AirbnbBackend:/app'
     depends_on:
       mongo:
         condition: service_healthy

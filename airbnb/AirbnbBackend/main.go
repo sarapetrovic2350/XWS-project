@@ -1,17 +1,18 @@
 package main
 
 import (
-	"Rest/data"
-	"Rest/handlers"
+	"Rest/handler"
+	"Rest/repository"
 	"context"
+	gorillaHandlers "github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
-
-	gorillaHandlers "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -30,22 +31,42 @@ func main() {
 	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
 	storeLogger := log.New(os.Stdout, "[patient-store] ", log.LstdFlags)
 
-	// NoSQL: Initialize Product Repository store
-	store, err := data.New(timeoutContext, storeLogger)
+	//dburi := os.Getenv("MONGO_DB_URI")
+
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://root:pass@mongo:27017"))
 	if err != nil {
-		logger.Fatal(err)
+		log.Panic(err)
 	}
-	defer store.Disconnect(timeoutContext)
+	err = client.Connect(context.TODO())
+	if err != nil {
+		log.Panic(err)
+	}
+
+	// NoSQL: Initialize repositories
+	repos := repository.InitRepositories(client, storeLogger)
+	defer repos.PatientRepo.Disconnect(timeoutContext)
+	defer repos.UsersRepo.Disconnect(timeoutContext)
 
 	// NoSQL: Checking if the connection was established
-	store.Ping()
+	repos.PatientRepo.Ping()
 
-	//Initialize the handler and inject said logger
-	patientsHandler := handlers.NewPatientsHandler(logger, store)
+	//Initialize handlers and inject said logger
+	//patientsHandler := handlers.NewPatientsHandler(logger, store)
+	handlers := handler.InitHandlers(logger, repos)
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
-	router.Use(patientsHandler.MiddlewareContentTypeSet)
+	router.Use(handlers.PatientsHandler.MiddlewareContentTypeSet)
+	router.Use(handlers.UsersHandler.MiddlewareContentTypeSet)
+
+	createUserRouter := router.Methods(http.MethodPost).Subrouter()
+	createUserRouter.HandleFunc("/users/", handlers.UsersHandler.CreateUser)
+	createUserRouter.Use(handlers.UsersHandler.MiddlewareUserDeserialization)
+
+	getUsersRouter := router.Methods(http.MethodGet).Subrouter()
+	getUsersRouter.HandleFunc("/users/", handlers.UsersHandler.GetAllUsers)
+
+	patientsHandler := handlers.PatientsHandler
 
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", patientsHandler.GetAllPatients)
@@ -120,4 +141,5 @@ func main() {
 		logger.Fatal("Cannot gracefully shutdown...")
 	}
 	logger.Println("Server stopped")
+
 }

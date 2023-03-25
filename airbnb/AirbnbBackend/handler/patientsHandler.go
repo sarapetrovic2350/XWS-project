@@ -1,7 +1,8 @@
-package handlers
+package handler
 
 import (
-	"Rest/data"
+	"Rest/model"
+	"Rest/repository"
 	"context"
 	"encoding/json"
 	"log"
@@ -16,11 +17,11 @@ type KeyProduct struct{}
 type PatientsHandler struct {
 	logger *log.Logger
 	// NoSQL: injecting product repository
-	repo *data.PatientRepo
+	repo *repository.PatientRepo
 }
 
 // Injecting the logger makes this code much more testable.
-func NewPatientsHandler(l *log.Logger, r *data.PatientRepo) *PatientsHandler {
+func NewPatientsHandler(l *log.Logger, r *repository.PatientRepo) *PatientsHandler {
 	return &PatientsHandler{l, r}
 }
 
@@ -86,7 +87,7 @@ func (p *PatientsHandler) GetPatientsByName(rw http.ResponseWriter, h *http.Requ
 }
 
 func (p *PatientsHandler) PostPatient(rw http.ResponseWriter, h *http.Request) {
-	patient := h.Context().Value(KeyProduct{}).(*data.Patient)
+	patient := h.Context().Value(KeyProduct{}).(*model.Patient)
 	p.repo.Insert(patient)
 	rw.WriteHeader(http.StatusCreated)
 }
@@ -94,7 +95,7 @@ func (p *PatientsHandler) PostPatient(rw http.ResponseWriter, h *http.Request) {
 func (p *PatientsHandler) PatchPatient(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	patient := h.Context().Value(KeyProduct{}).(*data.Patient)
+	patient := h.Context().Value(KeyProduct{}).(*model.Patient)
 
 	p.repo.Update(id, patient)
 	rw.WriteHeader(http.StatusOK)
@@ -123,7 +124,7 @@ func (p *PatientsHandler) DeletePatient(rw http.ResponseWriter, h *http.Request)
 func (p *PatientsHandler) AddAnamnesis(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	anamnesis := h.Context().Value(KeyProduct{}).(*data.Anamnesis)
+	anamnesis := h.Context().Value(KeyProduct{}).(*model.Anamnesis)
 
 	p.repo.AddAnamnesis(id, anamnesis)
 	rw.WriteHeader(http.StatusOK)
@@ -132,7 +133,7 @@ func (p *PatientsHandler) AddAnamnesis(rw http.ResponseWriter, h *http.Request) 
 func (p *PatientsHandler) AddTherapy(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	therapy := h.Context().Value(KeyProduct{}).(*data.Therapy)
+	therapy := h.Context().Value(KeyProduct{}).(*model.Therapy)
 
 	p.repo.AddTherapy(id, therapy)
 	rw.WriteHeader(http.StatusOK)
@@ -141,7 +142,7 @@ func (p *PatientsHandler) AddTherapy(rw http.ResponseWriter, h *http.Request) {
 func (p *PatientsHandler) ChangeAddress(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	address := h.Context().Value(KeyProduct{}).(*data.Address)
+	address := h.Context().Value(KeyProduct{}).(*model.Address)
 
 	p.repo.UpdateAddress(id, address)
 	rw.WriteHeader(http.StatusOK)
@@ -196,7 +197,7 @@ func (p *PatientsHandler) Report(rw http.ResponseWriter, h *http.Request) {
 
 func (p *PatientsHandler) MiddlewarePatientDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		patient := &data.Patient{}
+		patient := &model.Patient{}
 		err := patient.FromJSON(h.Body)
 		if err != nil {
 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
@@ -214,7 +215,7 @@ func (p *PatientsHandler) MiddlewarePatientDeserialization(next http.Handler) ht
 // Solution: we added middlewares for Anamnesis, Therapy and Address objects
 func (p *PatientsHandler) MiddlewareAnamnesisDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		anamnesis := &data.Anamnesis{}
+		anamnesis := &model.Anamnesis{}
 		err := anamnesis.FromJSON(h.Body)
 		if err != nil {
 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
@@ -231,7 +232,7 @@ func (p *PatientsHandler) MiddlewareAnamnesisDeserialization(next http.Handler) 
 
 func (p *PatientsHandler) MiddlewareTherapyDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		therapy := &data.Therapy{}
+		therapy := &model.Therapy{}
 		err := therapy.FromJSON(h.Body)
 		if err != nil {
 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
@@ -248,7 +249,7 @@ func (p *PatientsHandler) MiddlewareTherapyDeserialization(next http.Handler) ht
 
 func (p *PatientsHandler) MiddlewareAddressDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		address := &data.Address{}
+		address := &model.Address{}
 		err := address.FromJSON(h.Body)
 		if err != nil {
 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)

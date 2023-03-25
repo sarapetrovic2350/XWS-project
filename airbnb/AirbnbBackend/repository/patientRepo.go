@@ -1,10 +1,10 @@
-package data
+package repository
 
 import (
+	"Rest/model"
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 
@@ -12,39 +12,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 // NoSQL: ProductRepo struct encapsulating Mongo api client
 type PatientRepo struct {
-	cli    *mongo.Client
+	client *mongo.Client
 	logger *log.Logger
 }
 
 // NoSQL: Constructor which reads db configuration from environment
-func New(ctx context.Context, logger *log.Logger) (*PatientRepo, error) {
-	dburi := os.Getenv("MONGO_DB_URI")
-
-	client, err := mongo.NewClient(options.Client().ApplyURI(dburi))
-	if err != nil {
-		return nil, err
-	}
-
-	err = client.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-
+func NewPatientRepo(client *mongo.Client, logger *log.Logger) (*PatientRepo, error) {
 	return &PatientRepo{
-		cli:    client,
+		client: client,
 		logger: logger,
 	}, nil
 }
 
 // Disconnect from database
 func (pr *PatientRepo) Disconnect(ctx context.Context) error {
-	err := pr.cli.Disconnect(ctx)
+	err := pr.client.Disconnect(ctx)
 	if err != nil {
 		return err
 	}
@@ -57,27 +44,27 @@ func (pr *PatientRepo) Ping() {
 	defer cancel()
 
 	// Check connection -> if no error, connection is established
-	err := pr.cli.Ping(ctx, readpref.Primary())
+	err := pr.client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		pr.logger.Println(err)
 	}
 
 	// Print available databases
-	databases, err := pr.cli.ListDatabaseNames(ctx, bson.M{})
+	databases, err := pr.client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
 		pr.logger.Println(err)
 	}
 	fmt.Println(databases)
 }
 
-func (pr *PatientRepo) GetAll() (Patients, error) {
+func (pr *PatientRepo) GetAll() (model.Patients, error) {
 	// Initialise context (after 5 seconds timeout, abort operation)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	patientsCollection := pr.getCollection()
 
-	var patients Patients
+	var patients model.Patients
 	patientsCursor, err := patientsCollection.Find(ctx, bson.M{})
 	if err != nil {
 		pr.logger.Println(err)
@@ -90,13 +77,13 @@ func (pr *PatientRepo) GetAll() (Patients, error) {
 	return patients, nil
 }
 
-func (pr *PatientRepo) GetById(id string) (*Patient, error) {
+func (pr *PatientRepo) GetById(id string) (*model.Patient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	patientsCollection := pr.getCollection()
 
-	var patient Patient
+	var patient model.Patient
 	objID, _ := primitive.ObjectIDFromHex(id)
 	err := patientsCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&patient)
 	if err != nil {
@@ -106,13 +93,13 @@ func (pr *PatientRepo) GetById(id string) (*Patient, error) {
 	return &patient, nil
 }
 
-func (pr *PatientRepo) GetByName(name string) (Patients, error) {
+func (pr *PatientRepo) GetByName(name string) (model.Patients, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	patientsCollection := pr.getCollection()
 
-	var patients Patients
+	var patients model.Patients
 	patientsCursor, err := patientsCollection.Find(ctx, bson.M{"name": name})
 	if err != nil {
 		pr.logger.Println(err)
@@ -125,7 +112,7 @@ func (pr *PatientRepo) GetByName(name string) (Patients, error) {
 	return patients, nil
 }
 
-func (pr *PatientRepo) Insert(patient *Patient) error {
+func (pr *PatientRepo) Insert(patient *model.Patient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	patientsCollection := pr.getCollection()
@@ -139,7 +126,7 @@ func (pr *PatientRepo) Insert(patient *Patient) error {
 	return nil
 }
 
-func (pr *PatientRepo) Update(id string, patient *Patient) error {
+func (pr *PatientRepo) Update(id string, patient *model.Patient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	patientsCollection := pr.getCollection()
@@ -198,7 +185,7 @@ func (pr *PatientRepo) Delete(id string) error {
 	return nil
 }
 
-func (pr *PatientRepo) AddAnamnesis(id string, anamnesis *Anamnesis) error {
+func (pr *PatientRepo) AddAnamnesis(id string, anamnesis *model.Anamnesis) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	patientsCollection := pr.getCollection()
@@ -219,7 +206,7 @@ func (pr *PatientRepo) AddAnamnesis(id string, anamnesis *Anamnesis) error {
 	return nil
 }
 
-func (pr *PatientRepo) AddTherapy(id string, therapy *Therapy) error {
+func (pr *PatientRepo) AddTherapy(id string, therapy *model.Therapy) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	patientsCollection := pr.getCollection()
@@ -240,7 +227,7 @@ func (pr *PatientRepo) AddTherapy(id string, therapy *Therapy) error {
 	return nil
 }
 
-func (pr *PatientRepo) UpdateAddress(id string, address *Address) error {
+func (pr *PatientRepo) UpdateAddress(id string, address *model.Address) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	patientsCollection := pr.getCollection()
@@ -355,7 +342,7 @@ func (pr *PatientRepo) Report() (map[string]float64, error) {
 }
 
 func (pr *PatientRepo) getCollection() *mongo.Collection {
-	patientDatabase := pr.cli.Database("mongoDemo")
+	patientDatabase := pr.client.Database("patientsDB")
 	patientsCollection := patientDatabase.Collection("patients")
 	return patientsCollection
 }
