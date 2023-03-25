@@ -1,22 +1,16 @@
 package handler
 
 import (
-	"Rest/repository"
+	"Rest/service"
 	"log"
 )
 
 type Handlers struct {
-	PatientsHandler *PatientsHandler
-	UsersHandler    *UsersHandler
+	UserHandler *UserHandler
 }
 
 // InitHandlers should be called in main.go
-
-func InitHandlers(l *log.Logger, r *repository.Repositories) *Handlers {
-	patientsHandler := NewPatientsHandler(l, r.PatientRepo)
-	usersHandler := NewUsersHandler(l, r.UsersRepo)
-	return &Handlers{
-		PatientsHandler: patientsHandler,
-		UsersHandler:    usersHandler,
-	}
+func InitHandlers(l *log.Logger, s *service.Services) *Handlers {
+	userHandler := NewUserHandler(l, s.UserService)
+	return &Handlers{userHandler}
 }

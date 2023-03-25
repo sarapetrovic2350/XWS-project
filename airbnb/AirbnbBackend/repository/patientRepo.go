@@ -15,121 +15,117 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// NoSQL: ProductRepo struct encapsulating Mongo api client
+// PatientRepo struct encapsulating Mongo api client
 type PatientRepo struct {
 	client *mongo.Client
 	logger *log.Logger
 }
 
-// NoSQL: Constructor which reads db configuration from environment
-func NewPatientRepo(client *mongo.Client, logger *log.Logger) (*PatientRepo, error) {
-	return &PatientRepo{
-		client: client,
-		logger: logger,
-	}, nil
+func NewPatientRepo(client *mongo.Client, logger *log.Logger) *PatientRepo {
+	return &PatientRepo{client, logger}
 }
 
 // Disconnect from database
-func (pr *PatientRepo) Disconnect(ctx context.Context) error {
-	err := pr.client.Disconnect(ctx)
+func (repo *PatientRepo) Disconnect(ctx context.Context) error {
+	err := repo.client.Disconnect(ctx)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// Check database connection
-func (pr *PatientRepo) Ping() {
+// Ping check database connection
+func (repo *PatientRepo) Ping() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// Check connection -> if no error, connection is established
-	err := pr.client.Ping(ctx, readpref.Primary())
+	err := repo.client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 	}
 
 	// Print available databases
-	databases, err := pr.client.ListDatabaseNames(ctx, bson.M{})
+	databases, err := repo.client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 	}
 	fmt.Println(databases)
 }
 
-func (pr *PatientRepo) GetAll() (model.Patients, error) {
+func (repo *PatientRepo) GetAll() (model.Patients, error) {
 	// Initialise context (after 5 seconds timeout, abort operation)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	var patients model.Patients
 	patientsCursor, err := patientsCollection.Find(ctx, bson.M{})
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 	if err = patientsCursor.All(ctx, &patients); err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 	return patients, nil
 }
 
-func (pr *PatientRepo) GetById(id string) (*model.Patient, error) {
+func (repo *PatientRepo) GetById(id string) (*model.Patient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	var patient model.Patient
 	objID, _ := primitive.ObjectIDFromHex(id)
 	err := patientsCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&patient)
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 	return &patient, nil
 }
 
-func (pr *PatientRepo) GetByName(name string) (model.Patients, error) {
+func (repo *PatientRepo) GetByName(name string) (model.Patients, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	var patients model.Patients
 	patientsCursor, err := patientsCollection.Find(ctx, bson.M{"name": name})
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 	if err = patientsCursor.All(ctx, &patients); err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 	return patients, nil
 }
 
-func (pr *PatientRepo) Insert(patient *model.Patient) error {
+func (repo *PatientRepo) Insert(patient *model.Patient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	result, err := patientsCollection.InsertOne(ctx, &patient)
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
-	pr.logger.Printf("Documents ID: %v\n", result.InsertedID)
+	repo.logger.Printf("Documents ID: %v\n", result.InsertedID)
 	return nil
 }
 
-func (pr *PatientRepo) Update(id string, patient *model.Patient) error {
+func (repo *PatientRepo) Update(id string, patient *model.Patient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": objID}
@@ -138,20 +134,20 @@ func (pr *PatientRepo) Update(id string, patient *model.Patient) error {
 		"surname": patient.Surname,
 	}}
 	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	repo.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
 	return nil
 }
 
-func (pr *PatientRepo) AddPhoneNumber(id string, phoneNumber string) error {
+func (repo *PatientRepo) AddPhoneNumber(id string, phoneNumber string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": objID}
@@ -159,36 +155,36 @@ func (pr *PatientRepo) AddPhoneNumber(id string, phoneNumber string) error {
 		"phoneNumbers": phoneNumber,
 	}}
 	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	repo.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
 	return nil
 }
 
-func (pr *PatientRepo) Delete(id string) error {
+func (repo *PatientRepo) Delete(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objID}}
 	result, err := patientsCollection.DeleteOne(ctx, filter)
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
-	pr.logger.Printf("Documents deleted: %v\n", result.DeletedCount)
+	repo.logger.Printf("Documents deleted: %v\n", result.DeletedCount)
 	return nil
 }
 
-func (pr *PatientRepo) AddAnamnesis(id string, anamnesis *model.Anamnesis) error {
+func (repo *PatientRepo) AddAnamnesis(id string, anamnesis *model.Anamnesis) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objID}}
@@ -196,20 +192,20 @@ func (pr *PatientRepo) AddAnamnesis(id string, anamnesis *model.Anamnesis) error
 		"anamnesis": anamnesis,
 	}}
 	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	repo.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
 	return nil
 }
 
-func (pr *PatientRepo) AddTherapy(id string, therapy *model.Therapy) error {
+func (repo *PatientRepo) AddTherapy(id string, therapy *model.Therapy) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objID}}
@@ -217,20 +213,20 @@ func (pr *PatientRepo) AddTherapy(id string, therapy *model.Therapy) error {
 		"therapy": therapy,
 	}}
 	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	repo.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
 	return nil
 }
 
-func (pr *PatientRepo) UpdateAddress(id string, address *model.Address) error {
+func (repo *PatientRepo) UpdateAddress(id string, address *model.Address) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objID}}
@@ -238,20 +234,20 @@ func (pr *PatientRepo) UpdateAddress(id string, address *model.Address) error {
 		"address": address,
 	}}
 	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	repo.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
 	return nil
 }
 
-func (pr *PatientRepo) ChangePhone(id string, index int, phoneNumber string) error {
+func (repo *PatientRepo) ChangePhone(id string, index int, phoneNumber string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	// What happens if set value for index=10, but we only have 3 phone numbers?
 	// -> Every value in between will be set to an empty string
@@ -261,21 +257,22 @@ func (pr *PatientRepo) ChangePhone(id string, index int, phoneNumber string) err
 		"phoneNumbers." + strconv.Itoa(index): phoneNumber,
 	}}
 	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	repo.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return err
 	}
 	return nil
 }
 
 // BONUS
-func (pr *PatientRepo) Receipt(id string) (float64, error) {
+
+func (repo *PatientRepo) Receipt(id string) (float64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 	matchStage := bson.D{{"$match", bson.D{{"_id", objID}}}}
@@ -291,26 +288,26 @@ func (pr *PatientRepo) Receipt(id string) (float64, error) {
 
 	cursor, err := patientsCollection.Aggregate(ctx, mongo.Pipeline{matchStage, sumStage, projectStage})
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return -1, err
 	}
 
 	var results []bson.M
 	if err = cursor.All(context.TODO(), &results); err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return -1, err
 	}
 	for _, result := range results {
-		pr.logger.Println(result)
+		repo.logger.Println(result)
 		return result["total"].(float64), nil
 	}
 	return -1, nil
 }
 
-func (pr *PatientRepo) Report() (map[string]float64, error) {
+func (repo *PatientRepo) Report() (map[string]float64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	patientsCollection := pr.getCollection()
+	patientsCollection := repo.getCollection()
 
 	sumStage := bson.D{{"$addFields",
 		bson.D{{"total", bson.D{{"$add",
@@ -324,25 +321,25 @@ func (pr *PatientRepo) Report() (map[string]float64, error) {
 
 	cursor, err := patientsCollection.Aggregate(ctx, mongo.Pipeline{sumStage, projectStage})
 	if err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 
 	var results []bson.M
 	if err = cursor.All(context.TODO(), &results); err != nil {
-		pr.logger.Println(err)
+		repo.logger.Println(err)
 		return nil, err
 	}
 	report := make(map[string]float64)
 	for _, result := range results {
-		pr.logger.Println(result)
+		repo.logger.Println(result)
 		report[result["_id"].(primitive.ObjectID).Hex()] = result["total"].(float64)
 	}
 	return report, nil
 }
 
-func (pr *PatientRepo) getCollection() *mongo.Collection {
-	patientDatabase := pr.client.Database("patientsDB")
+func (repo *PatientRepo) getCollection() *mongo.Collection {
+	patientDatabase := repo.client.Database("patientsDB")
 	patientsCollection := patientDatabase.Collection("patients")
 	return patientsCollection
 }

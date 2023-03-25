@@ -6,16 +6,13 @@ import (
 )
 
 type Repositories struct {
-	UsersRepo   *UsersRepo
+	UserRepo    *UserRepo
 	PatientRepo *PatientRepo
 }
 
 // InitRepositories should be called in main.go
 func InitRepositories(client *mongo.Client, logger *log.Logger) *Repositories {
-	userRepo, _ := NewUsersRepo(client, logger)
-	patientRepo, _ := NewPatientRepo(client, logger)
-	return &Repositories{
-		UsersRepo:   userRepo,
-		PatientRepo: patientRepo,
-	}
+	userRepo := NewUserRepo(client, logger)
+	patientRepo := NewPatientRepo(client, logger)
+	return &Repositories{userRepo, patientRepo}
 }

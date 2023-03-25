@@ -3,6 +3,7 @@ package main
 import (
 	"Rest/handler"
 	"Rest/repository"
+	"Rest/service"
 	"context"
 	gorillaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -28,8 +29,8 @@ func main() {
 	defer cancel()
 
 	//Initialize the logger we are going to use, with prefix and datetime for every log
-	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
-	storeLogger := log.New(os.Stdout, "[patient-store] ", log.LstdFlags)
+	logger := log.New(os.Stdout, "[airbnb-api] ", log.LstdFlags)
+	storeLogger := log.New(os.Stdout, "[airbnb-store] ", log.LstdFlags)
 
 	//dburi := os.Getenv("MONGO_DB_URI")
 
@@ -45,69 +46,27 @@ func main() {
 	// NoSQL: Initialize repositories
 	repos := repository.InitRepositories(client, storeLogger)
 	defer repos.PatientRepo.Disconnect(timeoutContext)
-	defer repos.UsersRepo.Disconnect(timeoutContext)
+	defer repos.UserRepo.Disconnect(timeoutContext)
 
 	// NoSQL: Checking if the connection was established
 	repos.PatientRepo.Ping()
 
+	// Initialize services
+	services := service.InitServices(repos)
+
 	//Initialize handlers and inject said logger
-	//patientsHandler := handlers.NewPatientsHandler(logger, store)
-	handlers := handler.InitHandlers(logger, repos)
+	handlers := handler.InitHandlers(logger, services)
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
-	router.Use(handlers.PatientsHandler.MiddlewareContentTypeSet)
-	router.Use(handlers.UsersHandler.MiddlewareContentTypeSet)
+	router.Use(handlers.UserHandler.MiddlewareContentTypeSet)
 
 	createUserRouter := router.Methods(http.MethodPost).Subrouter()
-	createUserRouter.HandleFunc("/users/", handlers.UsersHandler.CreateUser)
-	createUserRouter.Use(handlers.UsersHandler.MiddlewareUserDeserialization)
+	createUserRouter.HandleFunc("/users/", handlers.UserHandler.CreateUser)
+	createUserRouter.Use(handlers.UserHandler.MiddlewareUserDeserialization)
 
 	getUsersRouter := router.Methods(http.MethodGet).Subrouter()
-	getUsersRouter.HandleFunc("/users/", handlers.UsersHandler.GetAllUsers)
-
-	patientsHandler := handlers.PatientsHandler
-
-	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", patientsHandler.GetAllPatients)
-
-	postRouter := router.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/", patientsHandler.PostPatient)
-	postRouter.Use(patientsHandler.MiddlewarePatientDeserialization)
-
-	getByNameRouter := router.Methods(http.MethodGet).Subrouter()
-	getByNameRouter.HandleFunc("/filter", patientsHandler.GetPatientsByName)
-
-	receiptRouter := router.Methods(http.MethodGet).Subrouter()
-	receiptRouter.HandleFunc("/receipt/{id}", patientsHandler.Receipt)
-
-	reportRouter := router.Methods(http.MethodGet).Subrouter()
-	reportRouter.HandleFunc("/report", patientsHandler.Report)
-
-	getByIdRouter := router.Methods(http.MethodGet).Subrouter()
-	getByIdRouter.HandleFunc("/{id}", patientsHandler.GetPatientById)
-
-	patchRouter := router.Methods(http.MethodPatch).Subrouter()
-	patchRouter.HandleFunc("/{id}", patientsHandler.PatchPatient)
-	patchRouter.Use(patientsHandler.MiddlewarePatientDeserialization)
-
-	changePhoneRouter := router.Methods(http.MethodPatch).Subrouter()
-	changePhoneRouter.HandleFunc("/phone/{id}/{index}", patientsHandler.ChangePhone)
-
-	pushPhoneRouter := router.Methods(http.MethodPatch).Subrouter()
-	pushPhoneRouter.HandleFunc("/phone/{id}", patientsHandler.AddPhoneNumber)
-
-	addAnamnesisRouter := router.Methods(http.MethodPatch).Subrouter()
-	addAnamnesisRouter.HandleFunc("/anamnesis/{id}", patientsHandler.AddAnamnesis)
-
-	addTherapyRouter := router.Methods(http.MethodPatch).Subrouter()
-	addTherapyRouter.HandleFunc("/therapy/{id}", patientsHandler.AddTherapy)
-
-	changeAddressRouter := router.Methods(http.MethodPatch).Subrouter()
-	changeAddressRouter.HandleFunc("/address/{id}", patientsHandler.ChangeAddress)
-
-	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/{id}", patientsHandler.DeletePatient)
+	getUsersRouter.HandleFunc("/users/", handlers.UserHandler.GetAllUsers)
 
 	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
