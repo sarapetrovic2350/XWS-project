@@ -74,6 +74,9 @@ func main() {
 	getUsersRouter := router.Methods(http.MethodGet).Subrouter()
 	getUsersRouter.HandleFunc("/users/", handlers.UserHandler.GetAllUsers)
 
+	LoginRouter := router.Methods(http.MethodPost).Subrouter()
+	LoginRouter.HandleFunc("/users/login", handlers.UserHandler.Login)
+
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), h(router)))
 
