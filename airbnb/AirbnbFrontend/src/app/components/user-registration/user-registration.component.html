@@ -1,0 +1,59 @@
+<mat-card elevation="5" fxFlex class="content">
+  <mat-card-title>
+    <h2>{{title}}</h2>
+  </mat-card-title>
+  <mat-card-content>
+    <p></p>
+    <form (ngSubmit)="onSubmit()" *ngIf="!submitted">
+      <div class="row">
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>First name: </mat-label>
+            <input matInput name="firstName" [(ngModel)]="user.firstName" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Last name: </mat-label>
+            <input matInput name="lastName" [(ngModel)]="user.lastName" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Email: </mat-label>
+            <input name ="email" [(ngModel)]="user.email" matInput required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password: </mat-label>
+            <input name ="password" [(ngModel)]="user.password" matInput required type="password" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Repeat password: </mat-label>
+            <input name ="repeatedPassword" [(ngModel)]="passwordRepeated" matInput required type="password" required>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Street: </mat-label>
+            <input name ="street" [(ngModel)]="street" matInput required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Street number: </mat-label>
+            <input name ="streetNumber" [(ngModel)]="streetNumber" matInput required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>City: </mat-label>
+            <input name ="city" [(ngModel)]="city" matInput required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Country: </mat-label>
+            <input name ="country" [(ngModel)]="country" matInput required>
+          </mat-form-field>
+        </div>
+      </div>
+      <br><br>
+      <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Sign up</button><br>
+      <a style="color:blueviolet" href="/login" >Already have an account? Log in</a>
+    </form>
+    <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+  </mat-card-content>
+</mat-card>
+
+
