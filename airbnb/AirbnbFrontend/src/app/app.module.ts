@@ -9,6 +9,7 @@ import { UserRegistrationComponent } from './components/user-registration/user-r
 import { HeaderComponent } from './components/header/header.component';
 import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './components/login/login.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -17,13 +18,14 @@ import { LoginComponent } from './components/login/login.component';
     HeaderComponent,
     LoginComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    AngularMaterialModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        AngularMaterialModule,
+        HttpClientModule,
+        ReactiveFormsModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
