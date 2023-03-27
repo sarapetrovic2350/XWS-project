@@ -9,13 +9,17 @@ import { UserRegistrationComponent } from './components/user-registration/user-r
 import { HeaderComponent } from './components/header/header.component';
 import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './components/login/login.component';
+import { ShowFlightsComponent } from './components/show-flights/show-flights.component';
+import { CreateFlightComponent } from './components/create-flight/create-flight.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserRegistrationComponent,
     HeaderComponent,
-    LoginComponent
+    LoginComponent,
+    ShowFlightsComponent,
+    CreateFlightComponent
   ],
   imports: [
     BrowserModule,
