@@ -10,3 +10,7 @@ export class User {
     public address: Address = new Address()
   ) {}
 }
+
+export class LoginRequest {
+  constructor(public email: string = '', public password: string = '') {}
+}
