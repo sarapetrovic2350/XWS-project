@@ -5,10 +5,10 @@ import (
 	"Rest/repository"
 	"Rest/service"
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"time"
 
 	gorillaHandlers "github.com/gorilla/handlers"
@@ -61,6 +61,12 @@ func main() {
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
+	headers := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Allow-Headers", "text/plain"})
+	methods := gorillaHandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+	origins := gorillaHandlers.AllowedOrigins([]string{"http://localhost:4200"})
+	credential := gorillaHandlers.AllowCredentials()
+	h := gorillaHandlers.CORS(headers, methods, origins, credential)
+
 	router.Use(handlers.UserHandler.MiddlewareContentTypeSet)
 	router.Use(handlers.FlightHandler.MiddlewareContentTypeSet)
 
@@ -86,10 +92,15 @@ func main() {
 	updateFlightRouter := router.Methods(http.MethodPut).Subrouter()
 	updateFlightRouter.HandleFunc("/flights/updateFlight/{id}", handlers.FlightHandler.UpdateFlight)
 
-	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
+	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
+	LoginRouter := router.Methods(http.MethodPost).Subrouter()
+	LoginRouter.HandleFunc("/users/login", handlers.UserHandler.Login)
+
+	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), h(router)))
 
 	//Initialize the server
-	server := http.Server{
+	/*server := http.Server{
 		Addr:         ":" + port,
 		Handler:      cors(router),
 		IdleTimeout:  120 * time.Second,
@@ -118,5 +129,5 @@ func main() {
 		logger.Fatal("Cannot gracefully shutdown...")
 	}
 	logger.Println("Server stopped")
-
+	*/
 }

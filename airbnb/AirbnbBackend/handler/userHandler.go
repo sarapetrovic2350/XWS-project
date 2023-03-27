@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/service"
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 )
@@ -26,6 +28,20 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, h *http.Request) 
 		return
 	}
 	rw.WriteHeader(http.StatusCreated)
+}
+
+func (handler *UserHandler) Login(rw http.ResponseWriter, h *http.Request) {
+	var userLogin dto.Login
+	err := json.NewDecoder(h.Body).Decode(&userLogin)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+	user, _ := handler.userService.Login(&userLogin)
+	if user == false {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
 }
 
 func (handler *UserHandler) GetAllUsers(rw http.ResponseWriter, h *http.Request) {
