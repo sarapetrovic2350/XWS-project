@@ -67,3 +67,18 @@ func (repo *UserRepo) GetAll() (model.Users, error) {
 	}
 	return users, nil
 }
+func (repo *UserRepo) FindUserByEmail(email string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	usersCollection := repo.getCollection()
+
+	var user model.User
+	filter := bson.M{"email": bson.M{"$eq": email}}
+	err := usersCollection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		repo.logger.Println(err)
+		return nil, err
+	}
+	return &user, nil
+}

@@ -40,3 +40,11 @@ func (service *UserService) GetAllUsers() (model.Users, error) {
 	}
 	return users, nil
 }
+
+func (service *UserService) FindUserByEmail(email string) (*model.User, error) {
+	user, err := service.UserRepo.FindUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
