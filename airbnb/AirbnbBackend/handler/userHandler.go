@@ -23,6 +23,11 @@ func NewUserHandler(l *log.Logger, s *service.UserService) *UserHandler {
 
 func (handler *UserHandler) CreateUser(rw http.ResponseWriter, h *http.Request) {
 	user := h.Context().Value(KeyProduct{}).(*model.User)
+	existingUser, _ := handler.userService.FindUserByEmail(user.Email)
+	if existingUser != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	if err := handler.userService.CreateUser(user); err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
