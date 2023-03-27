@@ -5,15 +5,16 @@ import (
 	"Rest/repository"
 	"Rest/service"
 	"context"
-	gorillaHandlers "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	gorillaHandlers "github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main() {
@@ -47,6 +48,7 @@ func main() {
 	repos := repository.InitRepositories(client, storeLogger)
 	defer repos.PatientRepo.Disconnect(timeoutContext)
 	defer repos.UserRepo.Disconnect(timeoutContext)
+	defer repos.FlightRepo.Disconnect(timeoutContext)
 
 	// NoSQL: Checking if the connection was established
 	repos.PatientRepo.Ping()
@@ -60,6 +62,7 @@ func main() {
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
 	router.Use(handlers.UserHandler.MiddlewareContentTypeSet)
+	router.Use(handlers.FlightHandler.MiddlewareContentTypeSet)
 
 	createUserRouter := router.Methods(http.MethodPost).Subrouter()
 	createUserRouter.HandleFunc("/users/", handlers.UserHandler.CreateUser)
@@ -67,6 +70,21 @@ func main() {
 
 	getUsersRouter := router.Methods(http.MethodGet).Subrouter()
 	getUsersRouter.HandleFunc("/users/", handlers.UserHandler.GetAllUsers)
+
+	//flights
+
+	createFlightRouter := router.Methods(http.MethodPost).Subrouter()
+	createFlightRouter.HandleFunc("/flights/createFlight", handlers.FlightHandler.CreateFlight)
+	createFlightRouter.Use(handlers.FlightHandler.MiddlewareUserDeserialization)
+
+	getFlightsRouter := router.Methods(http.MethodGet).Subrouter()
+	getFlightsRouter.HandleFunc("/flights/getAllFlights", handlers.FlightHandler.GetAllFlights)
+
+	deleteFlightRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteFlightRouter.HandleFunc("/flights/deleteFlight/{id}", handlers.FlightHandler.DeleteFlight)
+
+	updateFlightRouter := router.Methods(http.MethodPut).Subrouter()
+	updateFlightRouter.HandleFunc("/flights/updateFlight/{id}", handlers.FlightHandler.UpdateFlight)
 
 	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
