@@ -1,0 +1,46 @@
+<mat-card elevation="5" fxFlex class="content">
+    <mat-card-title>
+      <h2>{{title}}</h2>
+    </mat-card-title>
+    <mat-card-content>
+      <p></p>
+      <form (ngSubmit)="onSubmit()" *ngIf="!submitted">
+        <div class="row">
+          <div>
+            <mat-form-field>
+                <mat-label>Date: </mat-label>
+                <input matInput [matDatepicker]="startDate"name="date">
+                <mat-datepicker-toggle [for]="startDate" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #startDate></mat-datepicker>
+            </mat-form-field><br>
+            <mat-form-field>
+                <mat-label>Time: </mat-label>
+                <input name ="time"matInput required>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+              <mat-label>Departure: </mat-label>
+              <input matInput name="departure" [(ngModel)]="flight.departure" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Arrival: </mat-label>
+              <input name ="arrival" [(ngModel)]="flight.arrival" matInput required>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Price: </mat-label>
+              <input name ="price" [(ngModel)]="flight.price" matInput required type="number">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>totalNumberOfSeats: </mat-label>
+              <input name ="totalNumberOfSeats" [(ngModel)]="flight.totalNumberOfSeats" matInput required type="number">
+            </mat-form-field>
+          </div>
+        </div>
+        <br><br>
+        <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Submit</button><br>
+      </form>
+      <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+    </mat-card-content>
+  </mat-card>
+  
+  
+  
