@@ -9,47 +9,59 @@
         <div>
           <mat-form-field appearance="outline">
             <mat-label>First name: </mat-label>
-            <input matInput name="firstName" [(ngModel)]="user.firstName" required>
+            <input matInput name="firstName" [(ngModel)]="user.firstName" [formControl]="name" required>
+            <mat-error *ngIf="name.invalid">You must enter first name</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Last name: </mat-label>
-            <input matInput name="lastName" [(ngModel)]="user.lastName" required>
+            <input matInput name="lastName" [(ngModel)]="user.lastName" [formControl]="lastName" required>
+            <mat-error *ngIf="name.invalid">You must enter last name</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Email: </mat-label>
-            <input name ="email" [(ngModel)]="user.email" matInput required>
+            <input name ="email" [(ngModel)]="user.email" matInput [formControl]="email" required>
+            <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Password: </mat-label>
-            <input name ="password" [(ngModel)]="user.password" matInput required type="password" required>
+            <input name ="password" [(ngModel)]="user.password" matInput required type="password" [formControl]="password" required>
+            <mat-error *ngIf="password.invalid">You must enter password with at least 6 characters</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Repeat password: </mat-label>
-            <input name ="repeatedPassword" [(ngModel)]="passwordRepeated" matInput required type="password" required>
+            <input name ="repeatedPassword" [(ngModel)]="passwordRepeated" matInput required type="password" [formControl]="passwordConfirm" required>
+            <mat-error *ngIf="passwordConfirm.invalid" >You must enter a repeated password</mat-error>
           </mat-form-field>
+          <label *ngIf="!passwordMatchValidator()" style="color: red;">Passwords do not match</label>
         </div>
         <div>
           <mat-form-field appearance="outline">
             <mat-label>Street: </mat-label>
-            <input name ="street" [(ngModel)]="street" matInput required>
+            <input name ="street" [(ngModel)]="street" matInput [formControl]="streetFormControl" required>
+            <mat-error *ngIf="name.invalid">You must enter street</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Street number: </mat-label>
-            <input name ="streetNumber" [(ngModel)]="streetNumber" matInput required>
+            <input name ="streetNumber" [(ngModel)]="streetNumber" [formControl]="streetNumberFormControl" matInput required>
+            <mat-error *ngIf="name.invalid">You must enter street number</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>City: </mat-label>
-            <input name ="city" [(ngModel)]="city" matInput required>
+            <input name ="city" [(ngModel)]="city" matInput [formControl]="cityFormControl" required>
+            <mat-error *ngIf="name.invalid">You must enter city</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Country: </mat-label>
-            <input name ="country" [(ngModel)]="country" matInput required>
+            <input name ="country" [(ngModel)]="country" matInput [formControl]="countryFormControl" required>
+            <mat-error *ngIf="name.invalid">You must enter country</mat-error>
           </mat-form-field>
         </div>
       </div>
       <br><br>
-      <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Sign up</button><br>
+      <button color="primary" [disabled]="email.invalid || name.invalid || lastName.invalid || password.invalid || passwordConfirm.invalid
+              || streetFormControl.invalid || streetNumberFormControl.invalid || cityFormControl.invalid || cityFormControl.invalid"
+              style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Sign up</button><br>
       <a style="color:blueviolet" href="/login" >Already have an account? Log in</a>
     </form>
     <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
