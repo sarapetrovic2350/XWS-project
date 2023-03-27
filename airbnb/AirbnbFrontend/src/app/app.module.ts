@@ -11,6 +11,8 @@ import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './components/login/login.component';
 import { ShowFlightsComponent } from './components/show-flights/show-flights.component';
 import { CreateFlightComponent } from './components/create-flight/create-flight.component';
+import {ReactiveFormsModule} from "@angular/forms";
+
 
 @NgModule({
   declarations: [
@@ -21,13 +23,14 @@ import { CreateFlightComponent } from './components/create-flight/create-flight.
     ShowFlightsComponent,
     CreateFlightComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    AngularMaterialModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        AngularMaterialModule,
+        HttpClientModule,
+        ReactiveFormsModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

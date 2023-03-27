@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {User} from "../model/user.model";
+import {LoginRequest, User} from "../model/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -11,5 +11,9 @@ export class UserService {
   constructor(private http: HttpClient) { }
   registerUser(user: User) {
     return this.http.post<User>(this.apiHost + 'users/', user);
+  }
+
+  login(request: LoginRequest){
+    return this.http.post<any>(this.apiHost + 'users/login', request);
   }
 }
