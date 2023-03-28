@@ -49,6 +49,7 @@ func main() {
 	defer repos.PatientRepo.Disconnect(timeoutContext)
 	defer repos.UserRepo.Disconnect(timeoutContext)
 	defer repos.FlightRepo.Disconnect(timeoutContext)
+	defer repos.TicketRepo.Disconnect(timeoutContext)
 
 	// NoSQL: Checking if the connection was established
 	repos.PatientRepo.Ping()
@@ -69,6 +70,7 @@ func main() {
 
 	router.Use(handlers.UserHandler.MiddlewareContentTypeSet)
 	router.Use(handlers.FlightHandler.MiddlewareContentTypeSet)
+	router.Use(handlers.TicketHandler.MiddlewareContentTypeSet)
 
 	createUserRouter := router.Methods(http.MethodPost).Subrouter()
 	createUserRouter.HandleFunc("/users/", handlers.UserHandler.CreateUser)
@@ -91,6 +93,12 @@ func main() {
 
 	updateFlightRouter := router.Methods(http.MethodPut).Subrouter()
 	updateFlightRouter.HandleFunc("/flights/updateFlight/{id}", handlers.FlightHandler.UpdateFlight)
+
+	//tickets
+
+	createTicketRouter := router.Methods(http.MethodPost).Subrouter()
+	createTicketRouter.HandleFunc("/tickets/createTicket", handlers.TicketHandler.CreateTicket)
+	createTicketRouter.Use(handlers.TicketHandler.MiddlewareTicketDeserialization)
 
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	LoginRouter := router.Methods(http.MethodPost).Subrouter()

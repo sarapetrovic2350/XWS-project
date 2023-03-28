@@ -13,7 +13,7 @@ type Flight struct {
 	DateTime           time.Time          `json:"dateTime" bson:"date_time"`
 	Departure          string             `json:"departure" bson:"departure"`
 	Arrival            string             `json:"arrival" bson:"arrival"`
-	Price              float32            `json:"price" bson:"price"`
+	Price              float64            `json:"price" bson:"price"`
 	TotalNumberOfSeats int                `json:"totalNumberOfSeats" bson:"total_number_of_seats"`
 	AvailableSeats     int                `json:"availableSeats" bson:"available_seats"`
 }
