@@ -4,6 +4,7 @@ import (
 	"Rest/model"
 	"Rest/service"
 	"context"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -42,6 +43,29 @@ func (handler *TicketHandler) GetAllTickets(rw http.ResponseWriter, h *http.Requ
 	}
 
 	err = tickets.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		return
+	}
+}
+
+func (handler *TicketHandler) GetTicketById(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+
+	ticket, err := handler.ticketService.GetById(id)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+
+	if ticket == nil {
+		http.Error(rw, "Ticket with given id not found", http.StatusNotFound)
+		handler.logger.Printf("Ticket with id: '%s' not found", id)
+		return
+	}
+
+	err = ticket.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
 		handler.logger.Fatal("Unable to convert to json :", err)

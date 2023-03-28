@@ -94,11 +94,20 @@ func main() {
 	updateFlightRouter := router.Methods(http.MethodPut).Subrouter()
 	updateFlightRouter.HandleFunc("/flights/updateFlight/{id}", handlers.FlightHandler.UpdateFlight)
 
+	getFlightByIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getFlightByIdRouter.HandleFunc("/flights/{id}", handlers.FlightHandler.GetFlightById)
+
 	//tickets
 
 	createTicketRouter := router.Methods(http.MethodPost).Subrouter()
 	createTicketRouter.HandleFunc("/tickets/createTicket", handlers.TicketHandler.CreateTicket)
 	createTicketRouter.Use(handlers.TicketHandler.MiddlewareTicketDeserialization)
+
+	getTicketRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketRouter.HandleFunc("/tickets/getAllTickets", handlers.TicketHandler.GetAllTickets)
+
+	getTicketByIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketByIdRouter.HandleFunc("/tickets/{id}", handlers.TicketHandler.GetTicketById)
 
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	LoginRouter := router.Methods(http.MethodPost).Subrouter()
