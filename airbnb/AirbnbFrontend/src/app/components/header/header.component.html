@@ -1,15 +1,21 @@
 <p>
   <mat-toolbar color="primary">
-    <button mat-icon-button class="example-icon" (click)="home()">
+    <button mat-icon-button class="example-icon" routerLink="/">
       <mat-icon>flight_takeoff</mat-icon>
     </button>
     <span>Airbnb</span>
+    <button *ngIf="isAdministrator" mat-button mat-ripple routerLink="/createFlight">
+      <span>Create flight</span>
+    </button>
+    <button *ngIf="isAdministrator" mat-button mat-ripple routerLink="/showFlights">
+      <span>Show flights</span>
+    </button>
     <span class="example-spacer"></span>
-    <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" (click)="signUp()">
+    <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">
       <mat-icon>account_circle</mat-icon>
     </button>
     <!--<span ngIf="!isLoggedIn">Sign up</span>-->
-    <button *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" (click)="login()">
+    <button *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/login">
       <mat-icon>lock</mat-icon>
     </button>
    <!-- <span ngIf="!isLoggedIn">Login</span>-->
@@ -17,7 +23,4 @@
       <span>Logout</span>
     </button>
   </mat-toolbar>
-  <a style="color:blueviolet" href="/createFlight" >Create a Flight</a>
-  <br><br>
-  <a style="color:blueviolet" href="/showFlights" >Flights</a>
 </p>

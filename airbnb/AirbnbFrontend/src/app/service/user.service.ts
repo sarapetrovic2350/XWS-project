@@ -23,6 +23,7 @@ export class UserService {
   setLoggedUser(data: any) {
     this.user = data;
     console.log(this.user)
+    console.log(this.user.role)
     localStorage.setItem('currentUser', JSON.stringify(this.user));
     console.log(localStorage.getItem('currentUser'));
   }
