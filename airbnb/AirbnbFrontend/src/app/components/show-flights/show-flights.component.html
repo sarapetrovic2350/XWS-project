@@ -31,8 +31,8 @@
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let flight">
                 <div class="commands">
-                    <button mat-button class="form-button" (click)="deleteFlight(flight.id)">
-                        <mat-icon fontIcon="delete" matTooltip="delete"></mat-icon>
+                    <button (click)="deleteFlight(flight.id)">
+                        <mat-icon color= "primary" matTooltip="delete">delete</mat-icon>
                     </button>
                 </div>
             </td>
