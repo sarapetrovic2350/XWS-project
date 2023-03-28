@@ -42,11 +42,18 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, h *http.Request) {
 		handler.logger.Print("Database exception: ", err)
 	}
 	user, _ := handler.userService.Login(&userLogin)
-	if user == false {
+	if user == nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	rw.WriteHeader(http.StatusOK)
+	err = user.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		rw.WriteHeader(http.StatusOK)
+		return
+	}
+
 }
 
 func (handler *UserHandler) GetAllUsers(rw http.ResponseWriter, h *http.Request) {

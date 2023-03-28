@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-header',
@@ -8,9 +9,12 @@ import {Router} from "@angular/router";
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  isLoggedIn: boolean = false;
+
+  constructor(private router: Router, private userService : UserService) { }
 
   ngOnInit(): void {
+    this.refreshUser()
   }
 
   signUp() {
@@ -21,5 +25,20 @@ export class HeaderComponent implements OnInit {
   }
   login() {
     this.router.navigate(['login']);
+  }
+
+  refreshUser(): void {
+    let user = localStorage.getItem('currentUser');
+    this.userService.getCurrentUser()
+    console.log(user)
+    if(user === null ){
+      this.isLoggedIn = false;
+    } else{
+      this.isLoggedIn = true;
+    }
+  }
+
+  logout(){
+    this.userService.logout();
   }
 }
