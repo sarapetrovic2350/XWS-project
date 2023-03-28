@@ -22,4 +22,8 @@ export class FlightService {
     return this.http.get<Flight[]>(this.apiHost + 'flights/getAllFlights');
   }
 
+  deleteFlight(id: any): Observable<any> {
+    return this.http.delete<any>(this.apiHost + 'flights/deleteFlight/' + id);
+  }
+
 }

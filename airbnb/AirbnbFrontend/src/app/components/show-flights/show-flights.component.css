@@ -54,3 +54,8 @@ button {
     color: white;
     text-transform: uppercase;
 }
+
+.commands{
+    display: flex;
+    justify-content: end;
+}
