@@ -88,6 +88,8 @@ func (repo *TicketRepo) Update(id string, ticket *model.Ticket) error {
 	defer cancel()
 	ticketsCollection := repo.getCollection()
 
+	ticket.DateOfPurchase = time.Now()
+
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": objID}
 	update := bson.M{"$set": bson.M{
