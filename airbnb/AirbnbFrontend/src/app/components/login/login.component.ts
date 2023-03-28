@@ -24,7 +24,6 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-
     if (this.request.email == '' || this.request.password == '') {
       this.message = 'Email or password missing.';
     } else {
@@ -32,6 +31,8 @@ export class LoginComponent implements OnInit {
       this.userService.login(this.request).subscribe(
         {
           next: (res) => {
+            console.log(res)
+            this.successfulLogin(res);
             Swal.fire({
               icon: 'success',
               title: 'Success!',
@@ -54,5 +55,7 @@ export class LoginComponent implements OnInit {
 
     }
   }
-
+  successfulLogin(data: any) {
+    this.userService.setLoggedUser(data);
+  }
 }

@@ -23,14 +23,12 @@ func (service *UserService) CreateUser(user *model.User) error {
 	return nil
 }
 
-func (service *UserService) Login(dto *dto.Login) (bool, error) {
-	users, err := service.GetAllUsers()
-	for _, user := range users {
-		if user.Email == dto.Email && user.Password == dto.Password {
-			return true, err
-		}
+func (service *UserService) Login(dto *dto.Login) (*model.User, error) {
+	user, err := service.FindUserByEmail(dto.Email)
+	if user != nil && user.Password == dto.Password {
+		return user, nil
 	}
-	return false, err
+	return nil, err
 }
 
 func (service *UserService) GetAllUsers() (model.Users, error) {
