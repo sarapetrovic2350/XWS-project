@@ -22,18 +22,18 @@ export class HeaderComponent implements OnInit {
   refreshUser(): void {
     let user = this.userService.getCurrentUser()
     console.log(user)
-    console.log(user.role)
-    if(user === null ){
+    if(user === null) {
       this.isLoggedIn = false;
-    } else{
+    } else {
       this.isLoggedIn = true;
+      if(user.role == "ADMINISTRATOR") {
+        this.isAdministrator = true;
+      }
+      if(user.role == "REGISTERED_USER") {
+        this.isRegisteredUser = true;
+      }
     }
-    if(user.role == "ADMINISTRATOR") {
-      this.isAdministrator = true;
-    }
-    if(user.role == "REGISTERED_USER") {
-      this.isRegisteredUser = true;
-    }
+
   }
 
   logout(){
