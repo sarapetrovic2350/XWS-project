@@ -19,7 +19,12 @@ func NewTicketHandler(l *log.Logger, s *service.TicketService) *TicketHandler {
 
 func (handler *TicketHandler) CreateTicket(rw http.ResponseWriter, h *http.Request) {
 	ticket := h.Context().Value(KeyProduct{}).(*model.Ticket)
-	if err := handler.ticketService.CreateTicket(ticket); err != nil {
+	createdTicket, err := handler.ticketService.CreateTicket(ticket)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if createdTicket == nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}

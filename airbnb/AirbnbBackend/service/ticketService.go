@@ -15,15 +15,20 @@ func NewTicketService(r *repository.TicketRepo, f *repository.FlightRepo) *Ticke
 	return &TicketService{r, f}
 }
 
-func (service *TicketService) CreateTicket(ticket *model.Ticket) error {
+func (service *TicketService) CreateTicket(ticket *model.Ticket) (*model.Ticket, error) {
 	flight, _ := service.FlightRepo.GetById(ticket.IdFlight)
-	var f = flight.Price * float64(ticket.NumberOfTickets)
-	ticket.TotalPrice = f
-	err := service.TicketRepo.Insert(ticket)
-	if err != nil {
-		return err
+	var totalPrice = flight.Price * float64(ticket.NumberOfTickets)
+	ticket.TotalPrice = totalPrice
+	if flight.AvailableSeats >= ticket.NumberOfTickets {
+		err := service.TicketRepo.Insert(ticket)
+		if err != nil {
+			return nil, err
+		}
+		flight.AvailableSeats = flight.AvailableSeats - ticket.NumberOfTickets
+		service.FlightRepo.Update(ticket.IdFlight, flight)
+		return ticket, nil
 	}
-	return nil
+	return nil, nil
 }
 
 func (service *TicketService) GetAllFlights() (model.Tickets, error) {
