@@ -10,6 +10,8 @@ import {UserService} from "../../service/user.service";
 export class HeaderComponent implements OnInit {
 
   isLoggedIn: boolean = false;
+  isAdministrator: boolean = false;
+  isRegisteredUser: boolean = false;
 
   constructor(private router: Router, private userService : UserService) { }
 
@@ -17,24 +19,20 @@ export class HeaderComponent implements OnInit {
     this.refreshUser()
   }
 
-  signUp() {
-    this.router.navigate(['register-user']);
-  }
-  home() {
-    this.router.navigate(['/']);
-  }
-  login() {
-    this.router.navigate(['login']);
-  }
-
   refreshUser(): void {
-    let user = localStorage.getItem('currentUser');
-    this.userService.getCurrentUser()
+    let user = this.userService.getCurrentUser()
     console.log(user)
+    console.log(user.role)
     if(user === null ){
       this.isLoggedIn = false;
     } else{
       this.isLoggedIn = true;
+    }
+    if(user.role == "ADMINISTRATOR") {
+      this.isAdministrator = true;
+    }
+    if(user.role == "REGISTERED_USER") {
+      this.isRegisteredUser = true;
     }
   }
 

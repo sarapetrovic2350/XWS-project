@@ -16,6 +16,7 @@ func NewUserService(r *repository.UserRepo) *UserService {
 }
 
 func (service *UserService) CreateUser(user *model.User) error {
+	user.Role = model.RegisteredUserRole
 	err := service.UserRepo.Insert(user)
 	if err != nil {
 		return err
