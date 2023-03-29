@@ -1,11 +1,9 @@
 package service
 
 import (
-	"Rest/dto"
 	"Rest/model"
 	"Rest/repository"
 	"fmt"
-	"time"
 )
 
 type FlightService struct {
@@ -17,18 +15,14 @@ func NewFlightService(r *repository.FlightRepo) *FlightService {
 	return &FlightService{r}
 }
 
-func (service *FlightService) CreateFlight(flightDTO *dto.FlightDTO) error {
-	println(flightDTO)
-	d1, _ := time.Parse("2006-01-02", flightDTO.DepartureDate)
-	d2, _ := time.Parse("2006-01-02", flightDTO.ArrivalDate)
-
-	flight := model.Flight{DepartureTime1: d1, ArrivalTime1: d2,
-		Departure: flightDTO.Departure, Arrival: flightDTO.Arrival, Price: flightDTO.Price, TotalNumberOfSeats: flightDTO.TotalNumberOfSeats,
-		AvailableSeats: flightDTO.AvailableSeats}
+func (service *FlightService) CreateFlight(flight *model.Flight) error {
 	fmt.Println(flight)
-	fmt.Println("kreiran let")
 
-	service.FlightRepo.Insert(&flight)
+	err := service.FlightRepo.Insert(flight)
+	if err != nil {
+		return err
+	}
+	return nil
 	return nil
 }
 

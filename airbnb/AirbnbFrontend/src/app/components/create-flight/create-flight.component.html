@@ -15,7 +15,7 @@
             </mat-form-field><br>
             <mat-form-field appearance="outline">
                 <mat-label>Departure Time: </mat-label>
-                <input name ="departureTime" [(ngModel)]="flight.departureTime" matInput required>
+                <input name ="departureTime" [(ngModel)]="departureTime" matInput required>
             </mat-form-field><br>
 
             <mat-form-field appearance="outline">
@@ -26,7 +26,7 @@
           </mat-form-field><br>
           <mat-form-field appearance="outline">
               <mat-label>Arrival Time: </mat-label>
-              <input name ="arrivalTime" [(ngModel)]="flight.arrivalTime" matInput required>
+              <input name ="arrivalTime" [(ngModel)]="arrivalTime" matInput required>
           </mat-form-field><br>
 
             <mat-form-field appearance="outline">
@@ -48,7 +48,7 @@
           </div>
         </div>
         <br><br>
-        <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Submit</button><br>
+        <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button (click)="onClick()" type="submit">Submit</button><br>
       </form>
       <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
     </mat-card-content>

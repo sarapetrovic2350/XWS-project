@@ -15,38 +15,38 @@ import { FlightService } from 'src/app/service/flight.service';
 })
 export class CreateTicketComponent implements OnInit {
 
-  public user: User = new User(); 
-  public ticket: Ticket = new Ticket(); 
-  public flight: Flight = new Flight(); 
+  public user: User = new User();
+  public ticket: Ticket = new Ticket();
+  public flight: Flight = new Flight();
   submitted = false;
 
   public title = "Buy Tickets"
 
-  public flightId = "6422de51113b2306df920756"; 
+  public flightId = "64243b25879f655fdc11937e";
 
   constructor(
-    private flightService: FlightService, 
+    private flightService: FlightService,
     private router: Router,
-    private userService: UserService, 
+    private userService: UserService,
     private ticketService: TicketService
     ) { }
 
   ngOnInit(): void {
-    this.user = this.userService.getCurrentUser(); 
-    
-    this.flightService.getFlightById(this.flightId).subscribe(res => { 
-      this.flight = res; 
-      console.log(this.flight); 
+    this.user = this.userService.getCurrentUser();
+
+    this.flightService.getFlightById(this.flightId).subscribe(res => {
+      this.flight = res;
+      console.log(this.flight);
     })
 
   }
 
   public createTicket(){
 
-    this.ticket.idFlight = this.flight.id; 
-    this.ticket.idUser = this.user.id; 
+    this.ticket.idFlight = this.flight.id;
+    this.ticket.idUser = this.user.id;
 
-    console.log(this.ticket); 
+    console.log(this.ticket);
 
     this.ticketService.createTicket(this.ticket).subscribe(
       {

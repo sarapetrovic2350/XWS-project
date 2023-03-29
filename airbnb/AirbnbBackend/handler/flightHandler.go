@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"Rest/dto"
 	"Rest/model"
 	"Rest/service"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,20 +20,9 @@ func NewFlightHandler(l *log.Logger, s *service.FlightService) *FlightHandler {
 }
 
 func (handler *FlightHandler) CreateFlight(rw http.ResponseWriter, h *http.Request) {
-	//var flightDTO dto.FlightDTO
-	fmt.Println("ee")
-	flight := h.Context().Value(KeyProduct{}).(*dto.FlightDTO)
-	fmt.Println(flight)
-	if flight == nil {
+	flight := h.Context().Value(KeyProduct{}).(*model.Flight)
+	if err := handler.flightService.CreateFlight(flight); err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	fmt.Println("prosao prvi if")
-	err := handler.flightService.CreateFlight(flight)
-
-	if err != nil {
-		fmt.Println(err)
-		rw.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
 	rw.WriteHeader(http.StatusCreated)

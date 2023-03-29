@@ -10,8 +10,8 @@ import (
 
 type Flight struct {
 	Id                 primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	DepartureTime1     time.Time          `json:"departureTime1" bson:"departure_time"`
-	ArrivalTime1       time.Time          `json:"arrivalTime1" bson:"arrival_time"`
+	DepartureDateTime  time.Time          `json:"departureDateTime" bson:"departure_date_time"`
+	ArrivalDateTime    time.Time          `json:"arrivalDateTime" bson:"arrival_date_time"`
 	Departure          string             `json:"departure" bson:"departure"`
 	Arrival            string             `json:"arrival" bson:"arrival"`
 	Price              int                `json:"price" bson:"price"`
