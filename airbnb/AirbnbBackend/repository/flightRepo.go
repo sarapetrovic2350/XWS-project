@@ -92,7 +92,8 @@ func (repo *FlightRepo) Update(id string, flight *model.Flight) error {
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": objID}
 	update := bson.M{"$set": bson.M{
-		"date_time":             flight.DateTime,
+		"departure_date_time":   flight.DepartureDateTime,
+		"arrival_date_time":     flight.ArrivalDateTime,
 		"departure":             flight.Departure,
 		"arrival":               flight.Arrival,
 		"price":                 flight.Price,

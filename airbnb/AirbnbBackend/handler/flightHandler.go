@@ -26,6 +26,7 @@ func (handler *FlightHandler) CreateFlight(rw http.ResponseWriter, h *http.Reque
 		return
 	}
 	rw.WriteHeader(http.StatusCreated)
+	rw.Header().Set("Content-Type", "application/json")
 }
 
 func (handler *FlightHandler) UpdateFlight(rw http.ResponseWriter, h *http.Request) {
