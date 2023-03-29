@@ -4,6 +4,7 @@ import (
 	"Rest/model"
 	"Rest/service"
 	"context"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -33,7 +34,7 @@ func (handler *TicketHandler) CreateTicket(rw http.ResponseWriter, h *http.Reque
 }
 
 func (handler *TicketHandler) GetAllTickets(rw http.ResponseWriter, h *http.Request) {
-	tickets, err := handler.ticketService.GetAllFlights()
+	tickets, err := handler.ticketService.GetAllTickets()
 	if err != nil {
 		handler.logger.Print("Database exception: ", err)
 	}
@@ -71,6 +72,37 @@ func (handler *TicketHandler) GetTicketById(rw http.ResponseWriter, h *http.Requ
 		handler.logger.Fatal("Unable to convert to json :", err)
 		return
 	}
+}
+
+func (handler *TicketHandler) GetTicketsByUserId(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+
+	tickets, err := handler.ticketService.GetByUserId(id)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+
+	if tickets == nil {
+		return
+	}
+
+	if tickets == nil {
+		http.Error(rw, "Ticket with given id not found", http.StatusNotFound)
+		handler.logger.Printf("Ticket with id: '%s' not found", id)
+		return
+	}
+
+	err = json.NewEncoder(rw).Encode(tickets)
+	//err = tickets.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
 }
 
 func (handler *TicketHandler) MiddlewareTicketDeserialization(next http.Handler) http.Handler {

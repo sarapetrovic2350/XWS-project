@@ -14,6 +14,7 @@ import { CreateFlightComponent } from './components/create-flight/create-flight.
 import {ReactiveFormsModule} from "@angular/forms";
 import { HomeComponent } from './components/home/home.component';
 import { CreateTicketComponent } from './components/create-ticket/create-ticket.component';
+import { ShowUsersTicketsComponent } from './components/show-users-tickets/show-users-tickets.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { CreateTicketComponent } from './components/create-ticket/create-ticket.
     ShowFlightsComponent,
     CreateFlightComponent,
     HomeComponent,
-    CreateTicketComponent
+    CreateTicketComponent,
+    ShowUsersTicketsComponent
   ],
     imports: [
         BrowserModule,
