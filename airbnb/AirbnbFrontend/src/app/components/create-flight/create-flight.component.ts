@@ -25,10 +25,6 @@ export class CreateFlightComponent implements OnInit {
   arrivalTime: string = '';
   ngOnInit(): void {
   }
-  onClick() {
-
-  }
-
   onSubmit() {
 
     let [departureHour, departureMinutes] = this.departureTime.split(':')
@@ -46,7 +42,7 @@ export class CreateFlightComponent implements OnInit {
     this.flightService.createFlight(this.flight).subscribe(
       {
         next: (res) => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/showFlights']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',

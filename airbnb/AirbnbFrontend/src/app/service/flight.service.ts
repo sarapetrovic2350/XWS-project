@@ -12,14 +12,14 @@ export class FlightService {
   headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient) { }
-  
+
   createFlight(flight: Flight) {
-    console.log(flight); 
+    console.log(flight);
     return this.http.post<Flight>(this.apiHost + 'flights/createFlight', flight);
   }
 
-  getAllFlights(): Observable<Flight[]> {
-    return this.http.get<Flight[]>(this.apiHost + 'flights/getAllFlights');
+  getAllFlights(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiHost + 'flights/getAllFlights');
   }
 
   deleteFlight(id: any): Observable<any> {
