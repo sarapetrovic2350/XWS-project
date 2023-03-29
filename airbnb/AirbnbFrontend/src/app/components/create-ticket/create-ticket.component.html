@@ -13,15 +13,11 @@
               </mat-form-field><br>
             <mat-form-field appearance="outline">
                 <mat-label>Arrival: </mat-label>
-                <input matInput name="departure" [(ngModel)]="flight.arrival" disabled>
+                <input matInput name="arrival" [(ngModel)]="flight.arrival" disabled>
               </mat-form-field><br>
             <mat-form-field appearance="outline">
               <mat-label>Date: </mat-label>
-              <input matInput name="departure" [(ngModel)]="flight.dateTime" disabled>
-            </mat-form-field><br>
-            <mat-form-field appearance="outline">
-              <mat-label>Time: </mat-label>
-              <input name ="arrival" matInput disabled>
+              <input matInput name="date" [(ngModel)]="flight.departureDateTime" disabled>
             </mat-form-field><br>
             <mat-form-field appearance="outline">
               <mat-label>Price: </mat-label>

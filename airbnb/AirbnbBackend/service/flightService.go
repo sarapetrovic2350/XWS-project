@@ -3,6 +3,7 @@ package service
 import (
 	"Rest/model"
 	"Rest/repository"
+	"fmt"
 )
 
 type FlightService struct {
@@ -15,10 +16,13 @@ func NewFlightService(r *repository.FlightRepo) *FlightService {
 }
 
 func (service *FlightService) CreateFlight(flight *model.Flight) error {
+	fmt.Println(flight)
+
 	err := service.FlightRepo.Insert(flight)
 	if err != nil {
 		return err
 	}
+	return nil
 	return nil
 }
 
