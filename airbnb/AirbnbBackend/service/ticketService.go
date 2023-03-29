@@ -3,6 +3,7 @@ package service
 import (
 	"Rest/model"
 	"Rest/repository"
+	"time"
 )
 
 type TicketService struct {
@@ -19,6 +20,7 @@ func (service *TicketService) CreateTicket(ticket *model.Ticket) (*model.Ticket,
 	flight, _ := service.FlightRepo.GetById(ticket.IdFlight)
 	var totalPrice = flight.Price * ticket.NumberOfTickets
 	ticket.TotalPrice = totalPrice
+	ticket.DateOfPurchase = time.Now()
 	if flight.AvailableSeats >= ticket.NumberOfTickets {
 		err := service.TicketRepo.Insert(ticket)
 		if err != nil {

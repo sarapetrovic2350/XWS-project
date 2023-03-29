@@ -12,6 +12,8 @@ import { LoginComponent } from './components/login/login.component';
 import { ShowFlightsComponent } from './components/show-flights/show-flights.component';
 import { CreateFlightComponent } from './components/create-flight/create-flight.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import { HomeComponent } from './components/home/home.component';
+import { CreateTicketComponent } from './components/create-ticket/create-ticket.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import {ReactiveFormsModule} from "@angular/forms";
     HeaderComponent,
     LoginComponent,
     ShowFlightsComponent,
-    CreateFlightComponent
+    CreateFlightComponent,
+    HomeComponent,
+    CreateTicketComponent
   ],
     imports: [
         BrowserModule,

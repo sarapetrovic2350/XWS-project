@@ -49,8 +49,13 @@ p {
 }
 
 button {
-    background-color: #04AA6D;
+    background-color: transparent;
     border: none;
     color: white;
     text-transform: uppercase;
+}
+
+.commands{
+    display: flex;
+    justify-content: end;
 }
