@@ -1,0 +1,49 @@
+<mat-card elevation="5" fxFlex class="content">
+    <mat-card-title>
+      <h2>{{title}}</h2>
+    </mat-card-title>
+    <mat-card-content>
+      <p></p>
+      <form (ngSubmit)="createTicket()" *ngIf="!submitted">
+        <div class="row">
+          <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Departure: </mat-label>
+                <input matInput name="departure" [(ngModel)]="flight.departure" disabled>
+              </mat-form-field><br>
+            <mat-form-field appearance="outline">
+                <mat-label>Arrival: </mat-label>
+                <input matInput name="departure" [(ngModel)]="flight.arrival" disabled>
+              </mat-form-field><br>
+            <mat-form-field appearance="outline">
+              <mat-label>Date: </mat-label>
+              <input matInput name="departure" [(ngModel)]="flight.dateTime" disabled>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+              <mat-label>Time: </mat-label>
+              <input name ="arrival" matInput disabled>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+              <mat-label>Price: </mat-label>
+              <input name ="price" [(ngModel)]="flight.price" matInput type="number" disabled>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+              <mat-label>Available seats: </mat-label>
+              <input name ="totalNumberOfSeats" [(ngModel)]="flight.availableSeats" matInput type="number" disabled>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+                <mat-label>Number of tickets: </mat-label>
+                <input name ="numberOfTickets" [(ngModel)]="ticket.numberOfTickets" matInput type="number" required>
+            </mat-form-field><br>
+          </div>
+        </div>
+        <br><br>
+        <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Submit</button><br>
+      </form>
+      <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+    </mat-card-content>
+  </mat-card>
+
+
+
+
