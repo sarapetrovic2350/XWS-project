@@ -6,6 +6,7 @@ import {CreateFlightComponent} from "./components/create-flight/create-flight.co
 import {ShowFlightsComponent} from "./components/show-flights/show-flights.component";
 import {HomeComponent} from "./components/home/home.component";
 import { CreateTicketComponent } from './components/create-ticket/create-ticket.component';
+import { ShowUsersTicketsComponent } from './components/show-users-tickets/show-users-tickets.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'createTicket', 
     component: CreateTicketComponent
+  }, 
+  {
+    path: 'showUserTickets', 
+    component: ShowUsersTicketsComponent
   }
 ];
 @NgModule({

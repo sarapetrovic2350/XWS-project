@@ -22,7 +22,7 @@ export class CreateTicketComponent implements OnInit {
 
   public title = "Buy Tickets"
 
-  public flightId = "6422de51113b2306df920756"; 
+  public flightId = "64240576e3f0e3cfa51d1257"; 
 
   constructor(
     private flightService: FlightService, 

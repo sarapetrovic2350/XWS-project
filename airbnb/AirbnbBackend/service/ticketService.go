@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/repository"
 	"time"
@@ -33,7 +34,7 @@ func (service *TicketService) CreateTicket(ticket *model.Ticket) (*model.Ticket,
 	return nil, nil
 }
 
-func (service *TicketService) GetAllFlights() (model.Tickets, error) {
+func (service *TicketService) GetAllTickets() (model.Tickets, error) {
 	tickets, err := service.TicketRepo.GetAll()
 	if err != nil {
 		return nil, err
@@ -48,4 +49,24 @@ func (service *TicketService) GetById(id string) (*model.Ticket, error) {
 		return nil, err
 	}
 	return ticket, nil
+}
+
+// dobavljanje svih karata koje je kupio jedan korisnik
+func (service *TicketService) GetByUserId(userId string) ([]dto.PurchasedTickets, error) {
+	//user, _ = service.UserRepo.GetById(userId)
+	tickets, err := service.TicketRepo.GetAll()
+	var retTickets []dto.PurchasedTickets
+	for _, itr := range tickets {
+		if itr.IdUser == userId {
+			flight, _ := service.FlightRepo.GetById(itr.IdFlight)
+			retTickets = append(retTickets, dto.PurchasedTickets{Id: itr.Id.String(), DateOfPurchase: itr.DateOfPurchase.String(),
+				DateOfDeparture: flight.DateTime.String(), Departure: flight.Departure, Arrival: flight.Arrival, NumberOfTickets: itr.NumberOfTickets,
+				TotalPrice: itr.TotalPrice})
+		}
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	return retTickets, nil
 }
