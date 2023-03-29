@@ -8,15 +8,27 @@
         <div class="row">
           <div>
             <mat-form-field appearance="outline">
-                <mat-label>Date: </mat-label>
-                <input matInput [matDatepicker]="startDate"name="date">
-                <mat-datepicker-toggle [for]="startDate" matSuffix></mat-datepicker-toggle>
-                <mat-datepicker #startDate></mat-datepicker>
+                <mat-label>Departure Date: </mat-label>
+                <input matInput [matDatepicker]="departureDate" [(ngModel)]="departureDateDateForm" name="departureDate">
+                <mat-datepicker-toggle [for]="departureDate" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #departureDate></mat-datepicker>
             </mat-form-field><br>
             <mat-form-field appearance="outline">
-                <mat-label>Time: </mat-label>
-                <input name ="time"matInput required>
+                <mat-label>Departure Time: </mat-label>
+                <input name ="departureTime" [(ngModel)]="flight.departureTime" matInput required>
             </mat-form-field><br>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Arrival Date: </mat-label>
+              <input matInput [matDatepicker]="arrivalDate" [(ngModel)]="arrivalDateDateForm" name="arrivalDate">
+              <mat-datepicker-toggle [for]="arrivalDate" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #arrivalDate></mat-datepicker>
+          </mat-form-field><br>
+          <mat-form-field appearance="outline">
+              <mat-label>Arrival Time: </mat-label>
+              <input name ="arrivalTime" [(ngModel)]="flight.arrivalTime" matInput required>
+          </mat-form-field><br>
+
             <mat-form-field appearance="outline">
               <mat-label>Departure: </mat-label>
               <input matInput name="departure" [(ngModel)]="flight.departure" required>

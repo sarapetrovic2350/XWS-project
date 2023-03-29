@@ -19,18 +19,17 @@ export class CreateFlightComponent implements OnInit {
   title = 'Create a Flight';
   flight = new Flight();
   submitted = false;
-  date: string= "";
-  time: string="";
+  departureDateDateForm: Date = new Date();
+  arrivalDateDateForm: Date = new Date();
   ngOnInit(): void {
   }
 
   onSubmit() {
 
     this.flight.availableSeats = this.flight.totalNumberOfSeats; 
-    this.flight.dateTime = new Date(); 
-    console.log(this.flight.dateTime); 
-    //this.flight.dateTime = this.date.concat(this.time.toString());
-    console.log(this.flight); 
+    this.flight.departureDate = this.departureDateDateForm.toISOString();
+    this.flight.arrivalDate = this.arrivalDateDateForm.toISOString();
+    console.log(this.flight);
 
     this.flightService.createFlight(this.flight).subscribe(
       {

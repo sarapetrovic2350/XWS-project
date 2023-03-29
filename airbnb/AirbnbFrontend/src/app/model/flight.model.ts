@@ -1,7 +1,10 @@
 export class Flight {
     constructor(
         public id: string = '',
-        public dateTime: Date = new Date(),
+        public departureDate: string = '',
+        public departureTime: string = '',
+        public arrivalDate: string = '',
+        public arrivalTime: string = '',
         public departure: string = '',
         public arrival: string = '',
         public price: number = 0,

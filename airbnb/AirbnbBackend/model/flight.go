@@ -10,10 +10,11 @@ import (
 
 type Flight struct {
 	Id                 primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	DateTime           time.Time          `json:"dateTime" bson:"date_time"`
+	DepartureTime1     time.Time          `json:"departureTime1" bson:"departure_time"`
+	ArrivalTime1       time.Time          `json:"arrivalTime1" bson:"arrival_time"`
 	Departure          string             `json:"departure" bson:"departure"`
 	Arrival            string             `json:"arrival" bson:"arrival"`
-	Price              float64            `json:"price" bson:"price"`
+	Price              int                `json:"price" bson:"price"`
 	TotalNumberOfSeats int                `json:"totalNumberOfSeats" bson:"total_number_of_seats"`
 	AvailableSeats     int                `json:"availableSeats" bson:"available_seats"`
 }

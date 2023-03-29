@@ -17,7 +17,7 @@ func NewTicketService(r *repository.TicketRepo, f *repository.FlightRepo) *Ticke
 
 func (service *TicketService) CreateTicket(ticket *model.Ticket) (*model.Ticket, error) {
 	flight, _ := service.FlightRepo.GetById(ticket.IdFlight)
-	var totalPrice = flight.Price * float64(ticket.NumberOfTickets)
+	var totalPrice = flight.Price * ticket.NumberOfTickets
 	ticket.TotalPrice = totalPrice
 	if flight.AvailableSeats >= ticket.NumberOfTickets {
 		err := service.TicketRepo.Insert(ticket)
