@@ -11,9 +11,18 @@ mat-card {
 .ml {
   margin-left: 5px;
 }
+
 .btn {
   margin-left: 10px;
   height: 50px;
   width: 100px;
   border-radius: 10px;
 }
+
+.home-img{
+  width: 600px;
+  height: 530px;
+  margin-left: 450px;
+  position: static;
+}
+
