@@ -4,6 +4,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import {FlightService} from "../../service/flight.service";
 import {Flight} from "../../model/flight.model";
 import Swal from 'sweetalert2';
+import {ShowFlight} from "../../model/show-flight.model";
 
 @Component({
   selector: 'app-show-flights',
@@ -12,21 +13,26 @@ import Swal from 'sweetalert2';
 })
 export class ShowFlightsComponent implements OnInit {
 
-  public dataSource = new MatTableDataSource<Flight>();
-  public displayedColumns = ['DateTime', 'Departure', 'Arrival', 'Price', 'TotalNumberOfSeats','AvailableSeats', 'commands'];
-  public flights: Flight[] = [];
+  public dataSource = new MatTableDataSource<ShowFlight>();
+  public displayedColumns = ['Departure', 'Arrival', 'DateTimeDeparture', 'DateTimeArrival', 'Price', 'TotalNumberOfSeats','AvailableSeats', 'commands'];
+  public flights: ShowFlight[] = [];
   public flight: Flight | undefined = undefined;
 
   constructor(private flightService: FlightService, private router: Router) { }
 
   ngOnInit(): void {
 
-    this.flightService.getAllFlights().subscribe((data: any) => {  
-      console.log(this.flights);     
+    this.flightService.getAllFlights().subscribe((data: any) => {
       this.flights = data;
+      for (let i = 0; i < this.flights.length; i++) {
+        let dateOfDeparture = new Date(this.flights[i].departureDateTime)
+        this.flights[i].departureDateTime = dateOfDeparture.toUTCString().replace('GMT', '')
+        let dateOfArrival = new Date(this.flights[i].arrivalDateTime)
+        this.flights[i].arrivalDateTime = dateOfArrival.toUTCString().replace('GMT', '')
+      }
+      console.log(this.flights);
       this.dataSource.data = this.flights;
     })
-    
 
   }
 
@@ -34,12 +40,12 @@ export class ShowFlightsComponent implements OnInit {
     console.log(id)
     this.flightService.deleteFlight(id).subscribe(res =>
       {
-        this.flightService.getAllFlights().subscribe(res => {     
+        this.flightService.getAllFlights().subscribe(res => {
           this.flights = res;
           this.dataSource.data = this.flights;
         })
-        //window.location.reload(); 
-        
+        //window.location.reload();
+
 
       });
   }

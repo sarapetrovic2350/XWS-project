@@ -1,7 +1,6 @@
 .container {
-    width: 50%;
-    margin: auto;
-    margin-top: 20px;
+    width: 70%;
+    margin: 20px auto auto;
     border-radius: 3px;
     border: #DCD6CC 1px solid;
     background-color: white;
