@@ -1,9 +1,12 @@
 package handler
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/service"
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -27,6 +30,29 @@ func (handler *FlightHandler) CreateFlight(rw http.ResponseWriter, h *http.Reque
 	}
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
+}
+
+func (handler *FlightHandler) SearchFlights(rw http.ResponseWriter, h *http.Request) {
+	var dto dto.SearchDTO
+	err := json.NewDecoder(h.Body).Decode(&dto)
+	fmt.Println(dto)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+	flights := handler.flightService.SearchFlights(dto)
+	if flights == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = flights.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	return
 }
 
 func (handler *FlightHandler) UpdateFlight(rw http.ResponseWriter, h *http.Request) {

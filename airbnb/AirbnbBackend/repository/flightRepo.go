@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -125,4 +127,31 @@ func (repo *FlightRepo) Delete(id string) error {
 	}
 	repo.logger.Printf("Documents deleted: %v\n", result.DeletedCount)
 	return nil
+}
+
+func (repo *FlightRepo) SearchFlights(searchCriteria dto.SearchDTO) model.Flights {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	//results := []model.Flight{}
+
+	end := time.Date(searchCriteria.Date.Year(), searchCriteria.Date.Month(), searchCriteria.Date.Day(), 23, 59, 59, 999999999, time.UTC)
+	fmt.Println(end)
+	filter := bson.M{"departure": searchCriteria.Departure, "arrival": searchCriteria.Arrival, "departure_date_time": bson.M{"$gte": searchCriteria.Date, "$lt": end}, "available_seats": bson.M{"$gte": searchCriteria.AvailableSeats}}
+
+	var flights model.Flights
+	flightsCollection := repo.getCollection()
+	cursor, err := flightsCollection.Find(ctx, filter)
+	if err != nil {
+		log.Panic("Could not find document in database", err.Error())
+		return nil
+	}
+	if err = cursor.All(context.TODO(), &flights); err != nil {
+		log.Panic("Could not find document in database", err.Error())
+		return nil
+	}
+
+	fmt.Println("SearchResult:")
+	fmt.Println(&flights)
+
+	return flights
 }

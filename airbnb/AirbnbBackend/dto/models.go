@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -16,4 +18,11 @@ type FlightDTO struct {
 	Price              int    `json:"price" `
 	TotalNumberOfSeats int    `json:"totalNumberOfSeats" `
 	AvailableSeats     int    `json:"availableSeats" `
+}
+
+type SearchDTO struct {
+	Departure      string    `json:"departure"`
+	Arrival        string    `json:"arrival"`
+	Date           time.Time `json:"date"`
+	AvailableSeats int       `json:"availableSeats"`
 }

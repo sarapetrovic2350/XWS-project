@@ -1,4 +1,27 @@
 <div class="container">
+    <mat-card>
+        <mat-form-field appearance="outline">
+          <mat-label>Search flights by date</mat-label>
+          <input type="date" matInput [(ngModel)]="date"/>
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+          <mat-form-field class="ml" appearance="outline">
+            <mat-label>Flights From</mat-label>
+            <input type="text" matInput [(ngModel)]="departure" placeholder="City"/>
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="ml" appearance="outline">
+            <mat-label>Flights To</mat-label>
+            <input type="text" matInput [(ngModel)]="arrival" placeholder="City"/>
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="ml" appearance="outline">
+            <mat-label>Passengers</mat-label>
+            <input type="number" matInput [(ngModel)]="availableSeats" placeholder="Number of passengers"/>
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field >
+          <button class="btn" mat-mini-fab color="primary" (click)="searchFlights()">Search</button>
+        </mat-card>
     <div class="table-header">
         <p class="table-title">Flights</p>
     </div>

@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
   date: Date = new Date()
   departure: string = ''
   arrival: string = ''
-  numberOfPassengers: string = ''
+  numberOfPassengers: number = 1
 
   ngOnInit(): void {
   }
@@ -20,6 +20,8 @@ export class HomeComponent implements OnInit {
     console.log(this.departure)
     console.log(this.arrival)
     console.log(this.numberOfPassengers)
+    
+
   }
 
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/repository"
 )
@@ -16,6 +17,14 @@ func NewFlightService(r *repository.FlightRepo) *FlightService {
 
 func (service *FlightService) CreateFlight(flight *model.Flight) error {
 	err := service.FlightRepo.Insert(flight)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *FlightService) SearchFlights(searchFlights dto.SearchDTO) model.Flights {
+	err := service.FlightRepo.SearchFlights(searchFlights)
 	if err != nil {
 		return err
 	}
