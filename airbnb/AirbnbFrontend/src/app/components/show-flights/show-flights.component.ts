@@ -41,29 +41,6 @@ export class ShowFlightsComponent implements OnInit {
 
   }
 
-  searchFlights() {
-    console.log(this.date)
-    console.log(this.departure)
-    console.log(this.arrival)
-    console.log(this.availableSeats)
-
-    var newDate1 = new Date(this.date)
-    console.log(newDate1)
-    var newDate2= new Date(newDate1.getFullYear(), newDate1.getMonth(), newDate1.getDate(), 2, 0, 0)
-    console.log(newDate2)
-    
-    var searchFlights = { date:newDate1.toISOString(),
-                          departure:this.departure,
-                          arrival:this.arrival,
-                          availableSeats:this.availableSeats
-                           }
-
-    this.flightService.searchFlights(searchFlights).subscribe(res =>
-      {   
-          this.flights = res;
-          this.dataSource.data = this.flights;
-        })   
-      };
 
   public deleteFlight(id: string) {
     console.log(id)
