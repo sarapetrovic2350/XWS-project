@@ -4,6 +4,7 @@ import (
 	"Rest/model"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"time"
@@ -76,6 +77,22 @@ func (repo *UserRepo) FindUserByEmail(email string) (*model.User, error) {
 	var user model.User
 	filter := bson.M{"email": bson.M{"$eq": email}}
 	err := usersCollection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		repo.logger.Println(err)
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (repo *UserRepo) GetById(id string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	usersCollection := repo.getCollection()
+
+	var user model.User
+	objID, _ := primitive.ObjectIDFromHex(id)
+	err := usersCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&user)
 	if err != nil {
 		repo.logger.Println(err)
 		return nil, err

@@ -112,6 +112,9 @@ func main() {
 	getTicketByIdRouter := router.Methods(http.MethodGet).Subrouter()
 	getTicketByIdRouter.HandleFunc("/tickets/{id}", handlers.TicketHandler.GetTicketById)
 
+	getTicketsByUserRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketsByUserRouter.HandleFunc("/tickets/getTicketsByUser/{id}", handlers.TicketHandler.GetTicketsByUserId)
+
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	LoginRouter := router.Methods(http.MethodPost).Subrouter()
 	LoginRouter.HandleFunc("/users/login", handlers.UserHandler.Login)

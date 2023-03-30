@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
+  path: string = "../assets/images/plane.jpg";
+  alttext: string="image";
+
   constructor() { }
   date: Date = new Date()
   departure: string = ''
