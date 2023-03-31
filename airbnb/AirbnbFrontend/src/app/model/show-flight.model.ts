@@ -7,6 +7,7 @@ export class ShowFlight {
     public arrival: string = '',
     public price: number = 0,
     public totalNumberOfSeats: number = 0,
-    public availableSeats: number = 0
+    public availableSeats: number = 0,
+    public totalPrice: number  = 0
   ) {}
 }
