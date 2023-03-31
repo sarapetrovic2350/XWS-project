@@ -23,8 +23,10 @@ export class HomeComponent implements OnInit {
   public dataSource = new MatTableDataSource<ShowFlight>();
   public displayedColumns = ['Departure', 'Arrival', 'DateTimeDeparture', 'DateTimeArrival', 'Price', 'TotalPrice'];
   public flights: ShowFlight[] = [];
+  public notFoundFlights: ShowFlight[] = [];
   public flight: Flight | undefined = undefined;
   isSearched: boolean = false;
+  notFound: boolean = false;
   totalPrice: number = 0;
 
   ngOnInit(): void {
@@ -37,29 +39,50 @@ export class HomeComponent implements OnInit {
 
     var newDate1 = new Date(this.date)
     console.log(newDate1)
-    var newDate2= new Date(newDate1.getFullYear(), newDate1.getMonth(), newDate1.getDate(), 2, 0, 0)
+    var newDate2 = new Date(newDate1.getFullYear(), newDate1.getMonth(), newDate1.getDate(), 2, 0, 0)
     console.log(newDate2)
 
-    var searchFlights = { date:newDate1.toISOString(),
-                          departure:this.departure,
-                          arrival:this.arrival,
-                          availableSeats:this.availableSeats
-                           }
+    var searchFlights = {
+      date: newDate1.toISOString(),
+      departure: this.departure,
+      arrival: this.arrival,
+      availableSeats: this.availableSeats
+    }
 
-    this.flightService.searchFlights(searchFlights).subscribe((data: any)  =>
+    this.flightService.searchFlights(searchFlights).subscribe(
       {
+        next: (res) => {
+          console.log(res)
           this.isSearched = true;
-          this.flights = data;
+          this.notFound = false;
+          this.flights = res;
           for (let i = 0; i < this.flights.length; i++) {
             let dateOfDeparture = new Date(this.flights[i].departureDateTime)
             this.flights[i].departureDateTime = dateOfDeparture.toUTCString().replace('GMT', '')
             let dateOfArrival = new Date(this.flights[i].arrivalDateTime)
             this.flights[i].arrivalDateTime = dateOfArrival.toUTCString().replace('GMT', '')
-            this.flights[i].totalPrice = this.availableSeats*this.flights[i].price
+            this.flights[i].totalPrice = this.availableSeats * this.flights[i].price
           }
           this.dataSource.data = this.flights;
-          console.log(data)
-        })
-      };
+
+        },
+
+        error: (e) => {
+          this.notFound = true;
+          this.isSearched = true;
+          this.dataSource.data = this.notFoundFlights;
+          console.log(e);
+        }
+      });
+  }
+
+  clearSearch() {
+    this.departure = ''
+    this.availableSeats = 1
+    this.arrival = ''
+    this.date = new Date()
+    this.isSearched = false;
+    this.notFound = false;
+  }
 
 }

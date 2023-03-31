@@ -30,7 +30,7 @@ export class FlightService {
     return this.http.get<Flight>(this.apiHost + 'flights/' + id);
   }
 
-  searchFlights(searchFlights: any): Observable<Flight[]>{
+  searchFlights(searchFlights: any): Observable<any[]>{
     return this.http.post<Flight[]>(this.apiHost + 'flights/searchFlights', searchFlights);
   }
 

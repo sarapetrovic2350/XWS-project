@@ -20,11 +20,15 @@
     <mat-icon matPrefix>search</mat-icon>
   </mat-form-field >
   <button class="btn" mat-mini-fab color="primary" (click)="searchFlights()">Search</button>
+  <button *ngIf="isSearched" mat-button mat-ripple (click)="clearSearch()">
+    <mat-icon color= "primary" matTooltip="clear search"> cancel_presentation</mat-icon>
+  </button>
 </mat-card>
 
 <div class="container" *ngIf="isSearched">
 <div class="table-header" *ngIf="isSearched">
   <p class="table-title">Flights</p>
+  <p *ngIf="notFound" class="table-title"> No flights found for your search criteria!</p>
 </div>
 <table *ngIf="isSearched" mat-table [dataSource]="dataSource">
   <ng-container matColumnDef="Departure">
