@@ -22,5 +22,39 @@
   <button class="btn" mat-mini-fab color="primary" (click)="searchFlights()">Search</button>
 </mat-card>
 
+<div class="container" *ngIf="isSearched">
+<div class="table-header" *ngIf="isSearched">
+  <p class="table-title">Flights</p>
+</div>
+<table *ngIf="isSearched" mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="Departure">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Departure</th>
+    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.departure}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Arrival">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Arrival</th>
+    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.arrival}}</td>
+  </ng-container>
+  <ng-container matColumnDef="DateTimeDeparture">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Date and time of Departure </th>
+    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.departureDateTime}}</td>
+  </ng-container>
+  <ng-container matColumnDef="DateTimeArrival">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Date and time of Arrival </th>
+    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.arrivalDateTime}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Price">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Price</th>
+    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.price}}</td>
+  </ng-container>
+  <ng-container matColumnDef="TotalPrice">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Total price</th>
+    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.totalPrice}}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>
+
 <img class="home-img" [src]="path" [alt]="alttext">
 
