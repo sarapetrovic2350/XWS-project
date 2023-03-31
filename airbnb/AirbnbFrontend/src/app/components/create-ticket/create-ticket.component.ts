@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import {Router} from "@angular/router";
+import {Router, Params, ActivatedRoute} from "@angular/router";
 import { Ticket } from 'src/app/model/ticket.model';
 import { Flight } from 'src/app/model/flight.model';
 import { User } from 'src/app/model/user.model';
@@ -27,18 +27,21 @@ export class CreateTicketComponent implements OnInit {
 
   constructor(
     private flightService: FlightService,
-    private router: Router,
     private userService: UserService,
-    private ticketService: TicketService
+    private ticketService: TicketService, 
+    private route: ActivatedRoute,
+    private router: Router
     ) { }
 
   ngOnInit(): void {
     this.user = this.userService.getCurrentUser();
 
-    this.flightService.getFlightById(this.flightId).subscribe(res => {
-      this.flight = res;
-      console.log(this.flight);
-    })
+    this.route.params.subscribe((params: Params) => {
+      this.flightService.getFlightById(params['id']).subscribe(res => {
+        this.flight = res;
+        console.log(this.flight);
+      })
+    });
 
   }
 
@@ -52,7 +55,7 @@ export class CreateTicketComponent implements OnInit {
     this.ticketService.createTicket(this.ticket).subscribe(
       {
         next: (res) => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/showUserTickets']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',

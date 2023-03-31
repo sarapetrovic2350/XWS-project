@@ -30,7 +30,7 @@ const routes: Routes = [
     component: HomeComponent
   }, 
   {
-    path: 'createTicket', 
+    path: 'createTicket/:id', 
     component: CreateTicketComponent
   }, 
   {

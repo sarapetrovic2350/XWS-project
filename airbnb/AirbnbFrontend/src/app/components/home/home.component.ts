@@ -4,6 +4,8 @@ import {FlightService} from "../../service/flight.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {ShowFlight} from "../../model/show-flight.model";
 import {Flight} from "../../model/flight.model";
+import { User } from 'src/app/model/user.model';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-home',
@@ -15,13 +17,13 @@ export class HomeComponent implements OnInit {
   path: string = "../assets/images/plane.jpg";
   alttext: string="image";
 
-  constructor(private flightService: FlightService, private router: Router) {}
+  constructor(private flightService: FlightService, private router: Router, private userService: UserService) {}
   date: Date = new Date()
   departure: string = ''
   arrival: string = ''
   availableSeats: number = 1
   public dataSource = new MatTableDataSource<ShowFlight>();
-  public displayedColumns = ['Departure', 'Arrival', 'DateTimeDeparture', 'DateTimeArrival', 'Price', 'TotalPrice'];
+  public displayedColumns = ['Departure', 'Arrival', 'DateTimeDeparture', 'DateTimeArrival', 'Price', 'TotalPrice', 'commands'];
   public flights: ShowFlight[] = [];
   public notFoundFlights: ShowFlight[] = [];
   public flight: Flight | undefined = undefined;
@@ -29,7 +31,10 @@ export class HomeComponent implements OnInit {
   notFound: boolean = false;
   totalPrice: number = 0;
 
+  public user: User = new User(); 
+
   ngOnInit(): void {
+    this.user = this.userService.getCurrentUser();
   }
   searchFlights() {
     console.log(this.date)
@@ -84,5 +89,14 @@ export class HomeComponent implements OnInit {
     this.isSearched = false;
     this.notFound = false;
   }
+
+  public buyTicket(id: string) {
+    if(this.user == null){
+      this.router.navigate(['/login']);
+    }else if (this.user.role == "REGISTERED_USER"){
+      this.router.navigate(['createTicket/' + id ]);
+    }
+  }
+
 
 }
