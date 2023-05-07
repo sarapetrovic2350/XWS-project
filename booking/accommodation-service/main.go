@@ -47,11 +47,16 @@ func main() {
 	accommodationRepository := repository.NewAccommodationRepo(client, storeLogger)
 	defer accommodationRepository.Disconnect(timeoutContext)
 
+	availabilityRepository := repository.NewAvailabilityRepo(client, storeLogger)
+	defer availabilityRepository.Disconnect(timeoutContext)
+
 	// Initialize services
 	accommodationService := service.NewAccommodationService(accommodationRepository)
+	availabilityService := service.NewAvailabilityService(availabilityRepository)
 
 	//Initialize handlers and inject said logger
 	accommodationHandler := handler.NewAccommodationHandler(logger, accommodationService)
+	availabilityHandler := handler.NewAvailabilityHandler(logger, availabilityService)
 
 	//Initialize the router and add a middleware for all the requests
 	//router := mux.NewRouter()
@@ -69,6 +74,10 @@ func main() {
 
 	//getUsersRouter := router.Methods(http.MethodGet).Subrouter()
 	newRouter.HandleFunc("/", accommodationHandler.GetAllAccommodations).Methods("GET")
+
+	newRouter.HandleFunc("/createAvailability", availabilityHandler.CreateAvailability).Methods("POST")
+
+	newRouter.HandleFunc("/availabilities", availabilityHandler.GetAllAvailabilities).Methods("GET")
 
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), h(newRouter)))

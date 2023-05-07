@@ -12,6 +12,14 @@ type Accommodation struct {
 	MinNumberOfGuests int                `json:"minNumberOfGuests" bson:"min_number_of_guests"`
 	MaxNumberOfGuests int                `json:"maxNumberOfGuests" bson:"max_number_of_guests"`
 	Address           Address            `bson:"inline"`
+	Images            []Image            `json:"images" bson:"images;"`
+	HostID            string             `json:"hostID" bson:"hostID;"`
+	Benefits          []string           `json:"benefits" bson:"benefits;"`
+}
+
+type Image struct {
+	Filename string `json:"filename" bson:"filename"`
+	Filepath string `json:"filepath" bson:"filepath"`
 }
 
 type Accommodations []*Accommodation
