@@ -41,19 +41,6 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, h *http.Request) 
 	}
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
-	/*user := h.Context().Value(KeyProduct{}).(*model.User)
-	existingUser, _ := handler.userService.FindUserByEmail(user.Email)
-	if existingUser != nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if err := handler.userService.CreateUser(user); err != nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	rw.WriteHeader(http.StatusCreated)
-
-	*/
 }
 
 func (handler *UserHandler) Login(rw http.ResponseWriter, h *http.Request) {

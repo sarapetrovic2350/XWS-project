@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	//Reading from environment, if not set we will default it to 8080.
+	//Reading from environment, if not set we will default it to 8090.
 	//This allows flexibility in different environments (for eg. when running multiple docker api's and want to override the default port)
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
@@ -58,22 +58,23 @@ func main() {
 	router := mux.NewRouter()
 	headers := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Allow-Headers", "text/plain"})
 	methods := gorillaHandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
-	origins := gorillaHandlers.AllowedOrigins([]string{"http://localhost:8080"})
+	origins := gorillaHandlers.AllowedOrigins([]string{"http://localhost:4200"})
 	credential := gorillaHandlers.AllowCredentials()
 	h := gorillaHandlers.CORS(headers, methods, origins, credential)
 
 	router.Use(userHandler.MiddlewareContentTypeSet)
 	newRouter := mux.NewRouter().StrictSlash(true)
+	newRouter.Use(userHandler.MiddlewareContentTypeSet)
 
-	//createUserRouter := router.Methods(http.MethodPost).Subrouter()
+	//createUserRouter := newRouter.Methods(http.MethodPost).Subrouter()
 	newRouter.HandleFunc("/", userHandler.CreateUser).Methods("POST")
-	//createUserRouter.Use(userHandler.MiddlewareUserDeserialization)
+	// newRouter.Use(userHandler.MiddlewareUserDeserialization)
 
-	//getUsersRouter := router.Methods(http.MethodGet).Subrouter()
+	//getUsersRouter := newRouter.Methods(http.MethodGet).Subrouter()
 	newRouter.HandleFunc("/", userHandler.GetAllUsers).Methods("GET")
 
-	LoginRouter := router.Methods(http.MethodPost).Subrouter()
-	LoginRouter.HandleFunc("/users/login", userHandler.Login)
+	//LoginRouter := router.Methods(http.MethodPost).Subrouter()
+	//LoginRouter.HandleFunc("/users/login", userHandler.Login)
 
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), h(newRouter)))

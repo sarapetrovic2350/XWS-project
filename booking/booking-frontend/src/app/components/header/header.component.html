@@ -1,0 +1,23 @@
+<p>
+  <mat-toolbar color="primary">
+    <button mat-icon-button class="example-icon" routerLink="/">
+      <mat-icon>home</mat-icon>
+    </button>
+    <span>Airbnb</span>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/create-accommodation">
+      <span>Create accommodation</span>
+    </button>
+    <span class="example-spacer"></span>
+    <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <!--<span ngIf="!isLoggedIn">Sign up</span>-->
+    <button *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/login">
+      <mat-icon>lock</mat-icon>
+    </button>
+   <!-- <span ngIf="!isLoggedIn">Login</span>-->
+    <button *ngIf="isLoggedIn" mat-button mat-ripple (click)="logout()">
+      <span>Logout</span>
+    </button>
+  </mat-toolbar>
+</p>

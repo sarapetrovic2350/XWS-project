@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="table-header">
+        <p class="table-title">Flights</p>
+    </div>
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="Departure">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Departure</th>
+            <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.departure}}</td>
+        </ng-container>
+        <ng-container matColumnDef="Arrival">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Arrival</th>
+            <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.arrival}}</td>
+        </ng-container>
+      <ng-container matColumnDef="DateTimeDeparture">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Date and time of Departure </th>
+        <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.departureDateTime}}</td>
+      </ng-container>
+      <ng-container matColumnDef="DateTimeArrival">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Date and time of Arrival </th>
+        <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.arrivalDateTime}}</td>
+      </ng-container>
+        <ng-container matColumnDef="Price">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Price</th>
+            <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.price}}</td>
+        </ng-container>
+        <ng-container matColumnDef="TotalNumberOfSeats">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Total Number Of Seats</th>
+            <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.totalNumberOfSeats}}</td>
+        </ng-container>
+        <ng-container matColumnDef="AvailableSeats">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Available Seats</th>
+            <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.availableSeats}}</td>
+        </ng-container>
+        <ng-container matColumnDef="commands">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let flight">
+                <div class="commands">
+                    <button (click)="deleteFlight(flight.id)">
+                        <mat-icon color= "primary" matTooltip="delete">delete</mat-icon>
+                    </button>
+                </div>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

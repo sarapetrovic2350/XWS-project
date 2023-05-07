@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	RegisteredUserRole string = "REGISTERED_USER"
-	AdministratorRole  string = "ADMINISTRATOR"
+	GuestUserRole string = "GUEST"
+	HostRole      string = "HOST"
 )
 
 type User struct {
