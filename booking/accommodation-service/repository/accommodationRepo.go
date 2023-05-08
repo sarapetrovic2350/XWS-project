@@ -105,14 +105,8 @@ func (repo *AccommodationRepo) GetById(id string) (*model.Accommodation, error) 
 func (repo *AccommodationRepo) SearchAccommodation(searchCriteria dto.SearchDTO) model.Accommodations {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	//results := []model.Flight{}
 
-	//treba za kasnije
-	//end := time.Date(searchCriteria.Date.Year(), searchCriteria.Date.Month(), searchCriteria.Date.Day(), 23, 59, 59, 999999999, time.UTC)
-	//fmt.Println(end)
-	filter := bson.M{"country": searchCriteria.Country, "city": searchCriteria.City,
-		//"departure_date_time": bson.M{"$gte": searchCriteria.Date, "$lt": end},
-		"min_number_of_guests": bson.M{"$gte": searchCriteria.NumberOfGuests}, "max_number_of_guests": bson.M{"$gte": searchCriteria.NumberOfGuests}}
+	filter := bson.M{"country": searchCriteria.Country, "city": searchCriteria.City}
 
 	var accommodations model.Accommodations
 	accommodationsCollection := repo.getCollection()

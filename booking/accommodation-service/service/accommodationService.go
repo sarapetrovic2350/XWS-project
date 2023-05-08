@@ -40,9 +40,15 @@ func (service *AccommodationService) FindAccommodationsByEmail(email string) (*m
 }
 
 func (service *AccommodationService) SearchAccommodation(searchAccommodations dto.SearchDTO) model.Accommodations {
-	err := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
-	if err != nil {
-		return err
+	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	var retAccommodations model.Accommodations
+	for _, itr := range accommodations {
+		if itr.MinNumberOfGuests <= searchAccommodations.NumberOfGuests && itr.MaxNumberOfGuests >= searchAccommodations.NumberOfGuests {
+			retAccommodations = append(retAccommodations, itr)
+		}
+	}
+	if retAccommodations != nil {
+		return retAccommodations
 	}
 	return nil
 }
