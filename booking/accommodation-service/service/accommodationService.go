@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/repository"
 )
@@ -36,4 +37,12 @@ func (service *AccommodationService) FindAccommodationsByEmail(email string) (*m
 		return nil, err
 	}
 	return user, nil
+}
+
+func (service *AccommodationService) SearchAccommodation(searchAccommodations dto.SearchDTO) model.Accommodations {
+	err := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	if err != nil {
+		return err
+	}
+	return nil
 }
