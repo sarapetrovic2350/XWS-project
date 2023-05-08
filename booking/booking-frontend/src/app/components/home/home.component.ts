@@ -30,11 +30,11 @@ export class HomeComponent implements OnInit {
   isSearched: boolean = false;
   notFound: boolean = false;
   totalPrice: number = 0;
-
-  public user: User = new User(); 
+  public user: User = new User();
+  role: string = "";
 
   ngOnInit(): void {
-    this.user = this.userService.getCurrentUser();
+    this.role = this.userService.getLoggedInUserRole();
   }
   searchFlights() {
     console.log(this.date)

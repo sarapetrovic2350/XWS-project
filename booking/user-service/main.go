@@ -66,17 +66,14 @@ func main() {
 	newRouter := mux.NewRouter().StrictSlash(true)
 	newRouter.Use(userHandler.MiddlewareContentTypeSet)
 
-	//createUserRouter := newRouter.Methods(http.MethodPost).Subrouter()
 	newRouter.HandleFunc("/", userHandler.CreateUser).Methods("POST")
-	// newRouter.Use(userHandler.MiddlewareUserDeserialization)
 
-	//getUsersRouter := newRouter.Methods(http.MethodGet).Subrouter()
 	newRouter.HandleFunc("/", userHandler.GetAllUsers).Methods("GET")
 
-	//LoginRouter := router.Methods(http.MethodPost).Subrouter()
-	//LoginRouter.HandleFunc("/users/login", userHandler.Login)
+	newRouter.HandleFunc("/login", userHandler.Login).Methods("POST")
 
-	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
+	newRouter.HandleFunc("/userByEmail/{email}", userHandler.GetUserByEmail).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), h(newRouter)))
 
 }

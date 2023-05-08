@@ -4,6 +4,9 @@ import (
 	"Rest/dto"
 	"Rest/model"
 	"Rest/repository"
+	"errors"
+	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 type UserService struct {
@@ -24,12 +27,19 @@ func (service *UserService) CreateUser(user *model.User) error {
 	return nil
 }
 
-func (service *UserService) Login(dto *dto.Login) (*model.User, error) {
+func (service *UserService) Login(dto *dto.Login) (string, error) {
 	user, err := service.FindUserByEmail(dto.Email)
-	if user != nil && user.Password == dto.Password {
-		return user, nil
+	if err != nil {
+		return "", err
 	}
-	return nil, err
+	if user.Password != dto.Password {
+		return "", errors.New("incorrect password")
+	}
+	token, err := GenerateJWT(user.Email, user.Role)
+	if err != nil {
+		return "", err
+	}
+	return token, err
 }
 
 func (service *UserService) GetAllUsers() (model.Users, error) {
@@ -46,4 +56,16 @@ func (service *UserService) FindUserByEmail(email string) (*model.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func GenerateJWT(email string, role string) (string, error) {
+	var sampleSecretKey = []byte("SecretYouShouldHide")
+	claims := jwt.MapClaims{}
+	claims["email"] = email
+	claims["role"] = role
+	claims["exp"] = time.Now().Add(time.Hour).Unix() * 1000
+	claims["authorized"] = true
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	return token.SignedString(sampleSecretKey)
 }

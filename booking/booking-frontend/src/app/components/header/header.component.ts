@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 import {UserService} from "../../service/user.service";
+import {User} from "../../model/user.model";
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   isHost: boolean = false;
   isGuest: boolean = false;
+  user: User = new User();
 
   constructor(private router: Router, private userService : UserService) { }
 
@@ -20,16 +22,21 @@ export class HeaderComponent implements OnInit {
   }
 
   refreshUser(): void {
-    let user = this.userService.getCurrentUser()
-    console.log(user)
-    if(user === null) {
+    let userRole = this.userService.getLoggedInUserRole()
+    let userEmail = this.userService.getLoggedInUserEmail()
+    this.userService.getUserByEmail(userEmail).subscribe(res => {
+      this.user = res;
+      console.log(this.user)
+    })
+
+    if(userRole === "") {
       this.isLoggedIn = false;
     } else {
       this.isLoggedIn = true;
-      if(user.role == "HOST") {
+      if(userRole == "HOST") {
         this.isHost = true;
       }
-      if(user.role == "GUEST") {
+      if(userRole == "GUEST") {
         this.isGuest = true;
       }
     }

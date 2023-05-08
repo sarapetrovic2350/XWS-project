@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
 
     }
   }
-  successfulLogin(data: any) {
-    this.userService.setLoggedUser(data);
+  successfulLogin(token: string) {
+    this.userService.setTokenForLoggedInUser(token);
   }
 }

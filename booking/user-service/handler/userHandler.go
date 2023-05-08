@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -49,19 +50,15 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, h *http.Request) {
 	if err != nil {
 		handler.logger.Print("Database exception: ", err)
 	}
-	user, _ := handler.userService.Login(&userLogin)
-	if user == nil {
+	token, err := handler.userService.Login(&userLogin)
+	fmt.Println(token)
+	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = user.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		handler.logger.Fatal("Unable to convert to json :", err)
-		rw.WriteHeader(http.StatusOK)
-		return
-	}
-
+	rw.WriteHeader(http.StatusOK)
+	rwToken, err := json.Marshal(token)
+	rw.Write(rwToken)
 }
 
 func (handler *UserHandler) GetAllUsers(rw http.ResponseWriter, h *http.Request) {
@@ -75,6 +72,27 @@ func (handler *UserHandler) GetAllUsers(rw http.ResponseWriter, h *http.Request)
 	}
 
 	err = users.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		return
+	}
+}
+func (handler *UserHandler) GetUserByEmail(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	email := vars["email"]
+	fmt.Println(vars)
+	user, err := handler.userService.FindUserByEmail(email)
+	fmt.Println(user)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+	if user == nil {
+		http.Error(rw, "User with given email not found", http.StatusNotFound)
+		handler.logger.Printf("User with email: '%s' not found", email)
+		return
+	}
+	err = user.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
 		handler.logger.Fatal("Unable to convert to json :", err)
