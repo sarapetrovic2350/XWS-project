@@ -66,7 +66,10 @@ func main() {
 	credential := gorillaHandlers.AllowCredentials()
 	h := gorillaHandlers.CORS(headers, methods, origins, credential)
 
+	//router.Use(userHandler.MiddlewareContentTypeSet)
 	newRouter := mux.NewRouter().StrictSlash(true)
+	newRouter.Use(accommodationHandler.MiddlewareContentTypeSet)
+	newRouter.Use(availabilityHandler.MiddlewareContentTypeSet)
 
 	//createUserRouter := router.Methods(http.MethodPost).Subrouter()
 	newRouter.HandleFunc("/", accommodationHandler.CreateAccommodation).Methods("POST")
@@ -74,6 +77,8 @@ func main() {
 
 	//getUsersRouter := router.Methods(http.MethodGet).Subrouter()
 	newRouter.HandleFunc("/", accommodationHandler.GetAllAccommodations).Methods("GET")
+
+	newRouter.HandleFunc("/search", accommodationHandler.SearchAccommodations).Methods("POST")
 
 	newRouter.HandleFunc("/createAvailability", availabilityHandler.CreateAvailability).Methods("POST")
 

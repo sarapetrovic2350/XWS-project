@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/repository"
 )
@@ -36,4 +37,18 @@ func (service *AccommodationService) FindAccommodationsByEmail(email string) (*m
 		return nil, err
 	}
 	return user, nil
+}
+
+func (service *AccommodationService) SearchAccommodation(searchAccommodations dto.SearchDTO) model.Accommodations {
+	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	var retAccommodations model.Accommodations
+	for _, itr := range accommodations {
+		if itr.MinNumberOfGuests <= searchAccommodations.NumberOfGuests && itr.MaxNumberOfGuests >= searchAccommodations.NumberOfGuests {
+			retAccommodations = append(retAccommodations, itr)
+		}
+	}
+	if retAccommodations != nil {
+		return retAccommodations
+	}
+	return nil
 }

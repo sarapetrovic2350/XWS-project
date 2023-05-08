@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"Rest/service"
 	"context"
@@ -85,4 +86,27 @@ func (handler *AccommodationHandler) MiddlewareContentTypeSet(next http.Handler)
 
 		next.ServeHTTP(rw, h)
 	})
+}
+
+func (handler *AccommodationHandler) SearchAccommodations(rw http.ResponseWriter, h *http.Request) {
+	var dto dto.SearchDTO
+	err := json.NewDecoder(h.Body).Decode(&dto)
+	fmt.Println(dto)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+	accommodations := handler.accommodationService.SearchAccommodation(dto)
+	if accommodations == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = accommodations.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	return
 }

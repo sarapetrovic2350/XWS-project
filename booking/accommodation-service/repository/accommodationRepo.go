@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"Rest/dto"
 	"Rest/model"
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -98,4 +100,28 @@ func (repo *AccommodationRepo) GetById(id string) (*model.Accommodation, error) 
 		return nil, err
 	}
 	return &accommodation, nil
+}
+
+func (repo *AccommodationRepo) SearchAccommodation(searchCriteria dto.SearchDTO) model.Accommodations {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"country": searchCriteria.Country, "city": searchCriteria.City}
+
+	var accommodations model.Accommodations
+	accommodationsCollection := repo.getCollection()
+	cursor, err := accommodationsCollection.Find(ctx, filter)
+	if err != nil {
+		log.Panic("Could not find document in database", err.Error())
+		return nil
+	}
+	if err = cursor.All(context.TODO(), &accommodations); err != nil {
+		log.Panic("Could not find document in database", err.Error())
+		return nil
+	}
+
+	fmt.Println("SearchResult:")
+	fmt.Println(&accommodations)
+
+	return accommodations
 }
