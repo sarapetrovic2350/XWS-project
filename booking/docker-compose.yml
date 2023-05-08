@@ -60,6 +60,32 @@ services:
     depends_on:
       - accommodation_db
 
+  reservation_db:
+    image: mongo
+    container_name: reservation_db
+    restart: on-failure
+    networks:
+      - backend
+
+  reservation-service:
+    image: reservation-service:compose_build
+    restart: on-failure
+    build:
+      context: ./reservation-service
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    environment:
+      USER_SERVICE_DOMAIN: ${USER_SERVICE_DOMAIN}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      ACCOMMODATION_DB_DOMAIN: ${ACCOMMODATION_DB_DOMAIN}
+      ACCOMMODATION_DB_PORT: ${ACCOMMODATION_DB_PORT}
+      RESERVATION_DB_DOMAIN: ${RESERVATION_DB_DOMAIN}
+      RESERVATION_DB_PORT: ${RESERVATION_DB_PORT}
+      PORT: ${RESERVATION_SERVICE_PORT}
+    depends_on:
+      - reservation_db
+
 networks:
   backend:
     name: booking
