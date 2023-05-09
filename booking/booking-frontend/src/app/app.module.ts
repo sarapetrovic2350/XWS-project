@@ -13,6 +13,7 @@ import { ShowFlightsComponent } from './components/show-flights/show-flights.com
 import { CreateFlightComponent } from './components/create-flight/create-flight.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { HomeComponent } from './components/home/home.component';
+import { CreateAccommodationComponent } from './components/create-accommodation/create-accommodation.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { HomeComponent } from './components/home/home.component';
     LoginComponent,
     ShowFlightsComponent,
     CreateFlightComponent,
-    HomeComponent
+    HomeComponent,
+    CreateAccommodationComponent
   ],
     imports: [
         BrowserModule,
