@@ -1,8 +1,11 @@
 package dto
 
+import "time"
+
 type SearchDTO struct {
-	Country string `json:"country"`
-	City    string `json:"city"`
-	//Date           time.Time `json:"date"`
-	NumberOfGuests int `json:"numberOfGuests"`
+	Country        string    `json:"country"`
+	City           string    `json:"city"`
+	StartDate      time.Time `json:"startDate"`
+	EndDate        time.Time `json:"endDate"`
+	NumberOfGuests int       `json:"numberOfGuests"`
 }

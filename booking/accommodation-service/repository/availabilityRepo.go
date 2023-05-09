@@ -69,6 +69,21 @@ func (repo *AvailabilityRepo) GetAll() (model.Availabilities, error) {
 	return accommodations, nil
 }
 
+func (repo *AvailabilityRepo) FindAvailabilitiesByAccommodationId(id string) (model.Availabilities, error) {
+	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	//defer cancel()
+
+	availabilitiesCollection, _ := repo.GetAll()
+	var availabilities model.Availabilities
+	for _, availability := range availabilitiesCollection {
+		if availability.AccommodationId == id {
+			availabilities = append(availabilities, availability)
+		}
+	}
+
+	return availabilities, nil
+}
+
 func (repo *AvailabilityRepo) GetById(id string) (*model.Availability, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

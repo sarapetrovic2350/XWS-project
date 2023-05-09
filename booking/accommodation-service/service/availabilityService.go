@@ -29,3 +29,11 @@ func (service *AvailabilityService) GetAllAvailabilities() (model.Availabilities
 	}
 	return availabilities, nil
 }
+
+func (service *AvailabilityService) FindAvailabilitiesByAccommodationId(id string) ([]*model.Availability, error) {
+	availabilities, err := service.AvailabilityRepo.FindAvailabilitiesByAccommodationId(id)
+	if err != nil {
+		return nil, err
+	}
+	return availabilities, nil
+}

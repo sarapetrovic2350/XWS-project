@@ -97,10 +97,11 @@ func (handler *AccommodationHandler) SearchAccommodations(rw http.ResponseWriter
 	}
 	accommodations := handler.accommodationService.SearchAccommodation(dto)
 	if accommodations == nil {
-		rw.WriteHeader(http.StatusBadRequest)
+		rw.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
 	err = accommodations.ToJSON(rw)
+	fmt.Println(err)
 	if err != nil {
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
 		handler.logger.Fatal("Unable to convert to json :", err)

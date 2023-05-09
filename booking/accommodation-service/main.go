@@ -51,7 +51,7 @@ func main() {
 	defer availabilityRepository.Disconnect(timeoutContext)
 
 	// Initialize services
-	accommodationService := service.NewAccommodationService(accommodationRepository)
+	accommodationService := service.NewAccommodationService(accommodationRepository, availabilityRepository)
 	availabilityService := service.NewAvailabilityService(availabilityRepository)
 
 	//Initialize handlers and inject said logger
