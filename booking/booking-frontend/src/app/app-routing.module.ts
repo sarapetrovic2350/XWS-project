@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {UserRegistrationComponent} from "./components/user-registration/user-registration.component";
 import {LoginComponent} from "./components/login/login.component";
-import {CreateFlightComponent} from "./components/create-flight/create-flight.component";
+import { CreateAccommodationComponent } from './components/create-accommodation/create-accommodation.component';
 import {ShowFlightsComponent} from "./components/show-flights/show-flights.component";
 import {HomeComponent} from "./components/home/home.component";
 
@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'create-accommodation',
-    component: CreateFlightComponent
+    component: CreateAccommodationComponent
   },
   {
     path: 'show-accommodations',

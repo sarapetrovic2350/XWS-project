@@ -62,7 +62,7 @@ func main() {
 	//router := mux.NewRouter()
 	headers := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Allow-Headers", "text/plain"})
 	methods := gorillaHandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
-	origins := gorillaHandlers.AllowedOrigins([]string{"http://localhost:8080"})
+	origins := gorillaHandlers.AllowedOrigins([]string{"http://localhost:4200"})
 	credential := gorillaHandlers.AllowCredentials()
 	h := gorillaHandlers.CORS(headers, methods, origins, credential)
 
