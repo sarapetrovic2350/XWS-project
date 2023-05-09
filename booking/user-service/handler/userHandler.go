@@ -30,11 +30,15 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, h *http.Request) 
 	var user model.User
 	err := json.NewDecoder(h.Body).Decode(&user)
 	if err != nil {
-		//TODO log
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	fmt.Println(user)
+	existingUser, _ := handler.userService.FindUserByEmail(user.Email)
+	if existingUser != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	err = handler.userService.CreateUser(&user)
 	if err != nil {
 		fmt.Println(err)

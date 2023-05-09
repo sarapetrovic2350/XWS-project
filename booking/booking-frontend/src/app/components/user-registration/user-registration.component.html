@@ -56,11 +56,18 @@
             <input name ="country" [(ngModel)]="country" matInput [formControl]="countryFormControl" required>
             <mat-error *ngIf="name.invalid">You must enter country</mat-error>
           </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Account type</mat-label>
+            <mat-select name ="role" matNativeControl [(ngModel)]="user.role" [formControl]="roleFormControl" required>
+              <mat-option value="GUEST">Guest</mat-option>
+              <mat-option value="HOST">Host</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
       <br><br>
       <button color="primary" [disabled]="email.invalid || name.invalid || lastName.invalid || password.invalid || passwordConfirm.invalid
-              || streetFormControl.invalid || streetNumberFormControl.invalid || cityFormControl.invalid || cityFormControl.invalid"
+              || streetFormControl.invalid || streetNumberFormControl.invalid || cityFormControl.invalid || countryFormControl.invalid || roleFormControl.invalid"
               style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Sign up</button><br>
       <a style="color:blueviolet" href="/login" >Already have an account? Log in</a>
     </form>

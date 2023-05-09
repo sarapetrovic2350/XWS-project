@@ -36,6 +36,7 @@ export class UserRegistrationComponent implements OnInit {
   streetNumberFormControl = new FormControl('', [Validators.required])
   cityFormControl = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30)])
   countryFormControl = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30)])
+  roleFormControl = new FormControl( '', [Validators.required])
   getEmailErrorMessage() {
     return this.email.hasError('required') ? 'You must enter email' :
       this.email.hasError('email') ? 'Not a valid email' :
