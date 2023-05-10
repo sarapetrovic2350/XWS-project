@@ -18,4 +18,9 @@ export class AccommodationService {
     console.log(accommodation);
     return this.http.post<Accommodation>(this.apiHost , accommodation);
   }
+
+  searchAccommodations(searchAccommodations: any) {
+    console.log(searchAccommodations);
+    return this.http.post<Accommodation[]>(this.apiHost + 'search' , searchAccommodations);
+  }
 }
