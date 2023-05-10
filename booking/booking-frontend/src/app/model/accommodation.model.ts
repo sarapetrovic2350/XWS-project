@@ -2,11 +2,12 @@ import {Address} from "./address.model";
 
 export class Accommodation {
     constructor(
-        public Name: string = '',
-        public MinNumberOfGuests: number = 0,
-        public MaxNumberOfGuests: number = 0,
-        public HostId: string = '',
-        public Benefits: string[] = [],
+        public id: string = '',
+        public name: string = '',
+        public minNumberOfGuests: number = 0,
+        public maxNumberOfGuests: number = 0,
+        public hostId: string = '',
+        public benefits: string[] = [],
         public address: Address = new Address()
       ) {}
 }

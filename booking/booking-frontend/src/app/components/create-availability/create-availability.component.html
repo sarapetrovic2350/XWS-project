@@ -1,0 +1,41 @@
+<mat-card elevation="5" fxFlex class="content">
+    <mat-card-title>
+      <h2>{{title}}</h2>
+    </mat-card-title>
+    <mat-card-content>
+      <p></p>
+      <form (ngSubmit)="onSubmit()" *ngIf="!submitted">
+        <div class="row">
+          <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Start Date: </mat-label>
+                <input matInput [matDatepicker]="departureDate" [(ngModel)]="departureDateDateForm" name="departureDate">
+                <mat-datepicker-toggle [for]="departureDate" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #departureDate></mat-datepicker>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+                <mat-label>End Date: </mat-label>
+                <input matInput [matDatepicker]="departureDate" [(ngModel)]="departureDateDateForm" name="departureDate">
+                <mat-datepicker-toggle [for]="departureDate" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #departureDate></mat-datepicker>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline">
+                <mat-label>Choose Price Selection:</mat-label>
+                <mat-select  [(ngModel)]="selections" name="selections">
+                  <mat-option *ngFor="let selected of priceSelection" [value]="selected" required>{{selected}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Price: </mat-label>
+                <input name ="price" [(ngModel)]="availability.price" matInput required type="number">
+              </mat-form-field><br>
+          </div>
+        </div>
+        <br>
+        <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Submit</button><br>
+      </form>
+      <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+    </mat-card-content>
+  </mat-card>
+
+

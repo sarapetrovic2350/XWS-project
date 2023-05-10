@@ -69,8 +69,8 @@ export class CreateAccommodationComponent implements OnInit {
         this.auxT.push(t);
       }
     }
-    this.accommodation.Benefits = this.auxT; 
-    this.accommodation.HostId = this.user.id;
+    this.accommodation.benefits = this.auxT; 
+    this.accommodation.hostId = this.user.id;
 
     this.accommodationService.createAccommodation(this.accommodation).subscribe(
       {

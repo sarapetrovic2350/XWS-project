@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -61,6 +62,37 @@ func (handler *AccommodationHandler) GetAllAccommodations(rw http.ResponseWriter
 	}
 }
 
+func (handler *AccommodationHandler) GetAccommodationByHostId(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	hostId := vars["id"]
+
+	accommodations, err := handler.accommodationService.GetAccommodationByHostId(hostId)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+
+	if accommodations == nil {
+		return
+	}
+
+	if accommodations == nil {
+		http.Error(rw, "Accommodations with given id not found", http.StatusNotFound)
+		handler.logger.Printf("Accommodations with id: '%s' not found", hostId)
+		return
+	}
+
+	err = json.NewEncoder(rw).Encode(accommodations)
+	//err = tickets.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
 func (handler *AccommodationHandler) MiddlewareAccommodationDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
 		accommodation := &model.Accommodation{}
@@ -110,4 +142,27 @@ func (handler *AccommodationHandler) SearchAccommodations(rw http.ResponseWriter
 	}
 	rw.WriteHeader(http.StatusOK)
 	return
+}
+
+func (handler *AccommodationHandler) GetAccommodationById(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+
+	accommodation, err := handler.accommodationService.GetById(id)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+
+	if accommodation == nil {
+		http.Error(rw, "Accommodation with given id not found", http.StatusNotFound)
+		handler.logger.Printf("Accommodation with id: '%s' not found", id)
+		return
+	}
+
+	err = accommodation.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		return
+	}
 }

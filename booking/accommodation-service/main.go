@@ -78,6 +78,10 @@ func main() {
 	//getUsersRouter := router.Methods(http.MethodGet).Subrouter()
 	newRouter.HandleFunc("/", accommodationHandler.GetAllAccommodations).Methods("GET")
 
+	newRouter.HandleFunc("/getByHostId/{id}", accommodationHandler.GetAccommodationByHostId).Methods("GET")
+
+	newRouter.HandleFunc("/getById/{id}", accommodationHandler.GetAccommodationById).Methods("GET")
+
 	newRouter.HandleFunc("/search", accommodationHandler.SearchAccommodations).Methods("POST")
 
 	newRouter.HandleFunc("/createAvailability", availabilityHandler.CreateAvailability).Methods("POST")

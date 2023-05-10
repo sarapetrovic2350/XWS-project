@@ -63,3 +63,28 @@ func (service *AccommodationService) SearchAccommodation(searchAccommodations dt
 	}
 	return nil
 }
+
+// dobavljanje smestaja po hostId-u, vlasnici smestaja
+func (service *AccommodationService) GetAccommodationByHostId(hostId string) (model.Accommodations, error) {
+	//user, _ = service.UserRepo.GetById(userId)
+	accommodations, err := service.AccommodationRepo.GetAll()
+	var retAccommodations model.Accommodations
+	for _, itr := range accommodations {
+		if itr.HostID == hostId {
+			retAccommodations = append(retAccommodations, itr)
+		}
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	return retAccommodations, nil
+}
+
+func (service *AccommodationService) GetById(id string) (*model.Accommodation, error) {
+	flight, err := service.AccommodationRepo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+	return flight, nil
+}
