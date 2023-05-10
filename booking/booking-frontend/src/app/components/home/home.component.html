@@ -1,74 +1,69 @@
-<!--<mat-card>-->
-<!--<mat-form-field appearance="outline">-->
-<!--  <mat-label>Search flights by date</mat-label>-->
-<!--  <input type="date" matInput [(ngModel)]="date"/>-->
-<!--  <mat-icon matPrefix>search</mat-icon>-->
-<!--</mat-form-field>-->
-<!--  <mat-form-field class="ml" appearance="outline">-->
-<!--    <mat-label>Flights From</mat-label>-->
-<!--    <input type="text" matInput [(ngModel)]="departure" placeholder="City"/>-->
-<!--    <mat-icon matPrefix>search</mat-icon>-->
-<!--  </mat-form-field>-->
-<!--  <mat-form-field class="ml" appearance="outline">-->
-<!--    <mat-label>Flights To</mat-label>-->
-<!--    <input type="text" matInput [(ngModel)]="arrival" placeholder="City"/>-->
-<!--    <mat-icon matPrefix>search</mat-icon>-->
-<!--  </mat-form-field>-->
-<!--  <mat-form-field class="ml" appearance="outline">-->
-<!--    <mat-label>Passengers</mat-label>-->
-<!--    <input type="number" matInput [(ngModel)]="availableSeats" placeholder="Number of passengers"/>-->
-<!--    <mat-icon matPrefix>search</mat-icon>-->
-<!--  </mat-form-field >-->
-<!--  <button class="btn" mat-mini-fab color="primary" (click)="searchFlights()">Search</button>-->
-<!--  <button *ngIf="isSearched" mat-button mat-ripple (click)="clearSearch()">-->
-<!--    <mat-icon color= "primary" matTooltip="clear search"> cancel_presentation</mat-icon>-->
-<!--  </button>-->
-<!--</mat-card>-->
+<mat-card>
+<mat-form-field appearance="outline">
+  <mat-label>Search flights by Start date</mat-label>
+  <input type="date" matInput [(ngModel)]=" startDate"/>
+  <mat-icon matPrefix>search</mat-icon>
+</mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>End date</mat-label>
+    <input type="date" matInput [(ngModel)]=" endDate"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <mat-form-field class="ml" appearance="outline">
+    <mat-label>Country</mat-label>
+    <input type="text" matInput [(ngModel)]="country" placeholder="Country"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <mat-form-field class="ml" appearance="outline">
+    <mat-label>City</mat-label>
+    <input type="text" matInput [(ngModel)]="city" placeholder="City"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <mat-form-field class="ml" appearance="outline">
+    <mat-label>Number of guests</mat-label>
+    <input type="number" matInput [(ngModel)]="numberOfGuests" placeholder="Number of Guests"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field >
+  <button class="btn" mat-mini-fab color="primary" (click)="searchAccommodations()">Search</button>
+  <button *ngIf="isSearched" mat-button mat-ripple (click)="clearSearch()">
+    <mat-icon color= "primary" matTooltip="clear search"> cancel_presentation</mat-icon>
+  </button>
+</mat-card>
 
-<!--<div class="container" *ngIf="isSearched">-->
-<!--<div class="table-header" *ngIf="isSearched">-->
-<!--  <p class="table-title">Flights</p>-->
-<!--  <p *ngIf="notFound" class="table-title"> No flights found for your search criteria!</p>-->
-<!--</div>-->
-<!--<table *ngIf="isSearched" mat-table [dataSource]="dataSource">-->
-<!--  <ng-container matColumnDef="Departure">-->
-<!--    <th mat-header-cell *matHeaderCellDef class="cell-center"> Departure</th>-->
-<!--    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.departure}}</td>-->
-<!--  </ng-container>-->
-<!--  <ng-container matColumnDef="Arrival">-->
-<!--    <th mat-header-cell *matHeaderCellDef class="cell-center"> Arrival</th>-->
-<!--    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.arrival}}</td>-->
-<!--  </ng-container>-->
-<!--  <ng-container matColumnDef="DateTimeDeparture">-->
-<!--    <th mat-header-cell *matHeaderCellDef class="cell-center"> Date and time of Departure </th>-->
-<!--    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.departureDateTime}}</td>-->
-<!--  </ng-container>-->
-<!--  <ng-container matColumnDef="DateTimeArrival">-->
-<!--    <th mat-header-cell *matHeaderCellDef class="cell-center"> Date and time of Arrival </th>-->
-<!--    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.arrivalDateTime}}</td>-->
-<!--  </ng-container>-->
-<!--  <ng-container matColumnDef="Price">-->
-<!--    <th mat-header-cell *matHeaderCellDef class="cell-center"> Price</th>-->
-<!--    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.price}}</td>-->
-<!--  </ng-container>-->
-<!--  <ng-container matColumnDef="TotalPrice">-->
-<!--    <th mat-header-cell *matHeaderCellDef class="cell-center"> Total price</th>-->
-<!--    <td mat-cell *matCellDef="let flight" class="cell-center">{{flight.totalPrice}}</td>-->
-<!--  </ng-container>-->
-<!--  <ng-container matColumnDef="commands">-->
-<!--    <th mat-header-cell *matHeaderCellDef></th>-->
-<!--    <td mat-cell *matCellDef="let flight">-->
-<!--        <div class="commands">-->
-<!--            <button (click)="buyTicket(flight.id)">-->
-<!--              <mat-icon color="primary" matTooltip="Buy Ticket!">add_shopping_cart</mat-icon>-->
-<!--            </button>-->
-<!--        </div>-->
-<!--    </td>-->
-<!--</ng-container>-->
-<!--  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>-->
-<!--  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>-->
-<!--</table>-->
-<!--</div>-->
+<div class="container" *ngIf="isSearched">
+<div class="table-header" *ngIf="isSearched">
+  <p class="table-title">Accommodations</p>
+  <p *ngIf="notFound" class="table-title"> No Accommodations found for your search criteria!</p>
+</div>
+<table *ngIf="isSearched" mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="Name">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Name</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.name}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Address">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Address</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.Address.street}} {{accommodation.Address.streetNumber}},
+      {{accommodation.Address.city}}<br>
+      {{accommodation.Address.country}}</td>
+  </ng-container>
+  <ng-container matColumnDef="MinNumberOfGuests">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Min number of guests</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.minNumberOfGuests}}</td>
+  </ng-container>
+  <ng-container matColumnDef="MaxNumberOfGuests">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Max number of guests</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.maxNumberOfGuests}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Benefits">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Benefits</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.benefits}}</td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>
 
 <!--<img class="home-img" [src]="path" [alt]="alttext">-->
 

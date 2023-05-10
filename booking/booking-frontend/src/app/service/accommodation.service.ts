@@ -29,7 +29,11 @@ export class AccommodationService {
     return this.http.post<Availability>(this.apiHost + 'createAvailability', ava);
   }
 
-  getAccommodationById(id: any): Observable<Accommodation>{
+  getAccommodationById(id: any): Observable<Accommodation> {
     return this.http.get<Accommodation>(this.apiHost + 'getById/' + id);
+  }
+  searchAccommodations(searchAccommodations: any) {
+    console.log(searchAccommodations);
+    return this.http.post<Accommodation[]>(this.apiHost + 'search', searchAccommodations);
   }
 }
