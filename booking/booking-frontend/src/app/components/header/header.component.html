@@ -4,6 +4,9 @@
       <mat-icon>home</mat-icon>
     </button>
     <span>Airbnb</span>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/show-host-accommodations">
+      <span>My accommodation</span>
+    </button>
     <button *ngIf="isHost" mat-button mat-ripple routerLink="/create-accommodation">
       <span>Create accommodation</span>
     </button>

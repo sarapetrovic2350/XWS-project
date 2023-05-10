@@ -14,6 +14,8 @@ import { CreateFlightComponent } from './components/create-flight/create-flight.
 import {ReactiveFormsModule} from "@angular/forms";
 import { HomeComponent } from './components/home/home.component';
 import { CreateAccommodationComponent } from './components/create-accommodation/create-accommodation.component';
+import { ViewHostAccommodationComponent } from './components/view-host-accommodation/view-host-accommodation.component';
+import { CreateAvailabilityComponent } from './components/create-availability/create-availability.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { CreateAccommodationComponent } from './components/create-accommodation/
     ShowFlightsComponent,
     CreateFlightComponent,
     HomeComponent,
-    CreateAccommodationComponent
+    CreateAccommodationComponent,
+    ViewHostAccommodationComponent,
+    CreateAvailabilityComponent
   ],
     imports: [
         BrowserModule,
