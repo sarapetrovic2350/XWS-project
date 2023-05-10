@@ -130,3 +130,13 @@ func (handler *UserHandler) MiddlewareContentTypeSet(next http.Handler) http.Han
 		next.ServeHTTP(rw, h)
 	})
 }
+
+func (handler *UserHandler) DeleteGuestUser(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+	if err := handler.userService.DeleteGuestUser(id); err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusCreated)
+}

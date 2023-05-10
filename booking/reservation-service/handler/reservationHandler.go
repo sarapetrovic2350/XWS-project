@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -52,6 +53,28 @@ func (handler *ReservationHandler) GetAllReservations(rw http.ResponseWriter, h 
 		return
 	}
 
+	err = reservations.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		handler.logger.Fatal("Unable to convert to json :", err)
+		return
+	}
+}
+
+func (handler *ReservationHandler) GetReservationsByUserId(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	userId := vars["id"]
+	fmt.Println(vars)
+	reservations, err := handler.reservationService.GetReservationsByUserId(userId)
+	fmt.Println(reservations)
+	if err != nil {
+		handler.logger.Print("Database exception: ", err)
+	}
+	if reservations == nil {
+		http.Error(rw, "User with given email not found", http.StatusNotFound)
+		handler.logger.Printf("User with email: '%s' not found", userId)
+		return
+	}
 	err = reservations.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)

@@ -68,3 +68,11 @@ func GenerateJWT(email string, role string) (string, error) {
 
 	return token.SignedString(sampleSecretKey)
 }
+
+func (service *UserService) DeleteGuestUser(id string) error {
+	err := service.UserRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

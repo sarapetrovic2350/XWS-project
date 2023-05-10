@@ -69,6 +69,8 @@ func main() {
 
 	newRouter.HandleFunc("/", reservationHandler.GetAllReservations).Methods("GET")
 
+	newRouter.HandleFunc("/getReservationsByUserId/{id}", reservationHandler.GetReservationsByUserId).Methods("GET")
+
 	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), h(newRouter)))
 

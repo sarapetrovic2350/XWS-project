@@ -120,3 +120,19 @@ func (repo *UserRepo) GetById(id string) (*model.User, error) {
 	}
 	return &user, nil
 }
+
+func (repo *UserRepo) Delete(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	usersCollection := repo.getCollection()
+
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objID}}
+	result, err := usersCollection.DeleteOne(ctx, filter)
+	if err != nil {
+		repo.logger.Println(err)
+		return err
+	}
+	repo.logger.Printf("Documents deleted: %v\n", result.DeletedCount)
+	return nil
+}
