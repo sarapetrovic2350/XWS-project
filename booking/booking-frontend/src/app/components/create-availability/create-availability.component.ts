@@ -31,14 +31,15 @@ export class CreateAvailabilityComponent implements OnInit {
   departureDateDateForm: Date = new Date();
   arrivalDateDateForm: Date = new Date();
 
-  selections: any[] =[]; 
-  priceSelection: string[] = ['Per Person', 'Per Accommodation'];
-  selected: string = '';
+  // selections: any[] =[]; 
+  // priceSelection: string[] = ['Per Person', 'Per Accommodation'];
+  // selected: string = '';
 
   isLoggedIn: boolean = false;
   isHost: boolean = false;
   isGuest: boolean = false;
   user: User = new User();
+  priceSelection: string = ''; 
 
   ngOnInit(): void {
     // this.availability.accommodationId = this.router.params['id']; 
@@ -75,14 +76,16 @@ export class CreateAvailabilityComponent implements OnInit {
     this.availability.startDateTime = this.arrivalDateDateForm; 
     this.availability.endlDateTime = this.departureDateDateForm; 
     
-    if(this.selected == 'Per Person'){
-      this.availability.priceSelection = 0; 
-    }else{
-      this.availability.priceSelection = 1; 
-    }
+    console.log(this.availability.startDateTime); 
+    console.log(this.availability.endlDateTime);  
+    // if(this.selected == 'Per Person'){
+    //   this.availability.priceSelection = 0; 
+    // }else{
+    //   this.availability.priceSelection = 1; 
+    // }
     
     this.availability.accommodationId = this.accommodation.id; 
-    
+    this.availability.priceSelection = Number(this.priceSelection); 
     this.accommodationService.createAvailability(this.availability).subscribe(
       {
         next: (res) => {
