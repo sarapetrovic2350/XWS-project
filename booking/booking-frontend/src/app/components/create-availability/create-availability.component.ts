@@ -73,11 +73,11 @@ export class CreateAvailabilityComponent implements OnInit {
   }
 
   onSubmit(){
-    this.availability.startDateTime = this.arrivalDateDateForm; 
-    this.availability.endlDateTime = this.departureDateDateForm; 
+    this.availability.startDate = this.arrivalDateDateForm; 
+    this.availability.endDate = this.departureDateDateForm; 
     
-    console.log(this.availability.startDateTime); 
-    console.log(this.availability.endlDateTime);  
+    console.log(this.availability.startDate); 
+    console.log(this.availability.endDate);  
     // if(this.selected == 'Per Person'){
     //   this.availability.priceSelection = 0; 
     // }else{
