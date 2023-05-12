@@ -1,9 +1,9 @@
 package service
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/repository"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/dto"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/model"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/repository"
 )
 
 type AccommodationService struct {

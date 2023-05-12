@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"Rest/model"
 	"context"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

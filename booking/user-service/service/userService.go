@@ -1,11 +1,11 @@
 package service
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/repository"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sarapetrovic2350/XWS-project/booking/user-service/dto"
+	"github.com/sarapetrovic2350/XWS-project/booking/user-service/model"
+	"github.com/sarapetrovic2350/XWS-project/booking/user-service/repository"
 	"time"
 )
 

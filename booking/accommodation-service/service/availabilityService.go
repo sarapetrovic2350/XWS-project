@@ -1,8 +1,8 @@
 package service
 
 import (
-	"Rest/model"
-	"Rest/repository"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/model"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/repository"
 )
 
 type AvailabilityService struct {

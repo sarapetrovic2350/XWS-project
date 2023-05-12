@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"Rest/model"
-	"Rest/service"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/model"
+	"github.com/sarapetrovic2350/XWS-project/booking/accommodation-service/service"
 	"log"
 	"net/http"
 )

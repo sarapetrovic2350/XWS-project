@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"Rest/model"
 	"context"
+	"github.com/sarapetrovic2350/XWS-project/booking/reservation-service/model"
 	"log"
 	"time"
 
