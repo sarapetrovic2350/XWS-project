@@ -1,10 +1,10 @@
 package handler
 
 import (
+	reservation "common/proto/reservation-service/pb"
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"reservation-service/model"
 	"reservation-service/service"
@@ -13,14 +13,45 @@ import (
 type KeyProduct struct{}
 
 type ReservationHandler struct {
-	logger *log.Logger
-	// NoSQL: injecting user service
+	reservation.UnimplementedReservationServiceServer
 	reservationService *service.ReservationService
 }
 
-// NewUserHandler Injecting the logger makes this code much more testable.
-func NewReservationHandler(l *log.Logger, s *service.ReservationService) *ReservationHandler {
-	return &ReservationHandler{l, s}
+// NewReservationHandler Injecting the logger makes this code much more testable.
+func NewReservationHandler(s *service.ReservationService) *ReservationHandler {
+	return &ReservationHandler{
+		reservationService: s,
+	}
+}
+func (handler *ReservationHandler) GetAll(ctx context.Context, request *reservation.GetAllRequest) (*reservation.GetAllResponse, error) {
+	fmt.Println("In GetAll grpc api")
+	reservations, err := handler.reservationService.GetAllReservations()
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetAllResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range reservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, request *reservation.GetUserReservationsRequest) (*reservation.GetUserReservationsResponse, error) {
+	fmt.Println("In GetReservationsByUserId grpc api")
+	reservations, err := handler.reservationService.GetReservationsByUserId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetUserReservationsResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range reservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
 }
 
 func (handler *ReservationHandler) CreateReservation(rw http.ResponseWriter, h *http.Request) {
@@ -42,47 +73,15 @@ func (handler *ReservationHandler) CreateReservation(rw http.ResponseWriter, h *
 	rw.Header().Set("Content-Type", "application/json")
 }
 
-func (handler *ReservationHandler) GetAllReservations(rw http.ResponseWriter, h *http.Request) {
-	reservations, err := handler.reservationService.GetAllReservations()
-	if err != nil {
-		handler.logger.Print("Database exception: ", err)
-	}
-
-	if reservations == nil {
-		return
-	}
-
-	err = reservations.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		handler.logger.Fatal("Unable to convert to json :", err)
-		return
-	}
-}
-
-func (handler *ReservationHandler) MiddlewareReservationDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		reservation := &model.Reservation{}
-		err := reservation.FromJSON(h.Body)
-		if err != nil {
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-			handler.logger.Fatal(err)
-			return
-		}
-
-		ctx := context.WithValue(h.Context(), KeyProduct{}, reservation)
-		h = h.WithContext(ctx)
-
-		next.ServeHTTP(rw, h)
-	})
-}
-
-func (handler *ReservationHandler) MiddlewareContentTypeSet(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		handler.logger.Println("Method [", h.Method, "] - Hit path :", h.URL.Path)
-
-		rw.Header().Add("Content-Type", "application/json")
-
-		next.ServeHTTP(rw, h)
-	})
-}
+//func (handler *ReservationHandler) GetAllReservations(rw http.ResponseWriter, h *http.Request) {
+//	reservations, err := handler.reservationService.GetAllReservations()
+//	if reservations == nil {
+//		return
+//	}
+//
+//	err = reservations.ToJSON(rw)
+//	if err != nil {
+//		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+//		return
+//	}
+//}

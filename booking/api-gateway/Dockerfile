@@ -5,7 +5,7 @@ FROM golang:latest as builder
 WORKDIR /app
 
 # Copy go mod and sum files
-COPY ./reservation-service/go.mod ./reservation-service/go.sum ./
+COPY ./api_gateway/go.mod ./api_gateway/go.sum ./
 
 # Copy the local dependency
 COPY /common ../common
@@ -14,7 +14,7 @@ COPY /common ../common
 RUN go mod download
 
 # Copy everything from the current directory to the Working Directory inside the container
-COPY ./reservation-service/ .
+COPY ./api_gateway/ .
 
 # Build the Go app
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .

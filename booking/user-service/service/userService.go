@@ -1,24 +1,35 @@
 package service
 
 import (
+	reservation "common/proto/reservation-service/pb"
+	user "common/proto/user-service/pb"
+	"context"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
-	"user-service/dto"
 	"user-service/model"
 	"user-service/repository"
 )
 
 type UserService struct {
 	// NoSQL: injecting user repository
-	UserRepo *repository.UserRepo
+	UserRepo                 model.UserStore
+	ReservationClientAddress string
 }
 
-func NewUserService(r *repository.UserRepo) *UserService {
-	return &UserService{r}
+func NewUserService(r model.UserStore, rca string) *UserService {
+	return &UserService{
+		UserRepo:                 r,
+		ReservationClientAddress: rca,
+	}
 }
 
 func (service *UserService) CreateUser(user *model.User) error {
+	existingUser, _ := service.FindUserByEmail(user.Email)
+	if existingUser != nil {
+		return errors.New("email already exists")
+	}
 	err := service.UserRepo.Insert(user)
 	if err != nil {
 		return err
@@ -26,12 +37,12 @@ func (service *UserService) CreateUser(user *model.User) error {
 	return nil
 }
 
-func (service *UserService) Login(dto *dto.Login) (string, error) {
-	user, err := service.FindUserByEmail(dto.Email)
+func (service *UserService) Login(email string, password string) (string, error) {
+	user, err := service.FindUserByEmail(email)
 	if err != nil {
 		return "", err
 	}
-	if user.Password != dto.Password {
+	if user.Password != password {
 		return "", errors.New("incorrect password")
 	}
 	token, err := GenerateJWT(user.Email, user.Role)
@@ -67,4 +78,18 @@ func GenerateJWT(email string, role string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString(sampleSecretKey)
+}
+
+func (service *UserService) Delete(request *user.DeleteUserRequest) error {
+	fmt.Println("In Delete User service")
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	reservationsResponse, err := reservationClient.GetReservationsByUserId(context.TODO(), &reservation.GetUserReservationsRequest{})
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if reservationsResponse != nil {
+		return errors.New("user has active reservations")
+	}
+	return service.UserRepo.Delete(request.Id)
 }

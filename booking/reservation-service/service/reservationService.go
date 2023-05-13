@@ -2,15 +2,14 @@ package service
 
 import (
 	"reservation-service/model"
-	"reservation-service/repository"
 )
 
 type ReservationService struct {
-	// NoSQL: injecting user repository
-	ReservationRepo *repository.ReservationRepo
+	// NoSQL: injecting reservation repository
+	ReservationRepo model.ReservationStore
 }
 
-func NewReservationService(r *repository.ReservationRepo) *ReservationService {
+func NewReservationService(r model.ReservationStore) *ReservationService {
 	return &ReservationService{r}
 }
 
@@ -24,6 +23,14 @@ func (service *ReservationService) CreateReservation(reservation *model.Reservat
 
 func (service *ReservationService) GetAllReservations() (model.Reservations, error) {
 	reservations, err := service.ReservationRepo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return reservations, nil
+}
+
+func (service *ReservationService) GetReservationsByUserId(userId string) (model.Reservations, error) {
+	reservations, err := service.ReservationRepo.GetReservationsByUserId(userId)
 	if err != nil {
 		return nil, err
 	}

@@ -1,17 +1,28 @@
 syntax = "proto3";
 
-option go_package = "XWS-project/common/reservation";
+option go_package = "common/reservation";
 package reservation;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 service ReservationService {
+  rpc GetAll(GetAllRequest) returns (GetAllResponse) {
+    option (google.api.http) = {
+      get: "/reservation"
+    };
+  }
   rpc GetReservationsByUserId(GetUserReservationsRequest) returns (GetUserReservationsResponse) {
     option (google.api.http) = {
       get: "/getReservationsByUserId/{id}"
     };
   }
+}
+message GetAllRequest{
+}
+
+message GetAllResponse{
+  repeated Reservation reservations = 1;
 }
 
 message Reservation {

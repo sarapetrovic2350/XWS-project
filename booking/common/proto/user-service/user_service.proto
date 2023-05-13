@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+option go_package = "common/user";
+package user;
+
+import "google/api/annotations.proto";
+
+service UserService {
+  rpc GetAll(GetAllRequest) returns (GetAllResponse) {
+    option (google.api.http) = {
+      get: "/user"
+    };
+  }
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailResponse) {
+    option (google.api.http) = {
+      get: "/user/{email}"
+    };
+  }
+  rpc CreateUser(CreateUserRequest) returns(CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/user"
+      body: "user"
+    };
+  }
+  rpc Login(LoginRequest) returns(LoginResponse){
+    option (google.api.http) = {
+      post: "/user/login"
+      body: "login"
+    };
+  }
+  rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse){
+    option (google.api.http) = {
+      delete: "/user/delete/{id}"
+    };
+  }
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse){
+    option (google.api.http) = {
+      put: "/user/update"
+      body: "user"
+    };
+  }
+}
+message GetUserByEmailResponse{
+  User user = 1;
+}
+message GetUserByEmailRequest{
+  string email = 1;
+}
+message LoginResponse {
+  string jwt = 1;
+}
+
+message LoginRequest {
+  AuthLogin login = 1;
+}
+
+message AuthLogin {
+  string email = 1;
+  string password = 2;
+}
+message DeleteUserRequest{
+  string id = 1;
+}
+message DeleteUserResponse{
+  User user = 1;
+}
+message UpdateUserRequest {
+  User user = 1;
+}
+message UpdateUserResponse{
+  User user = 1;
+}
+message CreateUserRequest {
+  NewUser user = 1;
+}
+message CreateUserResponse {
+  User user = 1;
+}
+message GetAllRequest{
+}
+
+message GetAllResponse{
+  repeated User users = 1;
+}
+
+message AddressDTO {
+  string street = 1;
+  string city = 2;
+  string country = 3;
+  string number = 4;
+}
+
+message NewUser {
+  string role = 1;
+  string username = 3;
+  string password = 4;
+  string email = 5;
+  string firstName = 6;
+  string lastName = 7;
+  AddressDTO Address = 8;
+}
+
+message User {
+  string id = 1;
+  string role = 2;
+  string username = 3;
+  string password = 4;
+  string email = 5;
+  string firstName = 6;
+  string lastName = 7;
+  AddressDTO Address = 8;
+}
