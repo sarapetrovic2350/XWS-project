@@ -1,8 +1,8 @@
 package service
 
 import (
-	"Rest/model"
-	"Rest/repository"
+	"reservation-service/model"
+	"reservation-service/repository"
 )
 
 type ReservationService struct {

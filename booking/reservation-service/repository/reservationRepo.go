@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"Rest/model"
 	"context"
 	"log"
+	"reservation-service/model"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"

@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"Rest/dto"
-	"Rest/model"
+	"accommodation-service/dto"
+	"accommodation-service/model"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"Rest/model"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
 	"time"
+	"user-service/model"
 )
 
 // UserRepo struct encapsulating Mongo api client

@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"Rest/model"
-	"Rest/service"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"reservation-service/model"
+	"reservation-service/service"
 )
 
 type KeyProduct struct{}

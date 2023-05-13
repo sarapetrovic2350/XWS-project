@@ -1,15 +1,15 @@
 package handler
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/service"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"user-service/dto"
+	"user-service/model"
+	"user-service/service"
 )
 
 type KeyProduct struct{}

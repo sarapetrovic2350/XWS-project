@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option go_package = "XWS-project/common/reservation";
+package reservation;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service ReservationService {
+  rpc GetReservationsByUserId(GetUserReservationsRequest) returns (GetUserReservationsResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsByUserId/{id}"
+    };
+  }
+}
+
+message Reservation {
+  string id = 1;
+  //  enum Category {
+  //    CLOTHES = 0;
+  //    ELECTRONICS = 1;
+  //    BOOKS = 2;
+  //  };
+  int32 numberOfGuests = 2;
+  google.protobuf.Timestamp startDate = 3;
+  google.protobuf.Timestamp endDate = 4;
+  string userID = 5;
+  string accommodationID = 6;
+}
+
+message GetUserReservationsRequest {
+  string id = 1;
+}
+
+message GetUserReservationsResponse {
+  repeated Reservation reservations = 1;
+}

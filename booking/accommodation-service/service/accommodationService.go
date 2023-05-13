@@ -1,9 +1,9 @@
 package service
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/repository"
+	"accommodation-service/dto"
+	"accommodation-service/model"
+	"accommodation-service/repository"
 )
 
 type AccommodationService struct {

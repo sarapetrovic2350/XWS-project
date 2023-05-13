@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/service"
+	"accommodation-service/dto"
+	"accommodation-service/model"
+	"accommodation-service/service"
 	"context"
 	"encoding/json"
 	"fmt"

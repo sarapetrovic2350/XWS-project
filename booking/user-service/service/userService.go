@@ -1,12 +1,12 @@
 package service
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/repository"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"
+	"user-service/dto"
+	"user-service/model"
+	"user-service/repository"
 )
 
 type UserService struct {
