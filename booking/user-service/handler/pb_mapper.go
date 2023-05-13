@@ -51,6 +51,7 @@ func mapUser(modelUser *model.User) *user.User {
 		Email:     modelUser.Email,
 		FirstName: modelUser.FirstName,
 		LastName:  modelUser.LastName,
+		Role:      modelUser.Role,
 		Address: &user.AddressDTO{
 			Country: modelUser.Address.Country,
 			City:    modelUser.Address.City,
