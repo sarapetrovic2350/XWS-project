@@ -40,6 +40,7 @@ func (handler *ReservationHandler) GetAll(ctx context.Context, request *reservat
 }
 func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, request *reservation.GetUserReservationsRequest) (*reservation.GetUserReservationsResponse, error) {
 	fmt.Println("In GetReservationsByUserId grpc api")
+	fmt.Println(request)
 	reservations, err := handler.reservationService.GetReservationsByUserId(request.Id)
 	if err != nil {
 		return nil, err

@@ -91,22 +91,20 @@ message AddressDTO {
 }
 
 message NewUser {
-  string role = 1;
-  string username = 3;
-  string password = 4;
-  string email = 5;
-  string firstName = 6;
-  string lastName = 7;
-  AddressDTO Address = 8;
+  string firstName = 1;
+  string lastName = 2;
+  string role = 3;
+  string email = 4;
+  string password = 5;
+  AddressDTO Address = 6;
 }
 
 message User {
   string id = 1;
-  string role = 2;
-  string username = 3;
-  string password = 4;
+  string firstName = 2;
+  string lastName = 3;
+  string role = 4;
   string email = 5;
-  string firstName = 6;
-  string lastName = 7;
-  AddressDTO Address = 8;
+  string password = 6;
+  AddressDTO Address = 7;
 }

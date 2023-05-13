@@ -19,7 +19,7 @@ func GetClient(host, port string) (*mongo.Client, error) {
 func NewReservationClient(address string) reservation.ReservationServiceClient {
 	conn, err := getConnection(address)
 	if err != nil {
-		log.Fatalf("Failed to start gRPC connection to Booking service: %v", err)
+		log.Fatalf("Failed to start gRPC connection to Reservation service: %v", err)
 	}
 	return reservation.NewReservationServiceClient(conn)
 }

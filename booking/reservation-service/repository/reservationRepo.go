@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reservation-service/model"
 	"time"
@@ -36,11 +37,14 @@ func (repo *ReservationRepo) Insert(reservation *model.Reservation) error {
 }
 
 func (repo *ReservationRepo) GetReservationsByUserId(userId string) (model.Reservations, error) {
+	fmt.Println("reservations repo get by id")
+	fmt.Println(userId)
 	reservations, err := repo.GetAll()
 	var retReservations model.Reservations
 	for _, itr := range reservations {
 		if itr.UserID == userId {
 			retReservations = append(retReservations, itr)
+			fmt.Println(retReservations)
 		}
 	}
 	if err != nil {

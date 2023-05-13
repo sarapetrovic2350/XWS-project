@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"reservation-service/model"
 )
 
@@ -30,6 +31,8 @@ func (service *ReservationService) GetAllReservations() (model.Reservations, err
 }
 
 func (service *ReservationService) GetReservationsByUserId(userId string) (model.Reservations, error) {
+	fmt.Println(userId)
+	fmt.Println("get resrvations by user id reservation-service")
 	reservations, err := service.ReservationRepo.GetReservationsByUserId(userId)
 	if err != nil {
 		return nil, err

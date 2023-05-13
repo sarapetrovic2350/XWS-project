@@ -25,6 +25,10 @@ func NewUserRepo(client *mongo.Client) model.UserStore {
 		users: users,
 	}
 }
+func (repo *UserRepo) Get(id primitive.ObjectID) (*model.User, error) {
+	filter := bson.M{"_id": id}
+	return repo.filterOne(filter)
+}
 
 func (repo *UserRepo) GetAll() (model.Users, error) {
 	// Initialise context (after 5 seconds timeout, abort operation)
@@ -91,4 +95,9 @@ func (repo *UserRepo) Delete(id string) error {
 		return err
 	}
 	return nil
+}
+func (repo *UserRepo) filterOne(filter interface{}) (User *model.User, err error) {
+	result := repo.users.FindOne(context.TODO(), filter)
+	err = result.Decode(&User)
+	return
 }

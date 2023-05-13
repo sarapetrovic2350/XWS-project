@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 	"user-service/model"
 	"user-service/repository"
@@ -82,14 +83,19 @@ func GenerateJWT(email string, role string) (string, error) {
 
 func (service *UserService) Delete(request *user.DeleteUserRequest) error {
 	fmt.Println("In Delete User service")
+	fmt.Println(request)
+	fmt.Println(request.Id)
 	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
-	reservationsResponse, err := reservationClient.GetReservationsByUserId(context.TODO(), &reservation.GetUserReservationsRequest{})
+	fmt.Println("reservation client created")
+	getReservationsByUserIdRequest := reservation.GetUserReservationsRequest{Id: request.Id}
+	reservationsResponse, err := reservationClient.GetReservationsByUserId(context.TODO(), &getReservationsByUserIdRequest)
+	fmt.Println(reservationsResponse)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	if reservationsResponse != nil {
-		return errors.New("user has active reservations")
-	}
 	return service.UserRepo.Delete(request.Id)
+}
+func (service *UserService) Get(id primitive.ObjectID) (*model.User, error) {
+	return service.UserRepo.Get(id)
 }

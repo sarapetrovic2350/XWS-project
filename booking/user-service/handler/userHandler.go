@@ -4,6 +4,7 @@ import (
 	user "common/proto/user-service/pb"
 	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"user-service/service"
 )
 
@@ -53,8 +54,22 @@ func (handler *UserHandler) CreateUser(ctx context.Context, request *user.Create
 }
 
 func (handler *UserHandler) DeleteUser(ctx context.Context, request *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	fmt.Println("In Delete grpc api")
+	fmt.Print("Request.Id: ")
+	fmt.Println(request.Id)
+	formatedId, err := primitive.ObjectIDFromHex(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	deletedUser, err := handler.userService.Get(formatedId)
+	fmt.Print("deletedUser after mapping: ")
+	fmt.Println(deletedUser)
+	err = handler.userService.Delete(request)
+	if err != nil {
+		return nil, err
+	}
+	return &user.DeleteUserResponse{
+		User: mapUser(deletedUser)}, nil
 }
 func (handler *UserHandler) Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
 	fmt.Println("In Login grpc api")
