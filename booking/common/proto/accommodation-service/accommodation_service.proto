@@ -11,6 +11,11 @@ service AccommodationService {
       get: "/accommodation"
     };
   }
+  rpc GetAccommodationsByHostId(GetAccommodationsByHostIdRequest) returns (GetAccommodationsByHostIdResponse) {
+    option (google.api.http) = {
+      get: "/accommodation/{hostId}"
+    };
+  }
   rpc CreateAccommodation(CreateAccommodationRequest) returns(CreateAccommodationResponse) {
     option (google.api.http) = {
       post: "/accommodation"
@@ -36,7 +41,13 @@ message GetAccommodationsByParamsRequest {
 message GetAccommodationsByParamsResponse {
   repeated Accommodation accommodations = 1;
 }
+message GetAccommodationsByHostIdRequest {
+  string hostId = 1;
+}
 
+message GetAccommodationsByHostIdResponse {
+  repeated Accommodation accommodations = 1;
+}
 message SearchParams{
   string city = 1;
   string country = 2;

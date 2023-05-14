@@ -33,25 +33,22 @@ func (handler *AccommodationHandler) GetAll(ctx context.Context, request *accomm
 	}
 	return response, nil
 }
+func (handler *AccommodationHandler) GetAccommodationsByHostId(ctx context.Context, request *accommodation.GetAccommodationsByHostIdRequest) (*accommodation.GetAccommodationsByHostIdResponse, error) {
+	fmt.Println("In GetAccommodationsByHostId grpc api")
+	accommodations, err := handler.accommodationService.GetAccommodationByHostId(request.HostId)
+	if err != nil {
+		return nil, err
+	}
+	response := &accommodation.GetAccommodationsByHostIdResponse{
+		Accommodations: []*accommodation.Accommodation{},
+	}
+	for _, modelAccommodation := range accommodations {
+		current := mapAccommodation(modelAccommodation)
+		response.Accommodations = append(response.Accommodations, current)
+	}
+	return response, nil
+}
 
-//	func (handler *AccommodationHandler) CreateAccommodation(rw http.ResponseWriter, h *http.Request) {
-//		fmt.Println("creating")
-//		var accommodation model.Accommodation
-//		err := json.NewDecoder(h.Body).Decode(&accommodation)
-//		if err != nil {
-//			//TODO log
-//			rw.WriteHeader(http.StatusBadRequest)
-//			return
-//		}
-//		fmt.Println(accommodation)
-//		err = handler.accommodationService.CreateAccommodation(&accommodation)
-//		if err != nil {
-//			fmt.Println(err)
-//			rw.WriteHeader(http.StatusExpectationFailed)
-//		}
-//		rw.WriteHeader(http.StatusCreated)
-//		rw.Header().Set("Content-Type", "application/json")
-//	}
 func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, request *accommodation.CreateAccommodationRequest) (*accommodation.CreateAccommodationResponse, error) {
 	fmt.Println("In CreateAccommodation grpc api")
 	fmt.Print("Request.Accommodation: ")
