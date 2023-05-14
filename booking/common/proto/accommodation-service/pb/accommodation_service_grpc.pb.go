@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AccommodationServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	CreateAccommodation(ctx context.Context, in *CreateAccommodationRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error)
-	CreateAvailability(ctx context.Context, in *CreateAvailabilityRequest, opts ...grpc.CallOption) (*CreateAvailabilityResponse, error)
+	CreateAvailability(ctx context.Context, in *CreateAvailabilityRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error)
 	Search(ctx context.Context, in *GetAccommodationsByParamsRequest, opts ...grpc.CallOption) (*GetAccommodationsByParamsResponse, error)
 }
 
@@ -54,8 +54,8 @@ func (c *accommodationServiceClient) CreateAccommodation(ctx context.Context, in
 	return out, nil
 }
 
-func (c *accommodationServiceClient) CreateAvailability(ctx context.Context, in *CreateAvailabilityRequest, opts ...grpc.CallOption) (*CreateAvailabilityResponse, error) {
-	out := new(CreateAvailabilityResponse)
+func (c *accommodationServiceClient) CreateAvailability(ctx context.Context, in *CreateAvailabilityRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error) {
+	out := new(CreateAccommodationResponse)
 	err := c.cc.Invoke(ctx, "/accommodation.AccommodationService/CreateAvailability", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (c *accommodationServiceClient) Search(ctx context.Context, in *GetAccommod
 type AccommodationServiceServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	CreateAccommodation(context.Context, *CreateAccommodationRequest) (*CreateAccommodationResponse, error)
-	CreateAvailability(context.Context, *CreateAvailabilityRequest) (*CreateAvailabilityResponse, error)
+	CreateAvailability(context.Context, *CreateAvailabilityRequest) (*CreateAccommodationResponse, error)
 	Search(context.Context, *GetAccommodationsByParamsRequest) (*GetAccommodationsByParamsResponse, error)
 	mustEmbedUnimplementedAccommodationServiceServer()
 }
@@ -93,7 +93,7 @@ func (UnimplementedAccommodationServiceServer) GetAll(context.Context, *GetAllRe
 func (UnimplementedAccommodationServiceServer) CreateAccommodation(context.Context, *CreateAccommodationRequest) (*CreateAccommodationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccommodation not implemented")
 }
-func (UnimplementedAccommodationServiceServer) CreateAvailability(context.Context, *CreateAvailabilityRequest) (*CreateAvailabilityResponse, error) {
+func (UnimplementedAccommodationServiceServer) CreateAvailability(context.Context, *CreateAvailabilityRequest) (*CreateAccommodationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAvailability not implemented")
 }
 func (UnimplementedAccommodationServiceServer) Search(context.Context, *GetAccommodationsByParamsRequest) (*GetAccommodationsByParamsResponse, error) {

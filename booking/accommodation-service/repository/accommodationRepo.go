@@ -139,16 +139,43 @@ func (repo *AccommodationRepo) SearchAccommodation(searchCriteria *accommodation
 	return accommodations
 }
 
-func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(request *accommodation.CreateAvailabilityRequest) error {
-
+func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
+	fmt.Println("in AddAvailabilityForAccommodation REPO")
 	// Add the new availability to the availability array
-	update := bson.M{
-		"$push": bson.M{
-			"availabilities": request.AvailabilityForAccommodation.Availability,
+	fmt.Println(accommodation2.Availabilities)
+	filter := bson.M{
+		"_id": accommodation2.Id,
+		"availabilities.startDate": bson.M{
+			"$nin": []time.Time{availability.StartDate},
+			"$lt":  availability.StartDate,
+		},
+		"availabilities.endDate": bson.M{
+			"$nin": []time.Time{availability.EndDate},
+			"$gt":  availability.EndDate,
 		},
 	}
-	formattedId, err := primitive.ObjectIDFromHex(request.AvailabilityForAccommodation.AccommodationId)
-	var filter = bson.M{"_id": formattedId}
+	count, err := accommmodationRepo.accommodations.CountDocuments(context.Background(), filter)
+	if err != nil {
+		return status.Errorf(
+			codes.Internal,
+			"Error counting documents: %v",
+			err,
+		)
+	}
+	if count > 0 {
+		return status.Errorf(
+			codes.FailedPrecondition,
+			"Availability overlaps with existing Availability",
+		)
+	}
+	fmt.Println(availability)
+	fmt.Println(availability.PriceSelection)
+	update := bson.M{
+		"$push": bson.M{
+			"availabilities": availability,
+		},
+	}
+	filter = bson.M{"_id": accommodation2.Id}
 	_, err = accommmodationRepo.accommodations.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return status.Errorf(

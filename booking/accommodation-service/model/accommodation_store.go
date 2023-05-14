@@ -11,5 +11,5 @@ type AccommodationStore interface {
 	GetById(id string) (*Accommodation, error)
 	DeleteAll()
 	SearchAccommodation(searchCriteria *accommodation.GetAccommodationsByParamsRequest) Accommodations
-	AddAvailabilityForAccommodation(request *accommodation.CreateAvailabilityRequest) error
+	AddAvailabilityForAccommodation(accommodation2 *Accommodation, availability *Availability) error
 }

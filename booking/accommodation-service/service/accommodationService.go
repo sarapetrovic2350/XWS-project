@@ -91,8 +91,8 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 	return flight, nil
 }
 
-func (service *AccommodationService) AddAvailabilityForAccommodation(request *accommodation.CreateAvailabilityRequest) error {
-	err := service.AccommodationRepo.AddAvailabilityForAccommodation(request)
+func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
+	err := service.AccommodationRepo.AddAvailabilityForAccommodation(accommodation2, availability)
 	if err != nil {
 		return err
 	}

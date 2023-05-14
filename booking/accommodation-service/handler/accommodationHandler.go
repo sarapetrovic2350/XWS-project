@@ -68,21 +68,32 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 	}, nil
 }
 
-func (handler *AccommodationHandler) CreateAvailability(ctx context.Context, request *accommodation.CreateAvailabilityRequest) (*accommodation.CreateAvailabilityResponse, error) {
+func (handler *AccommodationHandler) CreateAvailability(ctx context.Context, request *accommodation.CreateAvailabilityRequest) (*accommodation.CreateAccommodationResponse, error) {
 	fmt.Println("In CreateAvailability grpc api")
 	fmt.Print("Request.AccommodationId: ")
 	fmt.Println(request.AvailabilityForAccommodation.AccommodationId)
 	fmt.Println(request.AvailabilityForAccommodation.Availability)
-	modelAvailability := mapNewAvailability(request.AvailabilityForAccommodation.Availability)
-	fmt.Print("availability after mapping: ")
-	fmt.Println(modelAvailability)
-	err := handler.accommodationService.AddAvailabilityForAccommodation(request)
+	accommodationForUpdate, err := handler.accommodationService.GetById(request.AvailabilityForAccommodation.AccommodationId)
+	fmt.Println(accommodationForUpdate.Availabilities)
 	if err != nil {
 		return nil, err
 	}
-	return &accommodation.CreateAvailabilityResponse{
-		Availability: mapAvailabilityPb(modelAvailability),
-	}, nil
+
+	err = handler.accommodationService.AddAvailabilityForAccommodation(accommodationForUpdate, mapNewAvailability(request.AvailabilityForAccommodation.Availability))
+	if err != nil {
+		return nil, err
+	}
+
+	updated, err := handler.accommodationService.GetById(request.AvailabilityForAccommodation.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &accommodation.CreateAccommodationResponse{
+		Accommodation: mapAccommodation(updated),
+	}
+
+	return response, nil
 }
 
 func (handler AccommodationHandler) Search(ctx context.Context, request *accommodation.GetAccommodationsByParamsRequest) (*accommodation.GetAccommodationsByParamsResponse, error) {

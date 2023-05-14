@@ -17,7 +17,7 @@ service AccommodationService {
       body: "accommodation"
     };
   }
-  rpc CreateAvailability(CreateAvailabilityRequest) returns(CreateAvailabilityResponse) {
+  rpc CreateAvailability(CreateAvailabilityRequest) returns(CreateAccommodationResponse) {
     option (google.api.http) = {
       post: "/accommodation/createAvailability"
       body: "availabilityForAccommodation"
