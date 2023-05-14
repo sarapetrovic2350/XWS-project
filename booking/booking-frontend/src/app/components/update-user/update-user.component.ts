@@ -22,8 +22,8 @@ export class UpdateUserComponent implements OnInit {
   ngOnInit(): void {
     let userRole = this.userService.getLoggedInUserRole()
     let userEmail = this.userService.getLoggedInUserEmail()
+    let userId = this.userService.getLoggedInUserId()
     this.userService.getUserByEmail(userEmail).subscribe(res => {
-      //let user = res.user
       this.user = res.user;
       console.log(res)
     })
@@ -68,6 +68,35 @@ export class UpdateUserComponent implements OnInit {
       }
       });
 
+  }
+
+  deleteAccount(){
+    let userId = this.userService.getLoggedInUserId()
+      this.userService.deleteAccount(userId).subscribe(
+        {
+          next: (res) => {
+            localStorage.clear()
+            //this.router.navigate(['/register-user']);
+            window.location.href = 'register-user';
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Successfully deleted account!',
+            })
+  
+          },
+          error: (e) => {
+            this.submitted = false;
+            console.log(e);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'You have active reservations.',
+            })
+  
+          }
+  
+        });
   }
 
 }

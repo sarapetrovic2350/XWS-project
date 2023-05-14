@@ -69,6 +69,7 @@
         <button color="primary" [disabled]="email.invalid || name.invalid || lastName.invalid || password.invalid || passwordConfirm.invalid
                 || streetFormControl.invalid || streetNumberFormControl.invalid || cityFormControl.invalid || countryFormControl.invalid || roleFormControl.invalid"
                 style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Update</button><br>
+                <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit" (click)="deleteAccount()">Delete account</button><br>
       </form>
       <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
     </mat-card-content>
