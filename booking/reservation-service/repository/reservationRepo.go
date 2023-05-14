@@ -73,21 +73,18 @@ func (repo *ReservationRepo) DeleteAll() {
 	repo.reservations.DeleteMany(context.TODO(), bson.D{{}})
 }
 
-//func (repo *ReservationRepo) GetById(id string) (*model.Reservation, error) {
-//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//	defer cancel()
-//
-//	reservationsCollection := repo.getCollection()
-//
-//	var reservation model.Reservation
-//	objID, _ := primitive.ObjectIDFromHex(id)
-//	err := reservationsCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&reservation)
-//	if err != nil {
-//		repo.logger.Println(err)
-//		return nil, err
-//	}
-//	return &reservation, nil
-//}
+func (repo *ReservationRepo) GetById(id string) (*model.Reservation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var reservation model.Reservation
+	objID, _ := primitive.ObjectIDFromHex(id)
+	err := repo.reservations.FindOne(ctx, bson.M{"_id": objID}).Decode(&reservation)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation, nil
+}
 
 func (repo *ReservationRepo) Delete(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

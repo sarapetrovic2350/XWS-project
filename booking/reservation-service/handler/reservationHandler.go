@@ -99,16 +99,16 @@ func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, 
 //	}
 //}
 
-//func (handler *ReservationHandler) DeleteReservation(ctx context.Context, request *reservation.) (*user.DeleteUserResponse, error) {
-//	formatedId, err := primitive.ObjectIDFromHex(request.Id)
-//	if err != nil {
-//		return nil, err
-//	}
-//	deletedUser, err := handler.reservationService.Get(formatedId)
-//	err = handler.reservationService.Delete(request)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &user.DeleteUserResponse{
-//		User: mapUser(deletedUser)}, nil
-//}
+func (handler *ReservationHandler) DeleteReservation(ctx context.Context, request *reservation.DeleteReservationRequest) (*reservation.DeleteReservationResponse, error) {
+	//formatedId = request.Id
+	//if err != nil {
+	//	return nil, err
+	//}
+	deletedReservation, err := handler.reservationService.GetById(request.Id)
+	err = handler.reservationService.Delete(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.DeleteReservationResponse{
+		Reservation: mapReservation(deletedReservation)}, nil
+}

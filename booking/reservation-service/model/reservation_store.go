@@ -6,4 +6,5 @@ type ReservationStore interface {
 	DeleteAll()
 	Insert(reservation *Reservation) error
 	Delete(id string) error
+	GetById(id string) (*Reservation, error)
 }
