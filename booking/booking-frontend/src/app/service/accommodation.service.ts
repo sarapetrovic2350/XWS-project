@@ -9,15 +9,18 @@ import { Availability } from '../model/availability.model';
 })
 export class AccommodationService {
 
-  apiHost: string = 'http://localhost:8080/api/accommodation/';
+  apiHost: string = 'http://localhost:8000/accommodation';
   headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin' : '*',
   'Access-Control-Allow-Methods' : 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization' }  );
+  headers2: HttpHeaders = new HttpHeaders({
+  'Content-Type': 'application/json',
+  });
 
   constructor(private http: HttpClient) { }
 
-  createAccommodation(accommodation: Accommodation) {
+  createAccommodation(accommodation: any) {
     console.log(accommodation);
-    return this.http.post<Accommodation>(this.apiHost , accommodation);
+    return this.http.post<Accommodation>(this.apiHost , accommodation, {headers: this.headers2});
   }
 
   getAccommodationByHostId(id: any): Observable<any[]> {

@@ -46,7 +46,7 @@ func (service *UserService) Login(email string, password string) (string, error)
 	if user.Password != password {
 		return "", errors.New("incorrect password")
 	}
-	token, err := GenerateJWT(user.Email, user.Role)
+	token, err := GenerateJWT(user.Email, user.Role, user.Id.Hex())
 	if err != nil {
 		return "", err
 	}
@@ -69,11 +69,12 @@ func (service *UserService) FindUserByEmail(email string) (*model.User, error) {
 	return user, nil
 }
 
-func GenerateJWT(email string, role string) (string, error) {
+func GenerateJWT(email string, role string, id string) (string, error) {
 	var sampleSecretKey = []byte("SecretYouShouldHide")
 	claims := jwt.MapClaims{}
 	claims["email"] = email
 	claims["role"] = role
+	claims["id"] = id
 	claims["exp"] = time.Now().Add(time.Hour).Unix() * 1000
 	claims["authorized"] = true
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
