@@ -40,11 +40,11 @@ export class CreateAccommodationComponent implements OnInit {
   user: User = new User();
   ngOnInit(): void {
     let userRole = this.userService.getLoggedInUserRole()
-    let userEmail = this.userService.getLoggedInUserEmail()
-    this.userService.getUserByEmail(userEmail).subscribe(res => {
-      this.user = res;
-      console.log(this.user)
-    })
+    // let userEmail = this.userService.getLoggedInUserEmail()
+    // this.userService.getUserByEmail(userEmail).subscribe(res => {
+    //   this.user = res; 
+    //   console.log(this.user)
+    // })
 
     if(userRole === "") {
       this.isLoggedIn = false;
@@ -60,6 +60,10 @@ export class CreateAccommodationComponent implements OnInit {
   }
 
   onSubmit(){
+    
+    let userId = this.userService.getLoggedInUserId()
+
+    console.log(userId)
     this.accommodation.address.street = this.street;
     this.accommodation.address.number = this.streetNumber;
     this.accommodation.address.city = this.city;
@@ -69,10 +73,22 @@ export class CreateAccommodationComponent implements OnInit {
         this.auxT.push(t);
       }
     }
-    this.accommodation.benefits = this.auxT;
-    this.accommodation.hostId = this.user.id;
 
-    this.accommodationService.createAccommodation(this.accommodation).subscribe(
+    
+    this.accommodation.benefits = this.auxT;
+    //this.accommodation.hostId = userid;
+    console.log(this.accommodation.hostId);
+    var NewAccommodation = {
+      name: this.accommodation.name,
+      minNumberOfGuests: this.accommodation.minNumberOfGuests,
+      maxNumberOfGuests: this.accommodation.maxNumberOfGuests,
+      address: this.accommodation.address,
+      hostID: userId, 
+      benefits: this.accommodation.benefits
+    }
+    console.log(NewAccommodation);
+
+    this.accommodationService.createAccommodation(NewAccommodation).subscribe(
       {
         next: (res) => {
           // dodati stranu koju ide !!!!!!!!!!!!!!!!!
