@@ -21,7 +21,7 @@ export class UserRegistrationComponent implements OnInit {
   submitted = false;
   passwordRepeated: string= "";
   street: string = "";
-  streetNumber: string = "";
+  number: string = "";
   city: string= "";
   country: string="";
 
@@ -47,7 +47,7 @@ export class UserRegistrationComponent implements OnInit {
   }
   onSubmit() {
     this.user.address.street = this.street;
-    this.user.address.streetNumber = this.streetNumber;
+    this.user.address.number = this.number;
     this.user.address.city = this.city;
     this.user.address.country = this.country;
     console.log(this.user);

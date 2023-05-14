@@ -6,11 +6,13 @@ import (
 	userGw "common/proto/user-service/pb"
 	"context"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/rs/cors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Server struct {
@@ -50,5 +52,14 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
+	handler := server.getHandlerCORSWrapped()
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), handler))
+}
+
+func (server *Server) getHandlerCORSWrapped() http.Handler {
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins: []string{server.config.AllowedCorsOrigin},
+	})
+	handler := corsMiddleware.Handler(server.mux)
+	return handler
 }
