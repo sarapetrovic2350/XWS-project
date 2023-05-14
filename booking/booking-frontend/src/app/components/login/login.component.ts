@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
         {
           next: (res) => {
             console.log(res)
-            this.successfulLogin(res);
+            this.successfulLogin(res.jwt);
             Swal.fire({
               icon: 'success',
               title: 'Success!',
@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
     }
   }
   successfulLogin(token: string) {
+    console.log(token)
     this.userService.setTokenForLoggedInUser(token);
   }
 }

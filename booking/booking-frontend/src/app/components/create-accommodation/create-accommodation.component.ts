@@ -16,7 +16,7 @@ export class CreateAccommodationComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private accommodationService: AccommodationService, 
+    private accommodationService: AccommodationService,
     private userService : UserService
   ) { }
 
@@ -30,7 +30,7 @@ export class CreateAccommodationComponent implements OnInit {
   benefits: string[] = [];
   auxT: any[] = [];
 
-  BenefitList: string[] = ['Wifi', 'Free Parking', 'Private Bathroom', 'Shared Bathroom', 'Kitchen', 
+  BenefitList: string[] = ['Wifi', 'Free Parking', 'Private Bathroom', 'Shared Bathroom', 'Kitchen',
   'Air Conditioner', 'Kitchen'];
 
 
@@ -61,7 +61,7 @@ export class CreateAccommodationComponent implements OnInit {
 
   onSubmit(){
     this.accommodation.address.street = this.street;
-    this.accommodation.address.streetNumber = this.streetNumber;
+    this.accommodation.address.number = this.streetNumber;
     this.accommodation.address.city = this.city;
     this.accommodation.address.country = this.country;
     if (this.benefits != null) {
@@ -69,7 +69,7 @@ export class CreateAccommodationComponent implements OnInit {
         this.auxT.push(t);
       }
     }
-    this.accommodation.benefits = this.auxT; 
+    this.accommodation.benefits = this.auxT;
     this.accommodation.hostId = this.user.id;
 
     this.accommodationService.createAccommodation(this.accommodation).subscribe(

@@ -8,7 +8,7 @@ import "google/api/annotations.proto";
 service UserService {
   rpc GetAll(GetAllRequest) returns (GetAllResponse) {
     option (google.api.http) = {
-      get: "/user"
+      get: "/user",
     };
   }
   rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailResponse) {
@@ -96,7 +96,7 @@ message NewUser {
   string role = 3;
   string email = 4;
   string password = 5;
-  AddressDTO Address = 6;
+  AddressDTO address = 6;
 }
 
 message User {
@@ -106,5 +106,5 @@ message User {
   string role = 4;
   string email = 5;
   string password = 6;
-  AddressDTO Address = 7;
+  AddressDTO address = 7;
 }
