@@ -4,7 +4,7 @@ import (
 	"accommodation-service/model"
 	accommodation "common/proto/accommodation-service/pb"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"time"
 )
 
 func mapAccommodation(modelAccommodation *model.Accommodation) *accommodation.Accommodation {
@@ -55,9 +55,22 @@ func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model
 func mapAvailabilityPb(modelAvailability *model.Availability) *accommodation.Availability {
 	return &accommodation.Availability{
 		Id:             modelAvailability.Id.Hex(),
-		StartDate:      timestamppb.New(modelAvailability.StartDate),
-		EndDate:        timestamppb.New(modelAvailability.EndDate),
+		StartDate:      modelAvailability.StartDate.Format("2006-01-02"),
+		EndDate:        modelAvailability.EndDate.Format("2006-01-02"),
 		Price:          float32(modelAvailability.Price),
 		PriceSelection: accommodation.PriceSelection(modelAvailability.PriceSelection),
 	}
+}
+func mapNewAvailability(availabilityPb *accommodation.NewAvailability) *model.Availability {
+	startDate, _ := time.Parse("2006-01-02", availabilityPb.StartDate)
+	endDate, _ := time.Parse("2006-01-02", availabilityPb.EndDate)
+
+	availability := &model.Availability{
+		Id:             primitive.NewObjectID(),
+		StartDate:      startDate,
+		EndDate:        endDate,
+		Price:          float64(availabilityPb.Price),
+		PriceSelection: model.PriceSelection(availabilityPb.PriceSelection),
+	}
+	return availability
 }

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"accommodation-service/model"
-	accommodationGw "common/proto/accommodation-service/pb"
+	accommodation "common/proto/accommodation-service/pb"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
@@ -115,7 +115,7 @@ func (repo *AccommodationRepo) GetById(id string) (*model.Accommodation, error) 
 	return &accommodation, nil
 }
 
-func (repo *AccommodationRepo) SearchAccommodation(searchCriteria accommodationGw.GetAccommodationsByParamsRequest) model.Accommodations {
+func (repo *AccommodationRepo) SearchAccommodation(searchCriteria *accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -139,16 +139,17 @@ func (repo *AccommodationRepo) SearchAccommodation(searchCriteria accommodationG
 	return accommodations
 }
 
-func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(accommodationID primitive.ObjectID, availability *model.Availability) error {
+func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(request *accommodation.CreateAvailabilityRequest) error {
 
 	// Add the new availability to the availability array
 	update := bson.M{
 		"$push": bson.M{
-			"availabilities": availability,
+			"availabilities": request.AvailabilityForAccommodation.Availability,
 		},
 	}
-	var filter = bson.M{"_id": accommodationID}
-	_, err := accommmodationRepo.accommodations.UpdateOne(context.Background(), filter, update)
+	formattedId, err := primitive.ObjectIDFromHex(request.AvailabilityForAccommodation.AccommodationId)
+	var filter = bson.M{"_id": formattedId}
+	_, err = accommmodationRepo.accommodations.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return status.Errorf(
 			codes.Internal,

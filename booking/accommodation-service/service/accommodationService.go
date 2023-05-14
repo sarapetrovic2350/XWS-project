@@ -3,7 +3,7 @@ package service
 import (
 	"accommodation-service/model"
 	accommodation "common/proto/accommodation-service/pb"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"time"
 )
 
 type AccommodationService struct {
@@ -91,22 +91,24 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 	return flight, nil
 }
 
-func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation *model.Accommodation, availability *model.Availability) error {
-	err := service.AccommodationRepo.AddAvailabilityForAccommodation(accommodation.Id, availability)
+func (service *AccommodationService) AddAvailabilityForAccommodation(request *accommodation.CreateAvailabilityRequest) error {
+	err := service.AccommodationRepo.AddAvailabilityForAccommodation(request)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (service AccommodationService) SearchAccommodation(searchAccommodations accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
+func (service AccommodationService) SearchAccommodation(searchAccommodations *accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
 	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
 	var retAccommodations model.Accommodations
 	for _, itr := range accommodations {
 		for _, availability := range itr.Availabilities {
-			if (searchAccommodations.GetSearchParams().StartDate == timestamppb.New(availability.StartDate) && searchAccommodations.GetSearchParams().StartDate.AsTime().After(availability.StartDate)) &&
-				(searchAccommodations.GetSearchParams().EndDate == timestamppb.New(availability.EndDate) && searchAccommodations.GetSearchParams().EndDate.AsTime().Before(availability.EndDate)) {
-				if itr.MinNumberOfGuests <= int(searchAccommodations.GetSearchParams().NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.GetSearchParams().NumberOfGuests) {
+			startDate, _ := time.Parse("2006-01-02", searchAccommodations.SearchParams.StartDate)
+			endDate, _ := time.Parse("2006-01-02", searchAccommodations.SearchParams.EndDate)
+			if startDate == availability.StartDate && startDate.After(availability.StartDate) &&
+				endDate == availability.EndDate && endDate.Before(availability.EndDate) {
+				if itr.MinNumberOfGuests <= int(searchAccommodations.SearchParams.NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.SearchParams.NumberOfGuests) {
 					retAccommodations = append(retAccommodations, itr)
 				}
 

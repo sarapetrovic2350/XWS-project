@@ -4,7 +4,6 @@ option go_package = "common/accommodation";
 package accommodation;
 
 import "google/api/annotations.proto";
-import "google/protobuf/timestamp.proto";
 
 service AccommodationService {
   rpc GetAll(GetAllRequest) returns (GetAllResponse) {
@@ -16,6 +15,12 @@ service AccommodationService {
     option (google.api.http) = {
       post: "/accommodation"
       body: "accommodation"
+    };
+  }
+  rpc CreateAvailability(CreateAvailabilityRequest) returns(CreateAvailabilityResponse) {
+    option (google.api.http) = {
+      post: "/accommodation/createAvailability"
+      body: "availabilityForAccommodation"
     };
   }
   rpc Search(GetAccommodationsByParamsRequest) returns (GetAccommodationsByParamsResponse) {
@@ -36,8 +41,8 @@ message SearchParams{
   string city = 1;
   string country = 2;
   uint32 numberOfGuests = 3;
-  google.protobuf.Timestamp startDate = 4;
-  google.protobuf.Timestamp endDate = 5;
+  string startDate = 4;
+  string endDate = 5;
 }
 
 message GetAllRequest{
@@ -64,10 +69,29 @@ message Accommodation {
   repeated Availability availabilities = 8;
 }
 
+message CreateAvailabilityRequest{
+  NewAvailabilityForAccommodation availabilityForAccommodation = 1;
+}
+
+message NewAvailabilityForAccommodation {
+  string accommodationId = 1;
+  NewAvailability availability = 2;
+}
+message NewAvailability {
+  string startDate = 1;
+  string endDate = 2;
+  float price = 3;
+  PriceSelection priceSelection = 4;
+}
+
+message CreateAvailabilityResponse{
+  Availability availability = 1;
+}
+
 message Availability {
   string id = 1;
-  google.protobuf.Timestamp startDate = 2;
-  google.protobuf.Timestamp endDate = 3;
+  string startDate = 2;
+  string endDate = 3;
   float price = 4;
   PriceSelection priceSelection = 5;
 }
