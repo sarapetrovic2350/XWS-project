@@ -56,6 +56,16 @@ export class UserService {
       return decodedToken.email
     }
   }
+
+  getLoggedInUserId(): string {
+    const decodedToken = this.getDecodedAccessToken(localStorage.getItem("token")!);
+    if (decodedToken == null) {
+      return "";
+    } else {
+      return decodedToken.id
+    }
+  }
+
   getUserByEmail(email: string): Observable<User> {
     return this.http.get<User>(this.apiHost + '/' + email);
   }
