@@ -80,4 +80,8 @@ export class UserService {
     localStorage.clear();
     window.location.href = 'login';
   }
+
+  deleteAccount(id: any): Observable<any> {
+    return this.http.post<any>(this.apiHost + '/delete/' + id, {headers: this.headers});
+  }
 }

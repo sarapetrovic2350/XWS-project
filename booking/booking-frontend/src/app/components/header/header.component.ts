@@ -25,10 +25,10 @@ export class HeaderComponent implements OnInit {
     let userRole = this.userService.getLoggedInUserRole()
     let userEmail = this.userService.getLoggedInUserEmail()
     console.log(userEmail)
-    this.userService.getUserByEmail(userEmail).subscribe(res => {
-      this.user = res;
-      console.log(this.user)
-    })
+    //this.userService.getUserByEmail(userEmail).subscribe(res => {
+      //this.user = res;
+      //console.log(this.user)
+    //})
 
     if(userRole === "") {
       this.isLoggedIn = false;
