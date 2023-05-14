@@ -98,8 +98,19 @@ func (handler *UserHandler) GetUserByEmail(ctx context.Context, request *user.Ge
 }
 
 func (handler *UserHandler) UpdateUser(ctx context.Context, request *user.UpdateUserRequest) (*user.UpdateUserResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	fmt.Println("In UpdateUser grpc api")
+	fmt.Print("Request.User: ")
+	fmt.Println(request.User)
+	modelUser := mapUpdatedUser(request.User)
+	fmt.Print("user after mapping: ")
+	fmt.Println(modelUser)
+	err := handler.userService.Update(modelUser)
+	if err != nil {
+		return nil, err
+	}
+	return &user.UpdateUserResponse{
+		User: mapUser(modelUser),
+	}, nil
 }
 
 func (handler *UserHandler) mustEmbedUnimplementedUserServiceServer() {
