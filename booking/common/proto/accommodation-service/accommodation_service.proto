@@ -4,6 +4,7 @@ option go_package = "common/accommodation";
 package accommodation;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 service AccommodationService {
   rpc GetAll(GetAllRequest) returns (GetAllResponse) {
@@ -11,17 +12,45 @@ service AccommodationService {
       get: "/accommodation"
     };
   }
-//  rpc GetAccommodationByUserId(GetUserReservationsRequest) returns (GetUserReservationsResponse) {
-//    option (google.api.http) = {
-//      get: "/getAccommodationByUserId/{id}"
-//    };
-//  }
+  rpc CreateAccommodation(CreateAccommodationRequest) returns(CreateAccommodationResponse) {
+    option (google.api.http) = {
+      post: "/accommodation"
+      body: "accommodation"
+    };
+  }
+  rpc Search(GetAccommodationsByParamsRequest) returns (GetAccommodationsByParamsResponse) {
+    option (google.api.http) = {
+      post: "/accommodation/search"
+      body: "*"
+    };
+  }
 }
+message GetAccommodationsByParamsRequest {
+  SearchParams searchParams = 1;
+}
+message GetAccommodationsByParamsResponse {
+  repeated Accommodation accommodations = 1;
+}
+
+message SearchParams{
+  string city = 1;
+  string country = 2;
+  uint32 numberOfGuests = 3;
+  google.protobuf.Timestamp startDate = 4;
+  google.protobuf.Timestamp endDate = 5;
+}
+
 message GetAllRequest{
 }
 
 message GetAllResponse{
   repeated Accommodation accommodations = 1;
+}
+message CreateAccommodationRequest {
+  NewAccommodation accommodation = 1;
+}
+message CreateAccommodationResponse {
+  Accommodation accommodation = 1;
 }
 
 message Accommodation {
@@ -33,6 +62,16 @@ message Accommodation {
   string hostID = 6;
   repeated string benefits = 7;
 }
+
+message NewAccommodation {
+  string name = 1;
+  int32 minNumberOfGuests = 2;
+  int32 maxNumberOfGuests = 3;
+  AddressDTO address = 4;
+  string hostID = 5;
+  repeated string benefits = 6;
+}
+
 
 message AddressDTO {
   string street = 1;

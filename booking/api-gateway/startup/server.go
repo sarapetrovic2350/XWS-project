@@ -2,6 +2,7 @@ package startup
 
 import (
 	cfg "api-gateway/startup/config"
+	accommodationGw "common/proto/accommodation-service/pb"
 	reservationGw "common/proto/reservation-service/pb"
 	userGw "common/proto/user-service/pb"
 	"context"
@@ -44,6 +45,15 @@ func (server *Server) initHandlers() {
 	fmt.Print("reservationEndpoint: ")
 	fmt.Println(reservationEndpoint)
 	err = reservationGw.RegisterReservationServiceHandlerFromEndpoint(context.TODO(), server.mux, reservationEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Handlers initalized")
+
+	accommodationEndpoint := fmt.Sprintf("%s:%s", server.config.AccommodationDomain, server.config.AccommodationPort)
+	fmt.Print("accommodationEndpoint: ")
+	fmt.Println(accommodationEndpoint)
+	err = accommodationGw.RegisterAccommodationServiceHandlerFromEndpoint(context.TODO(), server.mux, accommodationEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

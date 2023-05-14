@@ -1,19 +1,19 @@
 package service
 
 import (
-	"accommodation-service/dto"
 	"accommodation-service/model"
-	"accommodation-service/repository"
 )
 
 type AccommodationService struct {
-	// NoSQL: injecting user repository
-	AccommodationRepo *repository.AccommodationRepo
-	AvailabilityRepo  *repository.AvailabilityRepo
+	// NoSQL: injecting AccommodationRepo
+	AccommodationRepo model.AccommodationStore
+	//AvailabilityRepo  *repository.AvailabilityRepo
 }
 
-func NewAccommodationService(accommodationRepository *repository.AccommodationRepo, availabilityRepo *repository.AvailabilityRepo) *AccommodationService {
-	return &AccommodationService{accommodationRepository, availabilityRepo}
+func NewAccommodationService(accommodationRepository model.AccommodationStore) *AccommodationService {
+	return &AccommodationService{
+		AccommodationRepo: accommodationRepository,
+	}
 }
 
 func (service *AccommodationService) CreateAccommodation(accommodation *model.Accommodation) error {
@@ -40,29 +40,29 @@ func (service *AccommodationService) FindAccommodationsByEmail(email string) (*m
 	return user, nil
 }
 
-func (service *AccommodationService) SearchAccommodation(searchAccommodations dto.SearchDTO) model.Accommodations {
-	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
-	var retAccommodations model.Accommodations
-	var availabilities model.Availabilities
-	for _, itr := range accommodations {
-		availabilities, _ = service.AvailabilityRepo.FindAvailabilitiesByAccommodationId(itr.Id.Hex())
-		for _, availability := range availabilities {
-			if (searchAccommodations.StartDate == availability.StartDate || searchAccommodations.StartDate.After(availability.StartDate)) &&
-				(searchAccommodations.EndDate == availability.EndDate || searchAccommodations.EndDate.Before(availability.EndDate)) {
-				if itr.MinNumberOfGuests <= searchAccommodations.NumberOfGuests && itr.MaxNumberOfGuests >= searchAccommodations.NumberOfGuests {
-					retAccommodations = append(retAccommodations, itr)
-				}
-
-			}
-
-		}
-
-	}
-	if retAccommodations != nil {
-		return retAccommodations
-	}
-	return nil
-}
+//func (service *AccommodationService) SearchAccommodation(searchAccommodations dto.SearchDTO) model.Accommodations {
+//	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+//	var retAccommodations model.Accommodations
+//	var availabilities model.Availabilities
+//	for _, itr := range accommodations {
+//		availabilities, _ = service.AvailabilityRepo.FindAvailabilitiesByAccommodationId(itr.Id.Hex())
+//		for _, availability := range availabilities {
+//			if (searchAccommodations.StartDate == availability.StartDate || searchAccommodations.StartDate.After(availability.StartDate)) &&
+//				(searchAccommodations.EndDate == availability.EndDate || searchAccommodations.EndDate.Before(availability.EndDate)) {
+//				if itr.MinNumberOfGuests <= searchAccommodations.NumberOfGuests && itr.MaxNumberOfGuests >= searchAccommodations.NumberOfGuests {
+//					retAccommodations = append(retAccommodations, itr)
+//				}
+//
+//			}
+//
+//		}
+//
+//	}
+//	if retAccommodations != nil {
+//		return retAccommodations
+//	}
+//	return nil
+//}
 
 // dobavljanje smestaja po hostId-u, vlasnici smestaja
 func (service *AccommodationService) GetAccommodationByHostId(hostId string) (model.Accommodations, error) {
