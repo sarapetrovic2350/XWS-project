@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Rest/handler"
-	"Rest/repository"
-	"Rest/service"
+	"accommodation-service/handler"
+	"accommodation-service/repository"
+	"accommodation-service/service"
 	"context"
 	"fmt"
 	"log"

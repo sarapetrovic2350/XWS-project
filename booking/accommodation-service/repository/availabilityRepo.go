@@ -1,72 +1,68 @@
 package repository
 
 import (
-	"Rest/model"
+	"accommodation-service/model"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 	"time"
+)
+
+const (
+	AVAILABILITY_DB   = "accommodation"
+	AVAILABILITY_COLL = "availability"
 )
 
 // UserRepo struct encapsulating Mongo api client
 type AvailabilityRepo struct {
-	client *mongo.Client
-	logger *log.Logger
+	availabilities *mongo.Collection
 }
 
-func NewAvailabilityRepo(client *mongo.Client, logger *log.Logger) *AvailabilityRepo {
-	return &AvailabilityRepo{client, logger}
+func NewAvailabilityRepo(client *mongo.Client) model.AvailabilityStore {
+	availabilities := client.Database(AVAILABILITY_DB).Collection(AVAILABILITY_COLL)
+	return &AvailabilityRepo{
+		availabilities: availabilities,
+	}
 }
 
 // Disconnect from database
-func (repo *AvailabilityRepo) Disconnect(ctx context.Context) error {
-	err := repo.client.Disconnect(ctx)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+//func (repo *AvailabilityRepo) Disconnect(ctx context.Context) error {
+//	err := repo.client.Disconnect(ctx)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
 func (repo *AvailabilityRepo) Insert(availability *model.Availability) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	availabilityCollection := repo.getCollection()
-
-	result, err := availabilityCollection.InsertOne(ctx, &availability)
+	result, err := repo.availabilities.InsertOne(context.TODO(), availability)
 	if err != nil {
-		repo.logger.Println(err)
 		return err
 	}
-	repo.logger.Printf("Documents ID: %v\n", result.InsertedID)
+	availability.Id = result.InsertedID.(primitive.ObjectID)
 	return nil
 }
 
-func (repo *AvailabilityRepo) getCollection() *mongo.Collection {
-	bookingDatabase := repo.client.Database("accommodationDB")
-	availabilitiesCollection := bookingDatabase.Collection("availabilities")
-	return availabilitiesCollection
-}
+//func (repo *AvailabilityRepo) getCollection() *mongo.Collection {
+//	bookingDatabase := repo.client.Database("accommodationDB")
+//	availabilitiesCollection := bookingDatabase.Collection("availabilities")
+//	return availabilitiesCollection
+//}
 
 func (repo *AvailabilityRepo) GetAll() (model.Availabilities, error) {
-	// Initialise context (after 5 seconds timeout, abort operation)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	availabilitiesCollection := repo.getCollection()
-
-	var accommodations model.Availabilities
-	accommodationsCursor, err := availabilitiesCollection.Find(ctx, bson.M{})
+	var availabilities model.Availabilities
+	availabilitiesCursor, err := repo.availabilities.Find(ctx, bson.M{})
 	if err != nil {
-		repo.logger.Println(err)
 		return nil, err
 	}
-	if err = accommodationsCursor.All(ctx, &accommodations); err != nil {
-		repo.logger.Println(err)
+	if err = availabilitiesCursor.All(ctx, &availabilities); err != nil {
 		return nil, err
 	}
-	return accommodations, nil
+	return availabilities, nil
 }
 
 func (repo *AvailabilityRepo) FindAvailabilitiesByAccommodationId(id string) (model.Availabilities, error) {
@@ -88,13 +84,10 @@ func (repo *AvailabilityRepo) GetById(id string) (*model.Availability, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	availabilitiesCollection := repo.getCollection()
-
 	var availability model.Availability
 	objID, _ := primitive.ObjectIDFromHex(id)
-	err := availabilitiesCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&availability)
+	err := repo.availabilities.FindOne(ctx, bson.M{"_id": objID}).Decode(&availability)
 	if err != nil {
-		repo.logger.Println(err)
 		return nil, err
 	}
 	return &availability, nil
