@@ -2,6 +2,8 @@ package service
 
 import (
 	"accommodation-service/model"
+	accommodation "common/proto/accommodation-service/pb"
+	"time"
 )
 
 type AccommodationService struct {
@@ -87,4 +89,36 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 		return nil, err
 	}
 	return flight, nil
+}
+
+func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
+	err := service.AccommodationRepo.AddAvailabilityForAccommodation(accommodation2, availability)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service AccommodationService) SearchAccommodation(searchAccommodations *accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
+	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	var retAccommodations model.Accommodations
+	for _, itr := range accommodations {
+		for _, availability := range itr.Availabilities {
+			startDate, _ := time.Parse("2006-01-02", searchAccommodations.SearchParams.StartDate)
+			endDate, _ := time.Parse("2006-01-02", searchAccommodations.SearchParams.EndDate)
+			if startDate == availability.StartDate && startDate.After(availability.StartDate) &&
+				endDate == availability.EndDate && endDate.Before(availability.EndDate) {
+				if itr.MinNumberOfGuests <= int(searchAccommodations.SearchParams.NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.SearchParams.NumberOfGuests) {
+					retAccommodations = append(retAccommodations, itr)
+				}
+
+			}
+
+		}
+
+	}
+	if retAccommodations != nil {
+		return retAccommodations
+	}
+	return nil
 }

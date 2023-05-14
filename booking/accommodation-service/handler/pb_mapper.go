@@ -4,11 +4,19 @@ import (
 	"accommodation-service/model"
 	accommodation "common/proto/accommodation-service/pb"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 func mapAccommodation(modelAccommodation *model.Accommodation) *accommodation.Accommodation {
+
+	var pbAvailabilities []*accommodation.Availability
+	for _, availability := range modelAccommodation.Availabilities {
+		pbAvailabilities = append(pbAvailabilities, mapAvailabilityPb(availability))
+	}
+
 	accommodationPb := &accommodation.Accommodation{
 		Id:                modelAccommodation.Id.Hex(),
+		Availabilities:    pbAvailabilities,
 		Name:              modelAccommodation.Name,
 		MinNumberOfGuests: int32(modelAccommodation.MinNumberOfGuests),
 		MaxNumberOfGuests: int32(modelAccommodation.MaxNumberOfGuests),
@@ -25,6 +33,7 @@ func mapAccommodation(modelAccommodation *model.Accommodation) *accommodation.Ac
 }
 
 func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model.Accommodation {
+
 	accommodation := &model.Accommodation{
 
 		Id:                primitive.NewObjectID(),
@@ -41,4 +50,27 @@ func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model
 		Benefits: accommodationPb.Benefits,
 	}
 	return accommodation
+}
+
+func mapAvailabilityPb(modelAvailability *model.Availability) *accommodation.Availability {
+	return &accommodation.Availability{
+		Id:             modelAvailability.Id.Hex(),
+		StartDate:      modelAvailability.StartDate.Format("2006-01-02"),
+		EndDate:        modelAvailability.EndDate.Format("2006-01-02"),
+		Price:          float32(modelAvailability.Price),
+		PriceSelection: accommodation.PriceSelection(modelAvailability.PriceSelection),
+	}
+}
+func mapNewAvailability(availabilityPb *accommodation.NewAvailability) *model.Availability {
+	startDate, _ := time.Parse("2006-01-02", availabilityPb.StartDate)
+	endDate, _ := time.Parse("2006-01-02", availabilityPb.EndDate)
+
+	availability := &model.Availability{
+		Id:             primitive.NewObjectID(),
+		StartDate:      startDate,
+		EndDate:        endDate,
+		Price:          float64(availabilityPb.Price),
+		PriceSelection: model.PriceSelection(availabilityPb.PriceSelection),
+	}
+	return availability
 }

@@ -68,81 +68,49 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 	}, nil
 }
 
-//func (handler *AccommodationHandler) GetAllAccommodations(rw http.ResponseWriter, h *http.Request) {
-//	accommodations, err := handler.accommodationService.GetAllAccommodations()
-//	if err != nil {
-//	}
-//
-//	if accommodations == nil {
-//		return
-//	}
-//
-//	err = accommodations.ToJSON(rw)
-//	if err != nil {
-//		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-//		return
-//	}
-//}
-//
-//func (handler *AccommodationHandler) GetAccommodationByHostId(rw http.ResponseWriter, h *http.Request) {
-//	vars := mux.Vars(h)
-//	hostId := vars["id"]
-//
-//	accommodations, err := handler.accommodationService.GetAccommodationByHostId(hostId)
-//
-//	if accommodations == nil {
-//		return
-//	}
-//
-//	if accommodations == nil {
-//		http.Error(rw, "Accommodations with given id not found", http.StatusNotFound)
-//		return
-//	}
-//
-//	err = json.NewEncoder(rw).Encode(accommodations)
-//	//err = tickets.ToJSON(rw)
-//	if err != nil {
-//		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-//		return
-//	}
-//
-//	rw.WriteHeader(http.StatusOK)
-//	rw.Header().Set("Content-Type", "application/json")
-//}
-//
-//func (handler *AccommodationHandler) SearchAccommodations(rw http.ResponseWriter, h *http.Request) {
-//	var dto dto.SearchDTO
-//	err := json.NewDecoder(h.Body).Decode(&dto)
-//	fmt.Println(dto)
-//	accommodations := handler.accommodationService.SearchAccommodation(dto)
-//	if accommodations == nil {
-//		rw.WriteHeader(http.StatusExpectationFailed)
-//		return
-//	}
-//	err = accommodations.ToJSON(rw)
-//	fmt.Println(err)
-//	if err != nil {
-//		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-//		rw.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//	rw.WriteHeader(http.StatusOK)
-//	return
-//}
-//
-//func (handler *AccommodationHandler) GetAccommodationById(rw http.ResponseWriter, h *http.Request) {
-//	vars := mux.Vars(h)
-//	id := vars["id"]
-//
-//	accommodation, err := handler.accommodationService.GetById(id)
-//
-//	if accommodation == nil {
-//		http.Error(rw, "Accommodation with given id not found", http.StatusNotFound)
-//		return
-//	}
-//	err = accommodation.ToJSON(rw)
-//	if err != nil {
-//		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-//		return
-//	}
-//}
+func (handler *AccommodationHandler) CreateAvailability(ctx context.Context, request *accommodation.CreateAvailabilityRequest) (*accommodation.CreateAccommodationResponse, error) {
+	fmt.Println("In CreateAvailability grpc api")
+	fmt.Print("Request.AccommodationId: ")
+	fmt.Println(request.AvailabilityForAccommodation.AccommodationId)
+	fmt.Println(request.AvailabilityForAccommodation.Availability)
+	accommodationForUpdate, err := handler.accommodationService.GetById(request.AvailabilityForAccommodation.AccommodationId)
+	fmt.Println(accommodationForUpdate.Availabilities)
+	if err != nil {
+		return nil, err
+	}
+
+	err = handler.accommodationService.AddAvailabilityForAccommodation(accommodationForUpdate, mapNewAvailability(request.AvailabilityForAccommodation.Availability))
+	if err != nil {
+		return nil, err
+	}
+
+	updated, err := handler.accommodationService.GetById(request.AvailabilityForAccommodation.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &accommodation.CreateAccommodationResponse{
+		Accommodation: mapAccommodation(updated),
+	}
+
+	return response, nil
+}
+
+func (handler AccommodationHandler) Search(ctx context.Context, request *accommodation.GetAccommodationsByParamsRequest) (*accommodation.GetAccommodationsByParamsResponse, error) {
+
+	accommodations := handler.accommodationService.SearchAccommodation(request)
+	if accommodations == nil {
+		return nil, nil
+	}
+
+	response := &accommodation.GetAccommodationsByParamsResponse{
+		Accommodations: []*accommodation.Accommodation{},
+	}
+
+	for _, modelAccommodation := range accommodations {
+		current := mapAccommodation(modelAccommodation)
+		response.Accommodations = append(response.Accommodations, current)
+	}
+
+	return response, nil
+}
