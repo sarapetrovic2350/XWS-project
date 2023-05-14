@@ -8,6 +8,7 @@ require (
 	common v0.0.0-00010101000000-000000000000
 	go.mongodb.org/mongo-driver v1.11.6
 	google.golang.org/grpc v1.55.0
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
@@ -27,5 +28,4 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
 )

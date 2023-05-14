@@ -7,14 +7,11 @@ replace common => ../common
 require (
 	common v0.0.0-00010101000000-000000000000
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gorilla/handlers v1.5.1
-	github.com/gorilla/mux v1.8.0
 	go.mongodb.org/mongo-driver v1.11.6
 	google.golang.org/grpc v1.55.0
 )
 
 require (
-	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
