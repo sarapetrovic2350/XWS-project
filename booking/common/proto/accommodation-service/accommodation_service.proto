@@ -61,6 +61,20 @@ message Accommodation {
   AddressDTO address = 5;
   string hostID = 6;
   repeated string benefits = 7;
+  repeated Availability availabilities = 8;
+}
+
+message Availability {
+  string id = 1;
+  google.protobuf.Timestamp startDate = 2;
+  google.protobuf.Timestamp endDate = 3;
+  float price = 4;
+  PriceSelection priceSelection = 5;
+}
+
+enum PriceSelection {
+  PER_PERSON = 0;
+  PER_ACCOMMODATION = 1;
 }
 
 message NewAccommodation {
