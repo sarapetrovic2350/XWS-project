@@ -42,7 +42,7 @@ func (repo *ReservationRepo) GetReservationsByUserId(userId string) (model.Reser
 	reservations, err := repo.GetAll()
 	var retReservations model.Reservations
 	for _, itr := range reservations {
-		if itr.UserID == userId {
+		if itr.UserId == userId {
 			retReservations = append(retReservations, itr)
 			fmt.Println(retReservations)
 		}

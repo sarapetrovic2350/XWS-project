@@ -15,6 +15,7 @@ func NewReservationService(r model.ReservationStore) *ReservationService {
 }
 
 func (service *ReservationService) CreateReservation(reservation *model.Reservation) error {
+	reservation.ReservationStatus = model.PENDING
 	err := service.ReservationRepo.Insert(reservation)
 	if err != nil {
 		return err

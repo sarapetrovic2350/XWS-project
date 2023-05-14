@@ -3,10 +3,7 @@ package handler
 import (
 	reservation "common/proto/reservation-service/pb"
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
-	"reservation-service/model"
 	"reservation-service/service"
 )
 
@@ -38,6 +35,21 @@ func (handler *ReservationHandler) GetAll(ctx context.Context, request *reservat
 	}
 	return response, nil
 }
+func (handler *ReservationHandler) CreateReservation(ctx context.Context, request *reservation.CreateReservationRequest) (*reservation.CreateReservationResponse, error) {
+	fmt.Println("In CreateReservation grpc api")
+	fmt.Print("Request.Reservation: ")
+	fmt.Println(request.Reservation)
+	modelReservation := mapNewReservation(request.Reservation)
+	fmt.Print("reservation after mapping: ")
+	fmt.Println(modelReservation)
+	err := handler.reservationService.CreateReservation(modelReservation)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.CreateReservationResponse{
+		Reservation: mapReservation(modelReservation),
+	}, nil
+}
 func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, request *reservation.GetUserReservationsRequest) (*reservation.GetUserReservationsResponse, error) {
 	fmt.Println("In GetReservationsByUserId grpc api")
 	fmt.Println(request)
@@ -55,24 +67,24 @@ func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, 
 	return response, nil
 }
 
-func (handler *ReservationHandler) CreateReservation(rw http.ResponseWriter, h *http.Request) {
-	fmt.Println("creating")
-	var reservation model.Reservation
-	err := json.NewDecoder(h.Body).Decode(&reservation)
-	if err != nil {
-		//TODO log
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	fmt.Println(reservation)
-	err = handler.reservationService.CreateReservation(&reservation)
-	if err != nil {
-		fmt.Println(err)
-		rw.WriteHeader(http.StatusExpectationFailed)
-	}
-	rw.WriteHeader(http.StatusCreated)
-	rw.Header().Set("Content-Type", "application/json")
-}
+//func (handler *ReservationHandler) CreateReservation(rw http.ResponseWriter, h *http.Request) {
+//	fmt.Println("creating")
+//	var reservation model.Reservation
+//	err := json.NewDecoder(h.Body).Decode(&reservation)
+//	if err != nil {
+//		//TODO log
+//		rw.WriteHeader(http.StatusBadRequest)
+//		return
+//	}
+//	fmt.Println(reservation)
+//	err = handler.reservationService.CreateReservation(&reservation)
+//	if err != nil {
+//		fmt.Println(err)
+//		rw.WriteHeader(http.StatusExpectationFailed)
+//	}
+//	rw.WriteHeader(http.StatusCreated)
+//	rw.Header().Set("Content-Type", "application/json")
+//}
 
 //func (handler *ReservationHandler) GetAllReservations(rw http.ResponseWriter, h *http.Request) {
 //	reservations, err := handler.reservationService.GetAllReservations()

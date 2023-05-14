@@ -57,7 +57,7 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 	fmt.Print("Request.Accommodation: ")
 	fmt.Println(request.Accommodation)
 	modelAccommodation := mapNewAccommodation(request.Accommodation)
-	fmt.Print("user after mapping: ")
+	fmt.Print("accommodation after mapping: ")
 	fmt.Println(modelAccommodation)
 	err := handler.accommodationService.CreateAccommodation(modelAccommodation)
 	if err != nil {
