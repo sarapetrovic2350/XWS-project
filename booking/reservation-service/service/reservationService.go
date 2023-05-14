@@ -40,3 +40,19 @@ func (service *ReservationService) GetReservationsByUserId(userId string) (model
 	}
 	return reservations, nil
 }
+
+func (service *ReservationService) GetById(id string) (*model.Reservation, error) {
+	reservation, err := service.ReservationRepo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+	return reservation, nil
+}
+
+func (service *ReservationService) Delete(id string) error {
+	err := service.ReservationRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

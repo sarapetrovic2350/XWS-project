@@ -98,3 +98,17 @@ func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, 
 //		return
 //	}
 //}
+
+func (handler *ReservationHandler) DeleteReservation(ctx context.Context, request *reservation.DeleteReservationRequest) (*reservation.DeleteReservationResponse, error) {
+	//formatedId = request.Id
+	//if err != nil {
+	//	return nil, err
+	//}
+	deletedReservation, err := handler.reservationService.GetById(request.Id)
+	err = handler.reservationService.Delete(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.DeleteReservationResponse{
+		Reservation: mapReservation(deletedReservation)}, nil
+}
