@@ -68,7 +68,6 @@ func (service *AccommodationService) FindAccommodationsByEmail(email string) (*m
 
 // dobavljanje smestaja po hostId-u, vlasnici smestaja
 func (service *AccommodationService) GetAccommodationByHostId(hostId string) (model.Accommodations, error) {
-	//user, _ = service.UserRepo.GetById(userId)
 	accommodations, err := service.AccommodationRepo.GetAll()
 	var retAccommodations model.Accommodations
 	for _, itr := range accommodations {
