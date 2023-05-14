@@ -2,10 +2,8 @@ package handler
 
 import (
 	reservation "common/proto/reservation-service/pb"
-	user "common/proto/user-service/pb"
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reservation-service/service"
 )
 
@@ -101,16 +99,16 @@ func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, 
 //	}
 //}
 
-func (handler *ReservationHandler) DeleteReservation(ctx context.Context, request *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
-	formatedId, err := primitive.ObjectIDFromHex(request.Id)
-	if err != nil {
-		return nil, err
-	}
-	deletedUser, err := handler.reservationService.Get(formatedId)
-	err = handler.reservationService.Delete(request)
-	if err != nil {
-		return nil, err
-	}
-	return &user.DeleteUserResponse{
-		User: mapUser(deletedUser)}, nil
-}
+//func (handler *ReservationHandler) DeleteReservation(ctx context.Context, request *reservation.) (*user.DeleteUserResponse, error) {
+//	formatedId, err := primitive.ObjectIDFromHex(request.Id)
+//	if err != nil {
+//		return nil, err
+//	}
+//	deletedUser, err := handler.reservationService.Get(formatedId)
+//	err = handler.reservationService.Delete(request)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &user.DeleteUserResponse{
+//		User: mapUser(deletedUser)}, nil
+//}
