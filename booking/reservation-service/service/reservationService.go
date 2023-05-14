@@ -1,6 +1,7 @@
 package service
 
 import (
+	reservation "common/proto/reservation-service/pb"
 	"fmt"
 	"reservation-service/model"
 )
@@ -39,4 +40,8 @@ func (service *ReservationService) GetReservationsByUserId(userId string) (model
 		return nil, err
 	}
 	return reservations, nil
+}
+
+func (service *ReservationService) Delete(request *reservation.DeleteReservationRequest) error {
+	return service.ReservationRepo.Delete(request.Id)
 }
