@@ -1,13 +1,15 @@
 package repository
 
 import (
-	"accommodation-service/dto"
 	"accommodation-service/model"
+	accommodationGw "common/proto/accommodation-service/pb"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 	"time"
 )
@@ -113,11 +115,11 @@ func (repo *AccommodationRepo) GetById(id string) (*model.Accommodation, error) 
 	return &accommodation, nil
 }
 
-func (repo *AccommodationRepo) SearchAccommodation(searchCriteria dto.SearchDTO) model.Accommodations {
+func (repo *AccommodationRepo) SearchAccommodation(searchCriteria accommodationGw.GetAccommodationsByParamsRequest) model.Accommodations {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	filter := bson.M{"country": searchCriteria.Country, "city": searchCriteria.City}
+	filter := bson.M{"country": searchCriteria.GetSearchParams().Country, "city": searchCriteria.GetSearchParams().City}
 
 	var accommodations model.Accommodations
 	accommodationsCollection := repo.accommodations
@@ -135,4 +137,24 @@ func (repo *AccommodationRepo) SearchAccommodation(searchCriteria dto.SearchDTO)
 	fmt.Println(&accommodations)
 
 	return accommodations
+}
+
+func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(accommodationID primitive.ObjectID, availability *model.Availability) error {
+
+	// Add the new availability to the availability array
+	update := bson.M{
+		"$push": bson.M{
+			"availabilities": availability,
+		},
+	}
+	var filter = bson.M{"_id": accommodationID}
+	_, err := accommmodationRepo.accommodations.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return status.Errorf(
+			codes.Internal,
+			"Error updating document: %v",
+			err,
+		)
+	}
+	return nil
 }

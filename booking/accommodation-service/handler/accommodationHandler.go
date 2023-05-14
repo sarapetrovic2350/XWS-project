@@ -146,3 +146,22 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 //		return
 //	}
 //}
+
+func (handler AccommodationHandler) Search(ctx context.Context, request accommodation.GetAccommodationsByParamsRequest) (*accommodation.GetAccommodationsByParamsResponse, error) {
+
+	accommodations := handler.accommodationService.SearchAccommodation(request)
+	if accommodations == nil {
+		return nil, nil
+	}
+
+	response := &accommodation.GetAccommodationsByParamsResponse{
+		Accommodations: []*accommodation.Accommodation{},
+	}
+
+	for _, modelAccommodation := range accommodations {
+		current := mapAccommodation(modelAccommodation)
+		response.Accommodations = append(response.Accommodations, current)
+	}
+
+	return response, nil
+}

@@ -1,6 +1,9 @@
 package model
 
-import "accommodation-service/dto"
+import (
+	accommodation "common/proto/accommodation-service/pb"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type AccommodationStore interface {
 	Insert(user *Accommodation) error
@@ -8,5 +11,6 @@ type AccommodationStore interface {
 	FindAccommodationByEmail(email string) (*Accommodation, error)
 	GetById(id string) (*Accommodation, error)
 	DeleteAll()
-	SearchAccommodation(searchCriteria dto.SearchDTO) Accommodations
+	SearchAccommodation(searchCriteria accommodation.GetAccommodationsByParamsRequest) Accommodations
+	AddAvailabilityForAccommodation(id primitive.ObjectID, availability *Availability) error
 }

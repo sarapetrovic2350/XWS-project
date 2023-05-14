@@ -2,6 +2,8 @@ package service
 
 import (
 	"accommodation-service/model"
+	accommodation "common/proto/accommodation-service/pb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type AccommodationService struct {
@@ -87,4 +89,34 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 		return nil, err
 	}
 	return flight, nil
+}
+
+func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation *model.Accommodation, availability *model.Availability) error {
+	err := service.AccommodationRepo.AddAvailabilityForAccommodation(accommodation.Id, availability)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service AccommodationService) SearchAccommodation(searchAccommodations accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
+	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	var retAccommodations model.Accommodations
+	for _, itr := range accommodations {
+		for _, availability := range itr.Availabilities {
+			if (searchAccommodations.GetSearchParams().StartDate == timestamppb.New(availability.StartDate) && searchAccommodations.GetSearchParams().StartDate.AsTime().After(availability.StartDate)) &&
+				(searchAccommodations.GetSearchParams().EndDate == timestamppb.New(availability.EndDate) && searchAccommodations.GetSearchParams().EndDate.AsTime().Before(availability.EndDate)) {
+				if itr.MinNumberOfGuests <= int(searchAccommodations.GetSearchParams().NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.GetSearchParams().NumberOfGuests) {
+					retAccommodations = append(retAccommodations, itr)
+				}
+
+			}
+
+		}
+
+	}
+	if retAccommodations != nil {
+		return retAccommodations
+	}
+	return nil
 }
