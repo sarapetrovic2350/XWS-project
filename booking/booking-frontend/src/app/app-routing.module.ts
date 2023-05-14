@@ -7,6 +7,7 @@ import {ShowFlightsComponent} from "./components/show-flights/show-flights.compo
 import {HomeComponent} from "./components/home/home.component";
 import { ViewHostAccommodationComponent } from './components/view-host-accommodation/view-host-accommodation.component';
 import { CreateAvailabilityComponent } from './components/create-availability/create-availability.component';
+import { UpdateUserComponent } from './components/update-user/update-user.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
   {
     path: 'createAvailability/:id', 
     component: CreateAvailabilityComponent
+  },
+  {
+    path: 'update-user', 
+    component: UpdateUserComponent
   }
 
 ];

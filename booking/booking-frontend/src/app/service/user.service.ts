@@ -60,6 +60,10 @@ export class UserService {
     return this.http.get<User>(this.apiHost + '/' + email);
   }
 
+  updateUser(user: any): Observable<User> {
+    return this.http.get<User>(this.apiHost + '/update' + user);
+  }
+
 
   logout(){
     localStorage.clear();

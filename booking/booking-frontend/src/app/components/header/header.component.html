@@ -14,6 +14,9 @@
     <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">
       <mat-icon>account_circle</mat-icon>
     </button>
+    <button *ngIf="isLoggedIn"  mat-button mat-ripple routerLink="/update-user">
+      <span>My informations</span>
+    </button>
     <!--<span ngIf="!isLoggedIn">Sign up</span>-->
     <button *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/login">
       <mat-icon>lock</mat-icon>
