@@ -99,3 +99,23 @@ func (service *UserService) Delete(request *user.DeleteUserRequest) error {
 func (service *UserService) Get(id primitive.ObjectID) (*model.User, error) {
 	return service.UserRepo.Get(id)
 }
+
+func (service *UserService) Update(user *model.User) error {
+	checkUser, err := service.UserRepo.FindUserByEmail(user.Email)
+	if err != nil && err.Error() != "mongo: no documents in result" {
+		return err
+	}
+	fmt.Print("Get user by email: ")
+	fmt.Println(checkUser)
+	stringObjectID := (user.Id).Hex()
+	fmt.Print(stringObjectID)
+	err = service.UserRepo.Delete(stringObjectID)
+	if err != nil {
+		return err
+	}
+	err = service.UserRepo.Insert(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
