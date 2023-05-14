@@ -66,12 +66,13 @@ export class UserService {
     }
   }
 
-  getUserByEmail(email: string): Observable<User> {
-    return this.http.get<User>(this.apiHost + '/' + email);
+  getUserByEmail(email: string): Observable<any> {
+    return this.http.get<any>(this.apiHost + '/' + email);
   }
 
-  updateUser(user: any): Observable<User> {
-    return this.http.get<User>(this.apiHost + '/update' + user);
+  updateUser(user: User): Observable<any> {
+    console.log(user);
+    return this.http.post<User>(this.apiHost + '/update', user, {headers: this.headers2});
   }
 
 

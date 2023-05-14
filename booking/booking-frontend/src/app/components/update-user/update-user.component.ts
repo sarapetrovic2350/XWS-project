@@ -23,8 +23,9 @@ export class UpdateUserComponent implements OnInit {
     let userRole = this.userService.getLoggedInUserRole()
     let userEmail = this.userService.getLoggedInUserEmail()
     this.userService.getUserByEmail(userEmail).subscribe(res => {
-      this.user = res;
-      console.log(this.user)
+      //let user = res.user
+      this.user = res.user;
+      console.log(res)
     })
   }
 
