@@ -53,7 +53,7 @@ func (handler *UserHandler) CreateUser(ctx context.Context, request *user.Create
 	}, nil
 }
 
-func (handler *UserHandler) DeleteUser(ctx context.Context, request *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
+func (handler *UserHandler) DeleteGuestUser(ctx context.Context, request *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
 	fmt.Println("In Delete grpc api")
 	fmt.Print("Request.Id: ")
 	fmt.Println(request.Id)
@@ -117,61 +117,3 @@ func (handler *UserHandler) mustEmbedUnimplementedUserServiceServer() {
 	//TODO implement me
 	panic("implement me")
 }
-
-//func (handler *UserHandler) CreateUser(rw http.ResponseWriter, h *http.Request) {
-//	fmt.Println("creating")
-//	var user model.User
-//	err := json.NewDecoder(h.Body).Decode(&user)
-//	if err != nil {
-//		rw.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//	fmt.Println(user)
-//	existingUser, _ := handler.userService.FindUserByEmail(user.Email)
-//	if existingUser != nil {
-//		rw.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//	err = handler.userService.CreateUser(&user)
-//	if err != nil {
-//		fmt.Println(err)
-//		rw.WriteHeader(http.StatusExpectationFailed)
-//	}
-//	rw.WriteHeader(http.StatusCreated)
-//	rw.Header().Set("Content-Type", "application/json")
-//}
-
-//func (handler *UserHandler) Login(rw http.ResponseWriter, h *http.Request) {
-//	var userLogin dto.Login
-//	err := json.NewDecoder(h.Body).Decode(&userLogin)
-//	token, err := handler.userService.Login(&userLogin)
-//	fmt.Println(token)
-//	if err != nil {
-//		rw.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//	rw.WriteHeader(http.StatusOK)
-//	rwToken, err := json.Marshal(token)
-//	rw.Write(rwToken)
-//}
-//func (handler *UserHandler) GetUserByEmail(rw http.ResponseWriter, h *http.Request) {
-//	vars := mux.Vars(h)
-//	email := vars["email"]
-//	fmt.Println(vars)
-//	user, err := handler.userService.FindUserByEmail(email)
-//	fmt.Println(user)
-//	if err != nil {
-//		handler.logger.Print("Database exception: ", err)
-//	}
-//	if user == nil {
-//		http.Error(rw, "User with given email not found", http.StatusNotFound)
-//		handler.logger.Printf("User with email: '%s' not found", email)
-//		return
-//	}
-//	err = user.ToJSON(rw)
-//	if err != nil {
-//		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-//		handler.logger.Fatal("Unable to convert to json :", err)
-//		return
-//	}
-//}

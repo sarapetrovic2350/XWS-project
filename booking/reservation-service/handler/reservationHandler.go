@@ -50,17 +50,17 @@ func (handler *ReservationHandler) CreateReservation(ctx context.Context, reques
 		Reservation: mapReservation(modelReservation),
 	}, nil
 }
-func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, request *reservation.GetUserReservationsRequest) (*reservation.GetUserReservationsResponse, error) {
+func (handler *ReservationHandler) GetActiveReservationsByGuestId(ctx context.Context, request *reservation.GetActiveReservationsGuestRequest) (*reservation.GetActiveReservationsGuestResponse, error) {
 	fmt.Println("In GetReservationsByUserId grpc api")
 	fmt.Println(request)
-	reservations, err := handler.reservationService.GetReservationsByUserId(request.Id)
+	activeReservations, err := handler.reservationService.GetActiveReservationsByGuestId(request.Id)
 	if err != nil {
 		return nil, err
 	}
-	response := &reservation.GetUserReservationsResponse{
+	response := &reservation.GetActiveReservationsGuestResponse{
 		Reservations: []*reservation.Reservation{},
 	}
-	for _, modelReservation := range reservations {
+	for _, modelReservation := range activeReservations {
 		current := mapReservation(modelReservation)
 		response.Reservations = append(response.Reservations, current)
 	}

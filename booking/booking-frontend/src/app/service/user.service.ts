@@ -81,7 +81,9 @@ export class UserService {
     window.location.href = 'login';
   }
 
-  deleteAccount(id: any): Observable<any> {
-    return this.http.post<any>(this.apiHost + '/delete/' + id, {headers: this.headers});
+  deleteGuestAccount(id: any): Observable<any> {
+    return this.http.post<any>(this.apiHost + '/deleteGuest/' + id, {headers: this.headers});
+  }
+  deleteHostAccount() {
   }
 }

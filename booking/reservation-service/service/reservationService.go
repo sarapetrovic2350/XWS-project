@@ -31,14 +31,20 @@ func (service *ReservationService) GetAllReservations() (model.Reservations, err
 	return reservations, nil
 }
 
-func (service *ReservationService) GetReservationsByUserId(userId string) (model.Reservations, error) {
+func (service *ReservationService) GetActiveReservationsByGuestId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)
-	fmt.Println("get resrvations by user id reservation-service")
+	fmt.Println("get active reservations by guest in reservation-service")
 	reservations, err := service.ReservationRepo.GetReservationsByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
-	return reservations, nil
+	var activeReservations model.Reservations
+	for _, itr := range reservations {
+		if itr.ReservationStatus == 1 {
+			activeReservations = append(activeReservations, itr)
+		}
+	}
+	return activeReservations, nil
 }
 
 func (service *ReservationService) GetById(id string) (*model.Reservation, error) {

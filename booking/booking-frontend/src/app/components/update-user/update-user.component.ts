@@ -48,14 +48,14 @@ export class UpdateUserComponent implements OnInit {
     return this.user.password === this.passwordRepeated
   }
   onSubmit(){
-    this.userService.updateUser(this.user).subscribe( 
+    this.userService.updateUser(this.user).subscribe(
       {next: (res) => {
         this.router.navigate(['/update-user']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',
             text: 'Sucessfully updated!',
-          })  
+          })
       },
       error: (e) => {
         console.log(e);
@@ -64,15 +64,17 @@ export class UpdateUserComponent implements OnInit {
             icon: 'error',
             title: 'Oops...',
             text: 'Check the fields again!',
-          })  
+          })
       }
       });
 
   }
 
   deleteAccount(){
-    let userId = this.userService.getLoggedInUserId()
-      this.userService.deleteAccount(userId).subscribe(
+    let userRole = this.userService.getLoggedInUserRole()
+    if (userRole == "GUEST") {
+      let userId = this.userService.getLoggedInUserId()
+      this.userService.deleteGuestAccount(userId).subscribe(
         {
           next: (res) => {
             localStorage.clear()
@@ -83,7 +85,7 @@ export class UpdateUserComponent implements OnInit {
               title: 'Success!',
               text: 'Successfully deleted account!',
             })
-  
+
           },
           error: (e) => {
             this.submitted = false;
@@ -93,10 +95,13 @@ export class UpdateUserComponent implements OnInit {
               title: 'Oops...',
               text: 'You have active reservations.',
             })
-  
+
           }
-  
+
         });
+    } else {
+      this.userService.deleteHostAccount()
+    }
   }
 
 }

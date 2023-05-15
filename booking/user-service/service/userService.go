@@ -86,17 +86,29 @@ func (service *UserService) Delete(request *user.DeleteUserRequest) error {
 	fmt.Println("In Delete User service")
 	fmt.Println(request)
 	fmt.Println(request.Id)
-	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
-	fmt.Println("reservation client created")
-	getReservationsByUserIdRequest := reservation.GetUserReservationsRequest{Id: request.Id}
-	reservationsResponse, err := reservationClient.GetReservationsByUserId(context.TODO(), &getReservationsByUserIdRequest)
-	fmt.Println(reservationsResponse)
+	reservations, err := service.GetActiveReservationsForGuestUser(request)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+	fmt.Println(reservations.Reservations)
+	if reservations.Reservations != nil {
+		return errors.New("guest user has active reservations")
+	}
 	return service.UserRepo.Delete(request.Id)
 }
+
+func (service *UserService) GetActiveReservationsForGuestUser(request *user.DeleteUserRequest) (*reservation.GetActiveReservationsGuestResponse, error) {
+	fmt.Println("In GetActiveReservationsForGuestUser User service")
+	fmt.Println(request)
+	fmt.Println(request.Id)
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	getReservationsByUserIdRequest := reservation.GetActiveReservationsGuestRequest{Id: request.Id}
+	reservationsResponse, err := reservationClient.GetActiveReservationsByGuestId(context.TODO(), &getReservationsByUserIdRequest)
+	return reservationsResponse, err
+}
+
 func (service *UserService) Get(id primitive.ObjectID) (*model.User, error) {
 	return service.UserRepo.Get(id)
 }
