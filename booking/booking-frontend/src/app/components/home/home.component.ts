@@ -46,23 +46,19 @@ export class HomeComponent implements OnInit {
     console.log(this.city)
     console.log(this.numberOfGuests)
 
-    var newDate1 = new Date(this.startDate)
-    console.log(newDate1)
-    var newDate2 = new Date(newDate1.getFullYear(), newDate1.getMonth(), newDate1.getDate(), 2, 0, 0)
-    console.log(newDate2)
-
-    var newDate12 = new Date(this.endDate)
-    console.log(newDate12)
-    var newDate22 = new Date(newDate12.getFullYear(), newDate12.getMonth(), newDate12.getDate(), 2, 0, 0)
-    console.log(newDate22)
-
+   
+   var searchParams
     var searchAccommodations = {
-      startDate: newDate1.toISOString(),
-      endDate: newDate12.toISOString(),
-      country: this.country,
-      city: this.city,
-      numberOfGuests: this.numberOfGuests
+        searchParams : {
+          country: this.country,
+          city: this.city,
+          numberOfGuests: this.numberOfGuests,
+          startDate: this.startDate,
+          endDate: this.endDate,
+      }
     }
+    console.log(searchAccommodations)
+  
 
     this.accommodationService.searchAccommodations(searchAccommodations).subscribe(
       {
@@ -70,7 +66,7 @@ export class HomeComponent implements OnInit {
           console.log(res)
           this.isSearched = true;
           this.notFound = false;
-          this.accommodations = res;
+          this.accommodations = res.accommodations;
           for (let i = 0; i < this.accommodations.length; i++) {
             let startDtae = new Date(this.accommodations[i].startDate)
             this.accommodations[i].startDate = startDtae.toUTCString().replace('GMT', '')

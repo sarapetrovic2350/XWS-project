@@ -29,14 +29,14 @@ export class AccommodationService {
 
   createAvailability(ava: Availability){
     console.log(ava);
-    return this.http.post<Availability>(this.apiHost + 'createAvailability', ava);
+    return this.http.post<Availability>(this.apiHost + '/createAvailability', ava);
   }
 
   getAccommodationById(id: any): Observable<Accommodation> {
-    return this.http.get<Accommodation>(this.apiHost + 'getById/' + id);
+    return this.http.get<Accommodation>(this.apiHost + '/getById/' + id);
   }
   searchAccommodations(searchAccommodations: any) {
     console.log(searchAccommodations);
-    return this.http.post<Accommodation[]>(this.apiHost + 'search', searchAccommodations);
+    return this.http.post<any>(this.apiHost + '/search', searchAccommodations);
   }
 }

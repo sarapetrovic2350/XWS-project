@@ -29,15 +29,6 @@ func NewAccommodationRepo(client *mongo.Client) model.AccommodationStore {
 	}
 }
 
-//// Disconnect from database
-//func (repo *AccommodationRepo) Disconnect(ctx context.Context) error {
-//	err := repo.client.Disconnect(ctx)
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
-
 func (repo *AccommodationRepo) Insert(accommodation *model.Accommodation) error {
 	result, err := repo.accommodations.InsertOne(context.TODO(), accommodation)
 	if err != nil {
@@ -84,7 +75,7 @@ func (repo *AccommodationRepo) SearchAccommodation(searchCriteria *accommodation
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	filter := bson.M{"country": searchCriteria.GetSearchParams().Country, "city": searchCriteria.GetSearchParams().City}
+	filter := bson.M{"country": searchCriteria.SearchParams.Country, "city": searchCriteria.SearchParams.City}
 
 	var accommodations model.Accommodations
 	accommodationsCollection := repo.accommodations
@@ -99,7 +90,7 @@ func (repo *AccommodationRepo) SearchAccommodation(searchCriteria *accommodation
 	}
 
 	fmt.Println("SearchResult:")
-	fmt.Println(&accommodations)
+	fmt.Println(accommodations)
 
 	return accommodations
 }

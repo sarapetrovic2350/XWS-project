@@ -42,9 +42,9 @@
   </ng-container>
   <ng-container matColumnDef="Address">
     <th mat-header-cell *matHeaderCellDef class="cell-center"> Address</th>
-    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.Address.street}} {{accommodation.Address.streetNumber}},
-      {{accommodation.Address.city}}<br>
-      {{accommodation.Address.country}}</td>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.address.street}} {{accommodation.address.streetNumber}},
+      {{accommodation.address.city}}<br>
+      {{accommodation.address.country}}</td>
   </ng-container>
   <ng-container matColumnDef="MinNumberOfGuests">
     <th mat-header-cell *matHeaderCellDef class="cell-center"> Min number of guests</th>
@@ -58,8 +58,6 @@
     <th mat-header-cell *matHeaderCellDef class="cell-center"> Benefits</th>
     <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.benefits}}</td>
   </ng-container>
-
-
   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

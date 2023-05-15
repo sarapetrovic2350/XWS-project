@@ -11,7 +11,7 @@ export class Accommodation {
         public address: Address = new Address(),
         public startDate: string = '',
         public endDate: string = '',
-        public pricePerPerson: number = 0,
+        public price: number = 0,
         public totalPrice: number  = 0,
 
       ) {}

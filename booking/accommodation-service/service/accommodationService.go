@@ -3,6 +3,8 @@ package service
 import (
 	"accommodation-service/model"
 	accommodation "common/proto/accommodation-service/pb"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -75,13 +77,22 @@ func (service *AccommodationService) AddAvailabilityForAccommodation(accommodati
 
 func (service AccommodationService) SearchAccommodation(searchAccommodations *accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
 	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	fmt.Println(accommodations)
+	for _, itr := range accommodations {
+		fmt.Println(itr.Name)
+	}
 	var retAccommodations model.Accommodations
 	for _, itr := range accommodations {
+		fmt.Println(itr.Availabilities)
 		for _, availability := range itr.Availabilities {
-			startDate, _ := time.Parse("2006-01-02", searchAccommodations.SearchParams.StartDate)
-			endDate, _ := time.Parse("2006-01-02", searchAccommodations.SearchParams.EndDate)
-			if startDate == availability.StartDate && startDate.After(availability.StartDate) &&
-				endDate == availability.EndDate && endDate.Before(availability.EndDate) {
+			fmt.Println(searchAccommodations.SearchParams.StartDate)
+			fmt.Println(searchAccommodations.SearchParams.EndDate)
+			startDate1 := strings.Split(searchAccommodations.SearchParams.StartDate, "T")
+			endDate1 := strings.Split(searchAccommodations.SearchParams.EndDate, "T")
+			startDate, _ := time.Parse("2006-01-02", startDate1[0])
+			endDate, _ := time.Parse("2006-01-02", endDate1[0])
+			if startDate == availability.StartDate || startDate.After(availability.StartDate) &&
+				endDate == availability.EndDate || endDate.Before(availability.EndDate) {
 				if itr.MinNumberOfGuests <= int(searchAccommodations.SearchParams.NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.SearchParams.NumberOfGuests) {
 					retAccommodations = append(retAccommodations, itr)
 				}

@@ -136,7 +136,6 @@ func (handler *AccommodationHandler) DeleteAccommodationsByHostId(ctx context.Co
 }
 
 func (handler AccommodationHandler) Search(ctx context.Context, request *accommodation.GetAccommodationsByParamsRequest) (*accommodation.AccommodationsResponse, error) {
-
 	accommodations := handler.accommodationService.SearchAccommodation(request)
 	if accommodations == nil {
 		return nil, nil
