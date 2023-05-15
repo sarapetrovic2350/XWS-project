@@ -75,33 +75,6 @@ func (repo *AccommodationRepo) DeleteAll() {
 	repo.accommodations.DeleteMany(context.TODO(), bson.D{{}})
 }
 
-func (repo *AccommodationRepo) FindAccommodationByEmail(email string) (*model.Accommodation, error) {
-	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//defer cancel()
-	//
-	//accommodationsCollection := repo.getCollection()
-	//
-	//var accommodation model.Accommodation
-	//filter := bson.M{"email": bson.M{"$eq": email}}
-	//err := accommodationsCollection.FindOne(ctx, filter).Decode(&accommodation)
-	//if err != nil {
-	//	repo.logger.Println(err)
-	//	return nil, err
-	//}
-	//return &accommodation, nil
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var accommodation model.Accommodation
-	filter := bson.M{"email": bson.M{"$eq": email}}
-	err := repo.accommodations.FindOne(ctx, filter).Decode(&accommodation)
-	if err != nil {
-		return nil, err
-	}
-	return &accommodation, nil
-}
-
 func (repo *AccommodationRepo) GetById(id string) (*model.Accommodation, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -183,6 +156,18 @@ func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(acc
 			"Error updating document: %v",
 			err,
 		)
+	}
+	return nil
+}
+
+func (accommmodationRepo *AccommodationRepo) Delete(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objID}}
+	_, err := accommmodationRepo.accommodations.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
 	}
 	return nil
 }

@@ -11,9 +11,14 @@ service ReservationService {
       get: "/reservation"
     };
   }
-  rpc GetActiveReservationsByGuestId(GetActiveReservationsGuestRequest) returns (GetActiveReservationsGuestResponse) {
+  rpc GetActiveReservationsByGuestId(GetActiveReservationsRequest) returns (GetActiveReservationsResponse) {
     option (google.api.http) = {
       get: "/getActiveReservationsByGuestId/{id}"
+    };
+  }
+  rpc GetActiveReservationsByHostId(GetActiveReservationsRequest) returns (GetActiveReservationsResponse) {
+    option (google.api.http) = {
+      get: "/getActiveReservationsByHostId/{id}"
     };
   }
 
@@ -65,11 +70,11 @@ enum ReservationStatus {
   ACCEPTED = 1;
   CANCELED = 2;
 }
-message GetActiveReservationsGuestRequest {
+message GetActiveReservationsRequest {
   string id = 1;
 }
 
-message GetActiveReservationsGuestResponse {
+message GetActiveReservationsResponse {
   repeated Reservation reservations = 1;
 }
 

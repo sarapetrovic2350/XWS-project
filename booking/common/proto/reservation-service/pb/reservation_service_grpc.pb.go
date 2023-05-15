@@ -23,7 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReservationServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
-	GetActiveReservationsByGuestId(ctx context.Context, in *GetActiveReservationsGuestRequest, opts ...grpc.CallOption) (*GetActiveReservationsGuestResponse, error)
+	GetActiveReservationsByGuestId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error)
+	GetActiveReservationsByHostId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error)
 	DeleteReservation(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error)
 	CreateReservation(ctx context.Context, in *CreateReservationRequest, opts ...grpc.CallOption) (*CreateReservationResponse, error)
 }
@@ -45,9 +46,18 @@ func (c *reservationServiceClient) GetAll(ctx context.Context, in *GetAllRequest
 	return out, nil
 }
 
-func (c *reservationServiceClient) GetActiveReservationsByGuestId(ctx context.Context, in *GetActiveReservationsGuestRequest, opts ...grpc.CallOption) (*GetActiveReservationsGuestResponse, error) {
-	out := new(GetActiveReservationsGuestResponse)
+func (c *reservationServiceClient) GetActiveReservationsByGuestId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error) {
+	out := new(GetActiveReservationsResponse)
 	err := c.cc.Invoke(ctx, "/reservation.ReservationService/GetActiveReservationsByGuestId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *reservationServiceClient) GetActiveReservationsByHostId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error) {
+	out := new(GetActiveReservationsResponse)
+	err := c.cc.Invoke(ctx, "/reservation.ReservationService/GetActiveReservationsByHostId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +87,8 @@ func (c *reservationServiceClient) CreateReservation(ctx context.Context, in *Cr
 // for forward compatibility
 type ReservationServiceServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
-	GetActiveReservationsByGuestId(context.Context, *GetActiveReservationsGuestRequest) (*GetActiveReservationsGuestResponse, error)
+	GetActiveReservationsByGuestId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error)
+	GetActiveReservationsByHostId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error)
 	DeleteReservation(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error)
 	CreateReservation(context.Context, *CreateReservationRequest) (*CreateReservationResponse, error)
 	mustEmbedUnimplementedReservationServiceServer()
@@ -90,8 +101,11 @@ type UnimplementedReservationServiceServer struct {
 func (UnimplementedReservationServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedReservationServiceServer) GetActiveReservationsByGuestId(context.Context, *GetActiveReservationsGuestRequest) (*GetActiveReservationsGuestResponse, error) {
+func (UnimplementedReservationServiceServer) GetActiveReservationsByGuestId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetActiveReservationsByGuestId not implemented")
+}
+func (UnimplementedReservationServiceServer) GetActiveReservationsByHostId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetActiveReservationsByHostId not implemented")
 }
 func (UnimplementedReservationServiceServer) DeleteReservation(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteReservation not implemented")
@@ -131,7 +145,7 @@ func _ReservationService_GetAll_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _ReservationService_GetActiveReservationsByGuestId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetActiveReservationsGuestRequest)
+	in := new(GetActiveReservationsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +157,25 @@ func _ReservationService_GetActiveReservationsByGuestId_Handler(srv interface{},
 		FullMethod: "/reservation.ReservationService/GetActiveReservationsByGuestId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReservationServiceServer).GetActiveReservationsByGuestId(ctx, req.(*GetActiveReservationsGuestRequest))
+		return srv.(ReservationServiceServer).GetActiveReservationsByGuestId(ctx, req.(*GetActiveReservationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReservationService_GetActiveReservationsByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetActiveReservationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).GetActiveReservationsByHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/reservation.ReservationService/GetActiveReservationsByHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).GetActiveReservationsByHostId(ctx, req.(*GetActiveReservationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -198,6 +230,10 @@ var ReservationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetActiveReservationsByGuestId",
 			Handler:    _ReservationService_GetActiveReservationsByGuestId_Handler,
+		},
+		{
+			MethodName: "GetActiveReservationsByHostId",
+			Handler:    _ReservationService_GetActiveReservationsByHostId_Handler,
 		},
 		{
 			MethodName: "DeleteReservation",

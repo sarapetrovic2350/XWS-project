@@ -72,8 +72,8 @@ export class UpdateUserComponent implements OnInit {
 
   deleteAccount(){
     let userRole = this.userService.getLoggedInUserRole()
+    let userId = this.userService.getLoggedInUserId()
     if (userRole == "GUEST") {
-      let userId = this.userService.getLoggedInUserId()
       this.userService.deleteGuestAccount(userId).subscribe(
         {
           next: (res) => {
@@ -100,7 +100,30 @@ export class UpdateUserComponent implements OnInit {
 
         });
     } else {
-      this.userService.deleteHostAccount()
+      this.userService.deleteHostAccount(userId).subscribe(
+        {
+          next: (res) => {
+            localStorage.clear()
+            //this.router.navigate(['/register-user']);
+            window.location.href = 'register-user';
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Successfully deleted account!',
+            })
+
+          },
+          error: (e) => {
+            this.submitted = false;
+            console.log(e);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'You have active reservations.',
+            })
+          }
+
+        });
     }
   }
 

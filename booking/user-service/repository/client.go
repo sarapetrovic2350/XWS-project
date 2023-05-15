@@ -1,6 +1,7 @@
 package repository
 
 import (
+	accommodation "common/proto/accommodation-service/pb"
 	reservation "common/proto/reservation-service/pb"
 	"context"
 	"fmt"
@@ -22,6 +23,14 @@ func NewReservationClient(address string) reservation.ReservationServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Reservation service: %v", err)
 	}
 	return reservation.NewReservationServiceClient(conn)
+}
+
+func NewAccommodationClient(address string) accommodation.AccommodationServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Accommodation service: %v", err)
+	}
+	return accommodation.NewAccommodationServiceClient(conn)
 }
 func getConnection(address string) (*grpc.ClientConn, error) {
 	return grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))

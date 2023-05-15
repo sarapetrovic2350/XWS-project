@@ -54,7 +54,7 @@ func (handler *UserHandler) CreateUser(ctx context.Context, request *user.Create
 }
 
 func (handler *UserHandler) DeleteGuestUser(ctx context.Context, request *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
-	fmt.Println("In Delete grpc api")
+	fmt.Println("In Delete Guest grpc api")
 	fmt.Print("Request.Id: ")
 	fmt.Println(request.Id)
 	formatedId, err := primitive.ObjectIDFromHex(request.Id)
@@ -64,13 +64,33 @@ func (handler *UserHandler) DeleteGuestUser(ctx context.Context, request *user.D
 	deletedUser, err := handler.userService.Get(formatedId)
 	fmt.Print("deletedUser after mapping: ")
 	fmt.Println(deletedUser)
-	err = handler.userService.Delete(request)
+	err = handler.userService.DeleteGuestUser(request)
 	if err != nil {
 		return nil, err
 	}
 	return &user.DeleteUserResponse{
 		User: mapUser(deletedUser)}, nil
 }
+
+func (handler *UserHandler) DeleteHostUser(ctx context.Context, request *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
+	fmt.Println("In Delete Host grpc api")
+	fmt.Print("Request.Id: ")
+	fmt.Println(request.Id)
+	formatedId, err := primitive.ObjectIDFromHex(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	deletedUser, err := handler.userService.Get(formatedId)
+	fmt.Print("deletedUser after mapping: ")
+	fmt.Println(deletedUser)
+	err = handler.userService.DeleteHostUser(request)
+	if err != nil {
+		return nil, err
+	}
+	return &user.DeleteUserResponse{
+		User: mapUser(deletedUser)}, nil
+}
+
 func (handler *UserHandler) Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
 	fmt.Println("In Login grpc api")
 	fmt.Print("Request.Login.Email: ")

@@ -24,7 +24,7 @@ export class AccommodationService {
   }
 
   getAccommodationByHostId(id: any): Observable<any[]> {
-    return this.http.get<any[]>(this.apiHost + '/' + id);
+    return this.http.get<any[]>(this.apiHost + '/byHost/' + id);
   }
 
   createAvailability(ava: Availability){

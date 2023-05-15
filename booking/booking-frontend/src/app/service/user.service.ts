@@ -84,6 +84,7 @@ export class UserService {
   deleteGuestAccount(id: any): Observable<any> {
     return this.http.post<any>(this.apiHost + '/deleteGuest/' + id, {headers: this.headers});
   }
-  deleteHostAccount() {
+  deleteHostAccount(id: any): Observable<any> {
+    return this.http.post<any>(this.apiHost + '/deleteHost/' + id, {headers: this.headers});
   }
 }
