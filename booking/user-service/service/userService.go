@@ -1,6 +1,7 @@
 package service
 
 import (
+	accommodation "common/proto/accommodation-service/pb"
 	reservation "common/proto/reservation-service/pb"
 	user "common/proto/user-service/pb"
 	"context"
@@ -15,14 +16,16 @@ import (
 
 type UserService struct {
 	// NoSQL: injecting user repository
-	UserRepo                 model.UserStore
-	ReservationClientAddress string
+	UserRepo                   model.UserStore
+	ReservationClientAddress   string
+	AccommodationClientAddress string
 }
 
-func NewUserService(r model.UserStore, rca string) *UserService {
+func NewUserService(r model.UserStore, rca string, aca string) *UserService {
 	return &UserService{
-		UserRepo:                 r,
-		ReservationClientAddress: rca,
+		UserRepo:                   r,
+		ReservationClientAddress:   rca,
+		AccommodationClientAddress: aca,
 	}
 }
 
@@ -82,21 +85,72 @@ func GenerateJWT(email string, role string, id string) (string, error) {
 	return token.SignedString(sampleSecretKey)
 }
 
-func (service *UserService) Delete(request *user.DeleteUserRequest) error {
-	fmt.Println("In Delete User service")
+func (service *UserService) DeleteGuestUser(request *user.DeleteUserRequest) error {
+	fmt.Println("In Delete Guest User service")
 	fmt.Println(request)
 	fmt.Println(request.Id)
-	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
-	fmt.Println("reservation client created")
-	getReservationsByUserIdRequest := reservation.GetUserReservationsRequest{Id: request.Id}
-	reservationsResponse, err := reservationClient.GetReservationsByUserId(context.TODO(), &getReservationsByUserIdRequest)
-	fmt.Println(reservationsResponse)
+	reservations, err := service.GetActiveReservationsForGuestUser(request)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+	fmt.Println(reservations.Reservations)
+	if reservations.Reservations != nil {
+		return errors.New("guest user has active reservations")
+	}
 	return service.UserRepo.Delete(request.Id)
 }
+
+func (service *UserService) DeleteHostUser(request *user.DeleteUserRequest) error {
+	fmt.Println("In Delete Host User service")
+	fmt.Println(request)
+	fmt.Println(request.Id)
+	reservations, err := service.GetActiveReservationsForHostUser(request)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Println(reservations.Reservations)
+	if reservations.Reservations != nil {
+		return errors.New("host user has active reservations")
+	}
+	err = service.UserRepo.Delete(request.Id)
+	if err != nil {
+		return errors.New("error while deleting host user")
+	}
+	// delete all accommodations created by host
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	deleteAccommodationsByHostRequest := accommodation.DeleteAccommodationsByHostIdRequest{Id: request.Id}
+	_, err = accommodationClient.DeleteAccommodationsByHostId(context.TODO(), &deleteAccommodationsByHostRequest)
+	if err != nil {
+		return errors.New("error while deleting accommodations created by host")
+	}
+	return nil
+}
+
+func (service *UserService) GetActiveReservationsForGuestUser(request *user.DeleteUserRequest) (*reservation.GetActiveReservationsResponse, error) {
+	fmt.Println("In GetActiveReservationsForGuestUser User service")
+	fmt.Println(request)
+	fmt.Println(request.Id)
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	getReservationsByUserIdRequest := reservation.GetActiveReservationsRequest{Id: request.Id}
+	reservationsResponse, err := reservationClient.GetActiveReservationsByGuestId(context.TODO(), &getReservationsByUserIdRequest)
+	return reservationsResponse, err
+}
+
+func (service *UserService) GetActiveReservationsForHostUser(request *user.DeleteUserRequest) (*reservation.GetActiveReservationsResponse, error) {
+	fmt.Println("In GetActiveReservationsForHostUser User service")
+	fmt.Println(request)
+	fmt.Println(request.Id)
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	getReservationsByUserIdRequest := reservation.GetActiveReservationsRequest{Id: request.Id}
+	reservationsResponse, err := reservationClient.GetActiveReservationsByHostId(context.TODO(), &getReservationsByUserIdRequest)
+	return reservationsResponse, err
+}
+
 func (service *UserService) Get(id primitive.ObjectID) (*model.User, error) {
 	return service.UserRepo.Get(id)
 }

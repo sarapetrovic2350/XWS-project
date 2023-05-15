@@ -18,13 +18,13 @@ func NewAccommodationHandler(s *service.AccommodationService) *AccommodationHand
 		accommodationService: s,
 	}
 }
-func (handler *AccommodationHandler) GetAll(ctx context.Context, request *accommodation.GetAllRequest) (*accommodation.GetAllResponse, error) {
+func (handler *AccommodationHandler) GetAll(ctx context.Context, request *accommodation.GetAllRequest) (*accommodation.AccommodationsResponse, error) {
 	fmt.Println("In GetAll grpc api")
 	accommodations, err := handler.accommodationService.GetAllAccommodations()
 	if err != nil {
 		return nil, err
 	}
-	response := &accommodation.GetAllResponse{
+	response := &accommodation.AccommodationsResponse{
 		Accommodations: []*accommodation.Accommodation{},
 	}
 	for _, modelAccommodation := range accommodations {
@@ -33,13 +33,13 @@ func (handler *AccommodationHandler) GetAll(ctx context.Context, request *accomm
 	}
 	return response, nil
 }
-func (handler *AccommodationHandler) GetAccommodationsByHostId(ctx context.Context, request *accommodation.GetAccommodationsByHostIdRequest) (*accommodation.GetAccommodationsByHostIdResponse, error) {
+func (handler *AccommodationHandler) GetAccommodationsByHostId(ctx context.Context, request *accommodation.GetAccommodationsByHostIdRequest) (*accommodation.AccommodationsResponse, error) {
 	fmt.Println("In GetAccommodationsByHostId grpc api")
-	accommodations, err := handler.accommodationService.GetAccommodationByHostId(request.HostId)
+	accommodations, err := handler.accommodationService.GetAccommodationsByHostId(request.HostId)
 	if err != nil {
 		return nil, err
 	}
-	response := &accommodation.GetAccommodationsByHostIdResponse{
+	response := &accommodation.AccommodationsResponse{
 		Accommodations: []*accommodation.Accommodation{},
 	}
 	for _, modelAccommodation := range accommodations {
@@ -49,7 +49,7 @@ func (handler *AccommodationHandler) GetAccommodationsByHostId(ctx context.Conte
 	return response, nil
 }
 
-func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, request *accommodation.CreateAccommodationRequest) (*accommodation.CreateAccommodationResponse, error) {
+func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, request *accommodation.CreateAccommodationRequest) (*accommodation.AccommodationResponse, error) {
 	fmt.Println("In CreateAccommodation grpc api")
 	fmt.Print("Request.Accommodation: ")
 	fmt.Println(request.Accommodation)
@@ -60,12 +60,12 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 	if err != nil {
 		return nil, err
 	}
-	return &accommodation.CreateAccommodationResponse{
+	return &accommodation.AccommodationResponse{
 		Accommodation: mapAccommodation(modelAccommodation),
 	}, nil
 }
 
-func (handler *AccommodationHandler) CreateAvailability(ctx context.Context, request *accommodation.CreateAvailabilityRequest) (*accommodation.CreateAccommodationResponse, error) {
+func (handler *AccommodationHandler) CreateAvailability(ctx context.Context, request *accommodation.CreateAvailabilityRequest) (*accommodation.AccommodationResponse, error) {
 	fmt.Println("In CreateAvailability grpc api")
 	fmt.Print("Request.AccommodationId: ")
 	fmt.Println(request.AvailabilityForAccommodation.AccommodationId)
@@ -86,21 +86,63 @@ func (handler *AccommodationHandler) CreateAvailability(ctx context.Context, req
 		return nil, err
 	}
 
-	response := &accommodation.CreateAccommodationResponse{
+	response := &accommodation.AccommodationResponse{
 		Accommodation: mapAccommodation(updated),
 	}
 
 	return response, nil
 }
+func (handler *AccommodationHandler) GetAccommodationById(ctx context.Context, request *accommodation.GetAccommodationByIdRequest) (*accommodation.AccommodationResponse, error) {
+	fmt.Println("In GetAccommodationById grpc api")
+	fmt.Print("Request.Id: ")
+	modelAccommodation, err := handler.accommodationService.GetById(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &accommodation.AccommodationResponse{
+		Accommodation: mapAccommodation(modelAccommodation),
+	}, nil
+}
+func (handler *AccommodationHandler) DeleteAccommodation(ctx context.Context, request *accommodation.DeleteAccommodationRequest) (*accommodation.AccommodationResponse, error) {
+	fmt.Println("In DeleteAccommodation accommmodation handler ")
+	deletedAccommodation, err := handler.accommodationService.GetById(request.Id)
+	err = handler.accommodationService.Delete(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &accommodation.AccommodationResponse{
+		Accommodation: mapAccommodation(deletedAccommodation)}, nil
+}
 
-func (handler AccommodationHandler) Search(ctx context.Context, request *accommodation.GetAccommodationsByParamsRequest) (*accommodation.GetAccommodationsByParamsResponse, error) {
+func (handler *AccommodationHandler) DeleteAccommodationsByHostId(ctx context.Context, request *accommodation.DeleteAccommodationsByHostIdRequest) (*accommodation.AccommodationsResponse, error) {
+	accommodations, err := handler.accommodationService.GetAccommodationsByHostId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	for _, itr := range accommodations {
+		err = handler.accommodationService.Delete(itr.Id.Hex())
+		if err != nil {
+			return nil, err
+		}
+	}
+	response := &accommodation.AccommodationsResponse{
+		Accommodations: []*accommodation.Accommodation{},
+	}
+	for _, modelAccommodation := range accommodations {
+		current := mapAccommodation(modelAccommodation)
+		response.Accommodations = append(response.Accommodations, current)
+	}
+	return response, nil
+}
+
+func (handler AccommodationHandler) Search(ctx context.Context, request *accommodation.GetAccommodationsByParamsRequest) (*accommodation.AccommodationsResponse, error) {
 
 	accommodations := handler.accommodationService.SearchAccommodation(request)
 	if accommodations == nil {
 		return nil, nil
 	}
 
-	response := &accommodation.GetAccommodationsByParamsResponse{
+	response := &accommodation.AccommodationsResponse{
 		Accommodations: []*accommodation.Accommodation{},
 	}
 

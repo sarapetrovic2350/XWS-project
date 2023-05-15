@@ -98,6 +98,7 @@ func (repo *UserRepo) Delete(id string) error {
 	}
 	return nil
 }
+
 func (repo *UserRepo) filterOne(filter interface{}) (User *model.User, err error) {
 	result := repo.users.FindOne(context.TODO(), filter)
 	err = result.Decode(&User)

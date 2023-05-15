@@ -48,14 +48,14 @@ export class UpdateUserComponent implements OnInit {
     return this.user.password === this.passwordRepeated
   }
   onSubmit(){
-    this.userService.updateUser(this.user).subscribe( 
+    this.userService.updateUser(this.user).subscribe(
       {next: (res) => {
         this.router.navigate(['/update-user']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',
             text: 'Sucessfully updated!',
-          })  
+          })
       },
       error: (e) => {
         console.log(e);
@@ -64,15 +64,17 @@ export class UpdateUserComponent implements OnInit {
             icon: 'error',
             title: 'Oops...',
             text: 'Check the fields again!',
-          })  
+          })
       }
       });
 
   }
 
   deleteAccount(){
+    let userRole = this.userService.getLoggedInUserRole()
     let userId = this.userService.getLoggedInUserId()
-      this.userService.deleteAccount(userId).subscribe(
+    if (userRole == "GUEST") {
+      this.userService.deleteGuestAccount(userId).subscribe(
         {
           next: (res) => {
             localStorage.clear()
@@ -83,7 +85,7 @@ export class UpdateUserComponent implements OnInit {
               title: 'Success!',
               text: 'Successfully deleted account!',
             })
-  
+
           },
           error: (e) => {
             this.submitted = false;
@@ -93,10 +95,36 @@ export class UpdateUserComponent implements OnInit {
               title: 'Oops...',
               text: 'You have active reservations.',
             })
-  
+
           }
-  
+
         });
+    } else {
+      this.userService.deleteHostAccount(userId).subscribe(
+        {
+          next: (res) => {
+            localStorage.clear()
+            //this.router.navigate(['/register-user']);
+            window.location.href = 'register-user';
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Successfully deleted account!',
+            })
+
+          },
+          error: (e) => {
+            this.submitted = false;
+            console.log(e);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'You have active reservations.',
+            })
+          }
+
+        });
+    }
   }
 
 }

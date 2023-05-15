@@ -7,9 +7,9 @@ import (
 type AccommodationStore interface {
 	Insert(user *Accommodation) error
 	GetAll() (Accommodations, error)
-	FindAccommodationByEmail(email string) (*Accommodation, error)
 	GetById(id string) (*Accommodation, error)
 	DeleteAll()
+	Delete(id string) error
 	SearchAccommodation(searchCriteria *accommodation.GetAccommodationsByParamsRequest) Accommodations
 	AddAvailabilityForAccommodation(accommodation2 *Accommodation, availability *Availability) error
 }

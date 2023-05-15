@@ -1,17 +1,25 @@
 package service
 
 import (
+	accommodation "common/proto/accommodation-service/pb"
+	"context"
 	"fmt"
 	"reservation-service/model"
+	"reservation-service/repository"
+	"time"
 )
 
 type ReservationService struct {
 	// NoSQL: injecting reservation repository
-	ReservationRepo model.ReservationStore
+	ReservationRepo            model.ReservationStore
+	AccommodationClientAddress string
 }
 
-func NewReservationService(r model.ReservationStore) *ReservationService {
-	return &ReservationService{r}
+func NewReservationService(r model.ReservationStore, acs string) *ReservationService {
+	return &ReservationService{
+		ReservationRepo:            r,
+		AccommodationClientAddress: acs,
+	}
 }
 
 func (service *ReservationService) CreateReservation(reservation *model.Reservation) error {
@@ -31,14 +39,47 @@ func (service *ReservationService) GetAllReservations() (model.Reservations, err
 	return reservations, nil
 }
 
-func (service *ReservationService) GetReservationsByUserId(userId string) (model.Reservations, error) {
+func (service *ReservationService) GetActiveReservationsByGuestId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)
-	fmt.Println("get resrvations by user id reservation-service")
+	fmt.Println("get active reservations by guest in reservation-service")
 	reservations, err := service.ReservationRepo.GetReservationsByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
-	return reservations, nil
+	var activeReservations model.Reservations
+	for _, itr := range reservations {
+		if itr.ReservationStatus == 1 {
+			activeReservations = append(activeReservations, itr)
+		}
+	}
+	return activeReservations, nil
+}
+
+func (service *ReservationService) GetActiveReservationsByHostId(userId string) (model.Reservations, error) {
+	fmt.Println(userId)
+	fmt.Println("get active reservations by host in reservation-service")
+	reservations, err := service.GetAllReservations()
+	if err != nil {
+		return nil, err
+	}
+
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	var activeReservations model.Reservations
+	for _, itr := range reservations {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInReservation, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		fmt.Println(accommodationInReservation)
+		if accommodationInReservation == nil {
+			continue
+		}
+		if accommodationInReservation.Accommodation.HostID == userId {
+			if itr.ReservationStatus == 1 && itr.StartDate.After(time.Now()) {
+				activeReservations = append(activeReservations, itr)
+			}
+		}
+	}
+	return activeReservations, nil
 }
 
 func (service *ReservationService) GetById(id string) (*model.Reservation, error) {

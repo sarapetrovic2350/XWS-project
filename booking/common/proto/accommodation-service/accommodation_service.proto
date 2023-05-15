@@ -6,48 +6,76 @@ package accommodation;
 import "google/api/annotations.proto";
 
 service AccommodationService {
-  rpc GetAll(GetAllRequest) returns (GetAllResponse) {
+  rpc GetAll(GetAllRequest) returns (AccommodationsResponse) {
     option (google.api.http) = {
       get: "/accommodation"
     };
   }
-  rpc GetAccommodationsByHostId(GetAccommodationsByHostIdRequest) returns (GetAccommodationsByHostIdResponse) {
+  rpc GetAccommodationById(GetAccommodationByIdRequest) returns (AccommodationResponse) {
     option (google.api.http) = {
-      get: "/accommodation/{hostId}"
+      get: "/accommodation/{id}"
     };
   }
-  rpc CreateAccommodation(CreateAccommodationRequest) returns(CreateAccommodationResponse) {
+  rpc GetAccommodationsByHostId(GetAccommodationsByHostIdRequest) returns (AccommodationsResponse) {
+    option (google.api.http) = {
+      get: "/accommodation/byHost/{hostId}"
+    };
+  }
+  rpc DeleteAccommodation(DeleteAccommodationRequest) returns(AccommodationResponse){
+    option (google.api.http) = {
+      post: "/accommodation/delete/{id}"
+      body: "*"
+    };
+  }
+  rpc DeleteAccommodationsByHostId(DeleteAccommodationsByHostIdRequest) returns(AccommodationsResponse){
+    option (google.api.http) = {
+      post: "/accommodation/deleteByHost/{id}"
+      body: "*"
+    };
+  }
+  rpc CreateAccommodation(CreateAccommodationRequest) returns(AccommodationResponse) {
     option (google.api.http) = {
       post: "/accommodation"
       body: "accommodation"
     };
   }
-  rpc CreateAvailability(CreateAvailabilityRequest) returns(CreateAccommodationResponse) {
+  rpc CreateAvailability(CreateAvailabilityRequest) returns(AccommodationResponse) {
     option (google.api.http) = {
       post: "/accommodation/createAvailability"
       body: "availabilityForAccommodation"
     };
   }
-  rpc Search(GetAccommodationsByParamsRequest) returns (GetAccommodationsByParamsResponse) {
+  rpc Search(GetAccommodationsByParamsRequest) returns (AccommodationsResponse) {
     option (google.api.http) = {
       post: "/accommodation/search"
       body: "*"
     };
   }
 }
-message GetAccommodationsByParamsRequest {
-  SearchParams searchParams = 1;
+
+message GetAllRequest{
 }
-message GetAccommodationsByParamsResponse {
-  repeated Accommodation accommodations = 1;
-}
+
 message GetAccommodationsByHostIdRequest {
   string hostId = 1;
 }
-
-message GetAccommodationsByHostIdResponse {
-  repeated Accommodation accommodations = 1;
+message GetAccommodationByIdRequest {
+  string id = 1;
 }
+
+message DeleteAccommodationRequest {
+  string id = 1;
+}
+message DeleteAccommodationsByHostIdRequest {
+  string id = 1;
+}
+message CreateAccommodationRequest {
+  NewAccommodation accommodation = 1;
+}
+message GetAccommodationsByParamsRequest {
+  SearchParams searchParams = 1;
+}
+
 message SearchParams{
   string city = 1;
   string country = 2;
@@ -56,17 +84,12 @@ message SearchParams{
   string endDate = 5;
 }
 
-message GetAllRequest{
+message AccommodationResponse {
+  Accommodation accommodation = 1;
 }
 
-message GetAllResponse{
+message AccommodationsResponse{
   repeated Accommodation accommodations = 1;
-}
-message CreateAccommodationRequest {
-  NewAccommodation accommodation = 1;
-}
-message CreateAccommodationResponse {
-  Accommodation accommodation = 1;
 }
 
 message Accommodation {
@@ -121,18 +144,9 @@ message NewAccommodation {
   repeated string benefits = 6;
 }
 
-
 message AddressDTO {
   string street = 1;
   string city = 2;
   string country = 3;
   string number = 4;
 }
-
-//message GetUserReservationsRequest {
-//  string id = 1;
-//}
-//
-//message GetUserReservationsResponse {
-//  repeated Reservation reservations = 1;
-//}
