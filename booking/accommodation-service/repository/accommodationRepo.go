@@ -8,8 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"log"
 	"time"
 )
@@ -48,12 +46,6 @@ func (repo *AccommodationRepo) Insert(accommodation *model.Accommodation) error 
 	accommodation.Id = result.InsertedID.(primitive.ObjectID)
 	return nil
 }
-
-//func (repo *AccommodationRepo) getCollection() *mongo.Collection {
-//	bookingDatabase := repo.client.Database("accommodationDB")
-//	accommodationsCollection := bookingDatabase.Collection("accommodations")
-//	return accommodationsCollection
-//}
 
 func (repo *AccommodationRepo) GetAll() (model.Accommodations, error) {
 	// Initialise context (after 5 seconds timeout, abort operation)
@@ -110,54 +102,6 @@ func (repo *AccommodationRepo) SearchAccommodation(searchCriteria *accommodation
 	fmt.Println(&accommodations)
 
 	return accommodations
-}
-
-func (accommmodationRepo *AccommodationRepo) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
-	fmt.Println("in AddAvailabilityForAccommodation REPO")
-	// Add the new availability to the availability array
-	fmt.Println(accommodation2.Availabilities)
-	filter := bson.M{
-		"_id": accommodation2.Id,
-		"availabilities.startDate": bson.M{
-			"$nin": []time.Time{availability.StartDate},
-			"$lt":  availability.StartDate,
-		},
-		"availabilities.endDate": bson.M{
-			"$nin": []time.Time{availability.EndDate},
-			"$gt":  availability.EndDate,
-		},
-	}
-	count, err := accommmodationRepo.accommodations.CountDocuments(context.Background(), filter)
-	if err != nil {
-		return status.Errorf(
-			codes.Internal,
-			"Error counting documents: %v",
-			err,
-		)
-	}
-	if count > 0 {
-		return status.Errorf(
-			codes.FailedPrecondition,
-			"Availability overlaps with existing Availability",
-		)
-	}
-	fmt.Println(availability)
-	fmt.Println(availability.PriceSelection)
-	update := bson.M{
-		"$push": bson.M{
-			"availabilities": availability,
-		},
-	}
-	filter = bson.M{"_id": accommodation2.Id}
-	_, err = accommmodationRepo.accommodations.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		return status.Errorf(
-			codes.Internal,
-			"Error updating document: %v",
-			err,
-		)
-	}
-	return nil
 }
 
 func (accommmodationRepo *AccommodationRepo) Delete(id string) error {

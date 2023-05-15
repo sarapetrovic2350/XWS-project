@@ -59,7 +59,14 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 }
 
 func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
-	err := service.AccommodationRepo.AddAvailabilityForAccommodation(accommodation2, availability)
+	newAvailabilities := append(accommodation2.Availabilities, availability)
+	accommodation2.Availabilities = newAvailabilities
+	accommodationObjectID := (accommodation2.Id).Hex()
+	err := service.AccommodationRepo.Delete(accommodationObjectID)
+	if err != nil {
+		return err
+	}
+	err = service.AccommodationRepo.Insert(accommodation2)
 	if err != nil {
 		return err
 	}

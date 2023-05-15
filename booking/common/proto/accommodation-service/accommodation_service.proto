@@ -142,6 +142,7 @@ message NewAccommodation {
   AddressDTO address = 4;
   string hostID = 5;
   repeated string benefits = 6;
+  repeated Availability availabilities = 7;
 }
 
 message AddressDTO {

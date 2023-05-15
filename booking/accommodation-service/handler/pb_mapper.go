@@ -34,10 +34,13 @@ func mapAccommodation(modelAccommodation *model.Accommodation) *accommodation.Ac
 
 func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model.Accommodation {
 
+	var modelAvailabilities []*model.Availability
+	for _, availability := range accommodationPb.Availabilities {
+		modelAvailabilities = append(modelAvailabilities, mapAvailabilityPbToModel(availability))
+	}
 	accommodation := &model.Accommodation{
-
-		Id:                primitive.NewObjectID(),
 		Name:              accommodationPb.Name,
+		Availabilities:    modelAvailabilities,
 		MinNumberOfGuests: int(accommodationPb.MinNumberOfGuests),
 		MaxNumberOfGuests: int(accommodationPb.MaxNumberOfGuests),
 		Address: model.Address{
@@ -49,6 +52,7 @@ func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model
 		HostID:   accommodationPb.HostID,
 		Benefits: accommodationPb.Benefits,
 	}
+
 	return accommodation
 }
 
@@ -59,6 +63,19 @@ func mapAvailabilityPb(modelAvailability *model.Availability) *accommodation.Ava
 		EndDate:        modelAvailability.EndDate.Format("2006-01-02"),
 		Price:          float32(modelAvailability.Price),
 		PriceSelection: accommodation.PriceSelection(modelAvailability.PriceSelection),
+	}
+}
+func mapAvailabilityPbToModel(availabilityPb *accommodation.Availability) *model.Availability {
+	startDate, _ := time.Parse("2006-01-02", availabilityPb.StartDate)
+	endDate, _ := time.Parse("2006-01-02", availabilityPb.EndDate)
+	availabilityId, _ := primitive.ObjectIDFromHex(availabilityPb.Id)
+
+	return &model.Availability{
+		Id:             availabilityId,
+		StartDate:      startDate,
+		EndDate:        endDate,
+		Price:          float64(availabilityPb.Price),
+		PriceSelection: model.PriceSelection(availabilityPb.PriceSelection),
 	}
 }
 func mapNewAvailability(availabilityPb *accommodation.NewAvailability) *model.Availability {

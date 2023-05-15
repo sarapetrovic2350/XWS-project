@@ -9,10 +9,10 @@ import (
 
 type Availability struct {
 	Id             primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	StartDate      time.Time          `json:"startDate" bson:"startDate"`
-	EndDate        time.Time          `json:"endDate" bson:"endDate"`
+	StartDate      time.Time          `json:"startDate" bson:"start_date"`
+	EndDate        time.Time          `json:"endDate" bson:"end_date"`
 	Price          float64            `json:"price" bson:"price"`
-	PriceSelection PriceSelection     `json:"priceSelection" bson:"priceSelection"`
+	PriceSelection PriceSelection     `json:"priceSelection" bson:"price_selection"`
 }
 
 type PriceSelection int

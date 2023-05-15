@@ -11,5 +11,4 @@ type AccommodationStore interface {
 	DeleteAll()
 	Delete(id string) error
 	SearchAccommodation(searchCriteria *accommodation.GetAccommodationsByParamsRequest) Accommodations
-	AddAvailabilityForAccommodation(accommodation2 *Accommodation, availability *Availability) error
 }
