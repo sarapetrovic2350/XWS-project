@@ -16,15 +16,25 @@ service ReservationService {
       get: "/getActiveReservationsByGuestId/{id}"
     };
   }
+  rpc GetReservationsByUserId(GetReservationsByUserIdRequest) returns (GetReservationsByUserIdResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsByUserId/{id}"
+    };
+  }
+  rpc GetReservationsByAccommodationId(GetReservationsByAccommodationRequest) returns (GetReservationsByAccommodationResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsByAccommodationId/{id}"
+    };
+  }
   rpc GetActiveReservationsByHostId(GetActiveReservationsRequest) returns (GetActiveReservationsResponse) {
     option (google.api.http) = {
       get: "/getActiveReservationsByHostId/{id}"
     };
   }
 
-  rpc DeleteReservation(DeleteReservationRequest) returns(DeleteReservationResponse){
+  rpc DeletePendingReservationByGuest(DeleteReservationRequest) returns(DeleteReservationResponse) {
     option (google.api.http) = {
-      delete: "/reservation/delete/{id}"
+      delete: "/reservation/deletePendingReservation/{id}"
     };
   }
   rpc CreateReservation(CreateReservationRequest) returns(CreateReservationResponse) {
@@ -73,11 +83,21 @@ enum ReservationStatus {
 message GetActiveReservationsRequest {
   string id = 1;
 }
-
+message GetReservationsByUserIdRequest {
+  string id = 1;
+}
+message GetReservationsByUserIdResponse {
+  repeated Reservation reservations = 1;
+}
 message GetActiveReservationsResponse {
   repeated Reservation reservations = 1;
 }
-
+message GetReservationsByAccommodationRequest {
+  string id = 1;
+}
+message GetReservationsByAccommodationResponse {
+  repeated Reservation reservations = 1;
+}
 message DeleteReservationRequest{
   string id = 1;
 }

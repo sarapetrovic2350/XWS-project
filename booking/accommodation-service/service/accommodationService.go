@@ -2,7 +2,11 @@ package service
 
 import (
 	"accommodation-service/model"
+	"accommodation-service/repository"
 	accommodation "common/proto/accommodation-service/pb"
+	reservation "common/proto/reservation-service/pb"
+	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -12,11 +16,13 @@ type AccommodationService struct {
 	// NoSQL: injecting AccommodationRepo
 	AccommodationRepo model.AccommodationStore
 	//AvailabilityRepo  *repository.AvailabilityRepo
+	ReservationClientAddress string
 }
 
-func NewAccommodationService(accommodationRepository model.AccommodationStore) *AccommodationService {
+func NewAccommodationService(accommodationRepository model.AccommodationStore, rca string) *AccommodationService {
 	return &AccommodationService{
-		AccommodationRepo: accommodationRepository,
+		AccommodationRepo:        accommodationRepository,
+		ReservationClientAddress: rca,
 	}
 }
 
@@ -61,10 +67,44 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 }
 
 func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
+	fmt.Println("In AddAvailabilityForAccommodation accommodation service")
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	idString := accommodation2.Id.Hex()
+	fmt.Println(idString)
+	getReservationsByAccommodationRequest := reservation.GetReservationsByAccommodationRequest{Id: idString}
+	reservationsForAccommodation, err := reservationClient.GetReservationsByAccommodationId(context.TODO(), &getReservationsByAccommodationRequest)
+
+	fmt.Println("reservations for accommodation:")
+	fmt.Println(reservationsForAccommodation.GetReservations())
+	fmt.Println(reservationsForAccommodation)
+	for _, itr := range reservationsForAccommodation.Reservations {
+		startDate, _ := time.Parse("2006-02-01", itr.StartDate)
+		endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+		if (availability.StartDate == startDate || startDate.Before(availability.StartDate)) &&
+			(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
+			return errors.New("reservation exists for given period of time")
+		}
+		if (availability.StartDate == startDate || startDate.After(availability.StartDate) && startDate.Before(availability.EndDate)) &&
+			(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
+			return errors.New("reservation exists for given period of time")
+		}
+		if (availability.StartDate == startDate || startDate.After(availability.StartDate)) &&
+			(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
+			return errors.New("reservation exists for given period of time")
+		}
+		if (availability.StartDate == startDate || startDate.Before(availability.StartDate) && endDate.After(availability.StartDate)) &&
+			(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
+			return errors.New("reservation exists for given period of time")
+		}
+		if availability.StartDate == endDate || availability.EndDate == startDate {
+			return errors.New("reservation exists for given period of time")
+		}
+	}
 	newAvailabilities := append(accommodation2.Availabilities, availability)
 	accommodation2.Availabilities = newAvailabilities
 	accommodationObjectID := (accommodation2.Id).Hex()
-	err := service.AccommodationRepo.Delete(accommodationObjectID)
+	err = service.AccommodationRepo.Delete(accommodationObjectID)
 	if err != nil {
 		return err
 	}
