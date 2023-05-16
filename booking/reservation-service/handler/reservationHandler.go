@@ -124,3 +124,11 @@ func (handler *ReservationHandler) DeletePendingReservationByGuest(ctx context.C
 	return &reservation.DeleteReservationResponse{
 		Reservation: mapReservation(deletedReservation)}, nil
 }
+func (handler *ReservationHandler) CancelReservationByGuest(ctx context.Context, request *reservation.CancelReservationRequest) (*reservation.CancelReservationResponse, error) {
+	canceledReservation, err := handler.reservationService.CancelReservation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.CancelReservationResponse{
+		Reservation: mapReservation(canceledReservation)}, nil
+}

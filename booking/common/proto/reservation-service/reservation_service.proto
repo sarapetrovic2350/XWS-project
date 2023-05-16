@@ -37,6 +37,11 @@ service ReservationService {
       delete: "/reservation/deletePendingReservation/{id}"
     };
   }
+  rpc CancelReservationByGuest(CancelReservationRequest) returns(CancelReservationResponse) {
+    option (google.api.http) = {
+      delete: "/reservation/cancelReservationByGuest/{id}"
+    };
+  }
   rpc CreateReservation(CreateReservationRequest) returns(CreateReservationResponse) {
     option (google.api.http) = {
       post: "/reservation"
@@ -102,5 +107,11 @@ message DeleteReservationRequest{
   string id = 1;
 }
 message DeleteReservationResponse{
+  Reservation reservation = 1;
+}
+message CancelReservationRequest {
+  string id = 1;
+}
+message CancelReservationResponse {
   Reservation reservation = 1;
 }

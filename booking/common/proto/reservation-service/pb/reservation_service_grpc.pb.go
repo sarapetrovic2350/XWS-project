@@ -28,6 +28,7 @@ type ReservationServiceClient interface {
 	GetReservationsByAccommodationId(ctx context.Context, in *GetReservationsByAccommodationRequest, opts ...grpc.CallOption) (*GetReservationsByAccommodationResponse, error)
 	GetActiveReservationsByHostId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error)
 	DeletePendingReservationByGuest(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error)
+	CancelReservationByGuest(ctx context.Context, in *CancelReservationRequest, opts ...grpc.CallOption) (*CancelReservationResponse, error)
 	CreateReservation(ctx context.Context, in *CreateReservationRequest, opts ...grpc.CallOption) (*CreateReservationResponse, error)
 }
 
@@ -93,6 +94,15 @@ func (c *reservationServiceClient) DeletePendingReservationByGuest(ctx context.C
 	return out, nil
 }
 
+func (c *reservationServiceClient) CancelReservationByGuest(ctx context.Context, in *CancelReservationRequest, opts ...grpc.CallOption) (*CancelReservationResponse, error) {
+	out := new(CancelReservationResponse)
+	err := c.cc.Invoke(ctx, "/reservation.ReservationService/CancelReservationByGuest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *reservationServiceClient) CreateReservation(ctx context.Context, in *CreateReservationRequest, opts ...grpc.CallOption) (*CreateReservationResponse, error) {
 	out := new(CreateReservationResponse)
 	err := c.cc.Invoke(ctx, "/reservation.ReservationService/CreateReservation", in, out, opts...)
@@ -112,6 +122,7 @@ type ReservationServiceServer interface {
 	GetReservationsByAccommodationId(context.Context, *GetReservationsByAccommodationRequest) (*GetReservationsByAccommodationResponse, error)
 	GetActiveReservationsByHostId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error)
 	DeletePendingReservationByGuest(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error)
+	CancelReservationByGuest(context.Context, *CancelReservationRequest) (*CancelReservationResponse, error)
 	CreateReservation(context.Context, *CreateReservationRequest) (*CreateReservationResponse, error)
 	mustEmbedUnimplementedReservationServiceServer()
 }
@@ -137,6 +148,9 @@ func (UnimplementedReservationServiceServer) GetActiveReservationsByHostId(conte
 }
 func (UnimplementedReservationServiceServer) DeletePendingReservationByGuest(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePendingReservationByGuest not implemented")
+}
+func (UnimplementedReservationServiceServer) CancelReservationByGuest(context.Context, *CancelReservationRequest) (*CancelReservationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelReservationByGuest not implemented")
 }
 func (UnimplementedReservationServiceServer) CreateReservation(context.Context, *CreateReservationRequest) (*CreateReservationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateReservation not implemented")
@@ -262,6 +276,24 @@ func _ReservationService_DeletePendingReservationByGuest_Handler(srv interface{}
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReservationService_CancelReservationByGuest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelReservationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).CancelReservationByGuest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/reservation.ReservationService/CancelReservationByGuest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).CancelReservationByGuest(ctx, req.(*CancelReservationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ReservationService_CreateReservation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateReservationRequest)
 	if err := dec(in); err != nil {
@@ -310,6 +342,10 @@ var ReservationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeletePendingReservationByGuest",
 			Handler:    _ReservationService_DeletePendingReservationByGuest_Handler,
+		},
+		{
+			MethodName: "CancelReservationByGuest",
+			Handler:    _ReservationService_CancelReservationByGuest_Handler,
 		},
 		{
 			MethodName: "CreateReservation",

@@ -119,3 +119,18 @@ func (service *ReservationService) Delete(id string) error {
 	}
 	return nil
 }
+func (service *ReservationService) CancelReservation(id string) (*model.Reservation, error) {
+	fmt.Println("Cancel Reservation in reservation service")
+	reservation, err := service.GetById(id)
+	fmt.Println(reservation)
+	reservation.ReservationStatus = model.CANCELED
+	err = service.ReservationRepo.Delete(id)
+	if err != nil {
+		return nil, err
+	}
+	err = service.ReservationRepo.Insert(reservation)
+	if err != nil {
+		return nil, err
+	}
+	return reservation, nil
+}
