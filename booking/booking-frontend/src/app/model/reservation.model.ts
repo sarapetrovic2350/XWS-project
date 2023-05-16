@@ -1,10 +1,13 @@
 export class Reservation {
     constructor(
-        numberOfGuests: number = 0, 
-        startDate: Date = new Date(), 
-        endDate: Date = new Date(),
-        userId: string = '', 
-        accommodationId: string = '', 
-        reservationStatus: string = ''
+        public numberOfGuests: number = 0, 
+        public startDate: string = '', 
+        public endDate: string = '',
+        public userId: string = '', 
+        public accommodationId: string = '', 
+        public reservationStatus: string = '', 
+        public country: string = '', 
+        public city: string = '', 
+        public name: string = ''
     ){}
 }

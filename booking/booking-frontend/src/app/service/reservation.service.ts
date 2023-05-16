@@ -23,6 +23,10 @@ export class ReservationService {
   }
 
   getActiveReservationsByGuestId(id: any){
-    return this.http.get<any[]>(this.apiHost + '/getActiveReservationsByGuestId/' + id);
+    return this.http.get<any[]>(this.apiHost + '/getActiveReservationsByGuestId/' + id, {headers: this.headers2});
+  }
+
+  getAllReservationsByGuestId(id: any){
+    return this.http.get<any[]>(this.apiHost + '/getReservationsByUserId/' + id, {headers: this.headers2});
   }
 }
