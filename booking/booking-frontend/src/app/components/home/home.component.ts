@@ -8,6 +8,7 @@ import { User } from 'src/app/model/user.model';
 import { UserService } from 'src/app/service/user.service';
 import {AccommodationService} from "../../service/accommodation.service";
 import {Accommodation} from "../../model/accommodation.model";
+import { Availability } from 'src/app/model/availability.model';
 
 @Component({
   selector: 'app-home',
@@ -26,15 +27,18 @@ export class HomeComponent implements OnInit {
   city: string = ''
   numberOfGuests: number = 1
   public dataSource = new MatTableDataSource<Accommodation>();
-  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits'];
+  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits', 'Status','Price'];
   public accommodations: Accommodation[] = [];
   public notFoundAccommodations: Accommodation[] = [];
   public accommodation: Accommodation = new Accommodation();
   isSearched: boolean = false;
   notFound: boolean = false;
-  totalPrice: number = 0;
+  public totalPrice: number = 0;
   public user: User = new User();
   role: string = "";
+  public price : number = 0;
+  public priceSelection: string = '';
+  public availabilities: Availability[] = [];
 
   ngOnInit(): void {
     //this.role = this.userService.getLoggedInUserRole();
@@ -68,10 +72,34 @@ export class HomeComponent implements OnInit {
           this.notFound = false;
           this.accommodations = res.accommodations;
           for (let i = 0; i < this.accommodations.length; i++) {
-            let startDtae = new Date(this.accommodations[i].startDate)
-            this.accommodations[i].startDate = startDtae.toUTCString().replace('GMT', '')
-            let endDate = new Date(this.accommodations[i].endDate)
-            this.accommodations[i].endDate = endDate.toUTCString().replace('GMT', '')
+            //let startDate = new Date(this.accommodations[i].startDate)
+            //this.accommodations[i].startDate = startDate.toUTCString().replace('GMT', '')
+            //let endDate = new Date(this.accommodations[i].endDate)
+            //this.accommodations[i].endDate = endDate.toUTCString().replace('GMT', '')
+            console.log(this.accommodations[i].availabilities)
+            this.availabilities = this.accommodations[i].availabilities
+            var startDate1 = this.startDate;
+            var endDate1 = this.endDate;
+            for (let i = 0; i < this.availabilities.length; i++){
+              this.price  = this.availabilities[i].price
+              this.priceSelection = this.availabilities[i].priceSelection.toString() 
+              console.log(this.availabilities[i].priceSelection)
+              if(this.priceSelection == "PER_PERSON"){
+               // console.log(this.endDate.getTime())
+                //var sub = endDate1.getDate() - startDate1.getDate()
+                //console.log(this.endDate)
+                //console.log(this.startDate)
+                //console.log(this.startDate.getDay())
+                //this.totalPrice = sub*this.price*this.numberOfGuests
+                //console.log(sub)
+                //console.log(this.totalPrice)
+              }else{
+                //var sub = this.endDate.getTime() - this.startDate.getTime()
+                //this.totalPrice = sub*this.price
+              }
+              
+              //this.priceSelection = this.accommodation.availabilities[i].priceSelection
+            } 
           }
           this.dataSource.data = this.accommodations;
           console.log(this.accommodations)

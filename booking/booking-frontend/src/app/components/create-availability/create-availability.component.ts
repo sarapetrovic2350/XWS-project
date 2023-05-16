@@ -83,14 +83,6 @@ export class CreateAvailabilityComponent implements OnInit {
   onSubmit(){    
     console.log(this.startDate); 
     console.log(this.endDate);  
-    // if(this.selected == 'Per Person'){
-    //   this.availability.priceSelection = 0; 
-    // }else{
-    //   this.availability.priceSelection = 1; 
-    // }
-
-    //this.accommodationId = this.accommodation.id
-    //var availability
     var accommodation = {
       accommodationId : this.accommodation.id,
       availability : {
@@ -104,7 +96,6 @@ export class CreateAvailabilityComponent implements OnInit {
     this.accommodationService.createAvailability(accommodation).subscribe(
       {
         next: (res) => {
-          // dodati stranu koju ide !!!!!!!!!!!!!!!!!
           this.router.navigate(['/show-host-accommodations']);
           Swal.fire({
             icon: 'success',
