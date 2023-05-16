@@ -24,8 +24,10 @@ const _ = grpc.SupportPackageIsVersion7
 type ReservationServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	GetActiveReservationsByGuestId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error)
+	GetReservationsByUserId(ctx context.Context, in *GetReservationsByUserIdRequest, opts ...grpc.CallOption) (*GetReservationsByUserIdResponse, error)
+	GetReservationsByAccommodationId(ctx context.Context, in *GetReservationsByAccommodationRequest, opts ...grpc.CallOption) (*GetReservationsByAccommodationResponse, error)
 	GetActiveReservationsByHostId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error)
-	DeleteReservation(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error)
+	DeletePendingReservationByGuest(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error)
 	CreateReservation(ctx context.Context, in *CreateReservationRequest, opts ...grpc.CallOption) (*CreateReservationResponse, error)
 }
 
@@ -55,6 +57,24 @@ func (c *reservationServiceClient) GetActiveReservationsByGuestId(ctx context.Co
 	return out, nil
 }
 
+func (c *reservationServiceClient) GetReservationsByUserId(ctx context.Context, in *GetReservationsByUserIdRequest, opts ...grpc.CallOption) (*GetReservationsByUserIdResponse, error) {
+	out := new(GetReservationsByUserIdResponse)
+	err := c.cc.Invoke(ctx, "/reservation.ReservationService/GetReservationsByUserId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *reservationServiceClient) GetReservationsByAccommodationId(ctx context.Context, in *GetReservationsByAccommodationRequest, opts ...grpc.CallOption) (*GetReservationsByAccommodationResponse, error) {
+	out := new(GetReservationsByAccommodationResponse)
+	err := c.cc.Invoke(ctx, "/reservation.ReservationService/GetReservationsByAccommodationId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *reservationServiceClient) GetActiveReservationsByHostId(ctx context.Context, in *GetActiveReservationsRequest, opts ...grpc.CallOption) (*GetActiveReservationsResponse, error) {
 	out := new(GetActiveReservationsResponse)
 	err := c.cc.Invoke(ctx, "/reservation.ReservationService/GetActiveReservationsByHostId", in, out, opts...)
@@ -64,9 +84,9 @@ func (c *reservationServiceClient) GetActiveReservationsByHostId(ctx context.Con
 	return out, nil
 }
 
-func (c *reservationServiceClient) DeleteReservation(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error) {
+func (c *reservationServiceClient) DeletePendingReservationByGuest(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error) {
 	out := new(DeleteReservationResponse)
-	err := c.cc.Invoke(ctx, "/reservation.ReservationService/DeleteReservation", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/reservation.ReservationService/DeletePendingReservationByGuest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,8 +108,10 @@ func (c *reservationServiceClient) CreateReservation(ctx context.Context, in *Cr
 type ReservationServiceServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	GetActiveReservationsByGuestId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error)
+	GetReservationsByUserId(context.Context, *GetReservationsByUserIdRequest) (*GetReservationsByUserIdResponse, error)
+	GetReservationsByAccommodationId(context.Context, *GetReservationsByAccommodationRequest) (*GetReservationsByAccommodationResponse, error)
 	GetActiveReservationsByHostId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error)
-	DeleteReservation(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error)
+	DeletePendingReservationByGuest(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error)
 	CreateReservation(context.Context, *CreateReservationRequest) (*CreateReservationResponse, error)
 	mustEmbedUnimplementedReservationServiceServer()
 }
@@ -104,11 +126,17 @@ func (UnimplementedReservationServiceServer) GetAll(context.Context, *GetAllRequ
 func (UnimplementedReservationServiceServer) GetActiveReservationsByGuestId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetActiveReservationsByGuestId not implemented")
 }
+func (UnimplementedReservationServiceServer) GetReservationsByUserId(context.Context, *GetReservationsByUserIdRequest) (*GetReservationsByUserIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetReservationsByUserId not implemented")
+}
+func (UnimplementedReservationServiceServer) GetReservationsByAccommodationId(context.Context, *GetReservationsByAccommodationRequest) (*GetReservationsByAccommodationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetReservationsByAccommodationId not implemented")
+}
 func (UnimplementedReservationServiceServer) GetActiveReservationsByHostId(context.Context, *GetActiveReservationsRequest) (*GetActiveReservationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetActiveReservationsByHostId not implemented")
 }
-func (UnimplementedReservationServiceServer) DeleteReservation(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteReservation not implemented")
+func (UnimplementedReservationServiceServer) DeletePendingReservationByGuest(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePendingReservationByGuest not implemented")
 }
 func (UnimplementedReservationServiceServer) CreateReservation(context.Context, *CreateReservationRequest) (*CreateReservationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateReservation not implemented")
@@ -162,6 +190,42 @@ func _ReservationService_GetActiveReservationsByGuestId_Handler(srv interface{},
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReservationService_GetReservationsByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetReservationsByUserIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).GetReservationsByUserId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/reservation.ReservationService/GetReservationsByUserId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).GetReservationsByUserId(ctx, req.(*GetReservationsByUserIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReservationService_GetReservationsByAccommodationId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetReservationsByAccommodationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).GetReservationsByAccommodationId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/reservation.ReservationService/GetReservationsByAccommodationId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).GetReservationsByAccommodationId(ctx, req.(*GetReservationsByAccommodationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ReservationService_GetActiveReservationsByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetActiveReservationsRequest)
 	if err := dec(in); err != nil {
@@ -180,20 +244,20 @@ func _ReservationService_GetActiveReservationsByHostId_Handler(srv interface{}, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReservationService_DeleteReservation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ReservationService_DeletePendingReservationByGuest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteReservationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReservationServiceServer).DeleteReservation(ctx, in)
+		return srv.(ReservationServiceServer).DeletePendingReservationByGuest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/reservation.ReservationService/DeleteReservation",
+		FullMethod: "/reservation.ReservationService/DeletePendingReservationByGuest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReservationServiceServer).DeleteReservation(ctx, req.(*DeleteReservationRequest))
+		return srv.(ReservationServiceServer).DeletePendingReservationByGuest(ctx, req.(*DeleteReservationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -232,12 +296,20 @@ var ReservationService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ReservationService_GetActiveReservationsByGuestId_Handler,
 		},
 		{
+			MethodName: "GetReservationsByUserId",
+			Handler:    _ReservationService_GetReservationsByUserId_Handler,
+		},
+		{
+			MethodName: "GetReservationsByAccommodationId",
+			Handler:    _ReservationService_GetReservationsByAccommodationId_Handler,
+		},
+		{
 			MethodName: "GetActiveReservationsByHostId",
 			Handler:    _ReservationService_GetActiveReservationsByHostId_Handler,
 		},
 		{
-			MethodName: "DeleteReservation",
-			Handler:    _ReservationService_DeleteReservation_Handler,
+			MethodName: "DeletePendingReservationByGuest",
+			Handler:    _ReservationService_DeletePendingReservationByGuest_Handler,
 		},
 		{
 			MethodName: "CreateReservation",
