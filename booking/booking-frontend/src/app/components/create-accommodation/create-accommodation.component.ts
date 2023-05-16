@@ -91,8 +91,7 @@ export class CreateAccommodationComponent implements OnInit {
     this.accommodationService.createAccommodation(NewAccommodation).subscribe(
       {
         next: (res) => {
-          // dodati stranu koju ide !!!!!!!!!!!!!!!!!
-          //this.router.navigate(['/showFlights']);
+          this.router.navigate(['/show-host-accommodations']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',
