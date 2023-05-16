@@ -63,6 +63,19 @@ func (service *ReservationService) GetAllReservations() (model.Reservations, err
 	}
 	return reservations, nil
 }
+func (service *ReservationService) GetReservationsByAccommodationId(accommodationId string) (model.Reservations, error) {
+	reservations, err := service.ReservationRepo.GetAll()
+	var reservationsForAccommodation model.Reservations
+	for _, itr := range reservations {
+		if itr.AccommodationId == accommodationId {
+			reservationsForAccommodation = append(reservationsForAccommodation, itr)
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	return reservationsForAccommodation, nil
+}
 
 func (service *ReservationService) GetActiveReservationsByGuestId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)
@@ -78,6 +91,15 @@ func (service *ReservationService) GetActiveReservationsByGuestId(userId string)
 		}
 	}
 	return activeReservations, nil
+}
+func (service *ReservationService) GetReservationsByUserId(userId string) (model.Reservations, error) {
+	fmt.Println(userId)
+	fmt.Println("get active reservations by guest in reservation-service")
+	reservations, err := service.ReservationRepo.GetReservationsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+	return reservations, nil
 }
 
 func (service *ReservationService) GetActiveReservationsByHostId(userId string) (model.Reservations, error) {

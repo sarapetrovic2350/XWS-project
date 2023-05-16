@@ -45,6 +45,22 @@ func (handler *ReservationHandler) CreateReservation(ctx context.Context, reques
 		Reservation: mapReservation(modelReservation),
 	}, nil
 }
+func (handler *ReservationHandler) GetReservationsByAccommodationId(ctx context.Context, request *reservation.GetReservationsByAccommodationRequest) (*reservation.GetReservationsByAccommodationResponse, error) {
+	fmt.Println("In GetReservationsByAccommodationId grpc api")
+	fmt.Println(request)
+	activeReservations, err := handler.reservationService.GetReservationsByAccommodationId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetReservationsByAccommodationResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range activeReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
 func (handler *ReservationHandler) GetActiveReservationsByGuestId(ctx context.Context, request *reservation.GetActiveReservationsRequest) (*reservation.GetActiveReservationsResponse, error) {
 	fmt.Println("In GetActiveReservationsByGuestId grpc api")
 	fmt.Println(request)
@@ -56,6 +72,22 @@ func (handler *ReservationHandler) GetActiveReservationsByGuestId(ctx context.Co
 		Reservations: []*reservation.Reservation{},
 	}
 	for _, modelReservation := range activeReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, request *reservation.GetReservationsByUserIdRequest) (*reservation.GetReservationsByUserIdResponse, error) {
+	fmt.Println("In GetReservationsByUserId grpc api")
+	fmt.Println(request)
+	reservations, err := handler.reservationService.GetReservationsByUserId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetReservationsByUserIdResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range reservations {
 		current := mapReservation(modelReservation)
 		response.Reservations = append(response.Reservations, current)
 	}
@@ -78,11 +110,7 @@ func (handler *ReservationHandler) GetActiveReservationsByHostId(ctx context.Con
 	return response, nil
 }
 
-func (handler *ReservationHandler) DeleteReservation(ctx context.Context, request *reservation.DeleteReservationRequest) (*reservation.DeleteReservationResponse, error) {
-	//formatedId = request.Id
-	//if err != nil {
-	//	return nil, err
-	//}
+func (handler *ReservationHandler) DeletePendingReservationByGuest(ctx context.Context, request *reservation.DeleteReservationRequest) (*reservation.DeleteReservationResponse, error) {
 	deletedReservation, err := handler.reservationService.GetById(request.Id)
 	err = handler.reservationService.Delete(request.Id)
 	if err != nil {
