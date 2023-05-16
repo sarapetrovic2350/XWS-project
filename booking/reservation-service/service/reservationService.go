@@ -24,7 +24,23 @@ func NewReservationService(r model.ReservationStore, acs string) *ReservationSer
 
 func (service *ReservationService) CreateReservation(reservation *model.Reservation) error {
 	reservation.ReservationStatus = model.PENDING
-	err := service.ReservationRepo.Insert(reservation)
+	reservations, err := service.ReservationRepo.GetAll()
+	for _, itr := range reservations {
+		if itr.AccommodationId == reservation.AccommodationId {
+			//reservationsByAccomodation = append(reservationsByAccomodation, itr)
+			if (reservation.StartDate == itr.StartDate || reservation.StartDate.After(itr.StartDate) && reservation.StartDate.Before(itr.EndDate)) ||
+				(reservation.EndDate == itr.EndDate || reservation.EndDate.Before(itr.EndDate) && reservation.EndDate.After(itr.StartDate)) {
+				return nil
+				//poruka da ne moze da napravi
+			}
+			if (reservation.StartDate == itr.StartDate || reservation.StartDate.Before(itr.StartDate)) &&
+				(reservation.EndDate == itr.EndDate || reservation.EndDate.After(itr.EndDate)) {
+				return nil
+			}
+		}
+	}
+
+	err = service.ReservationRepo.Insert(reservation)
 	if err != nil {
 		return err
 	}

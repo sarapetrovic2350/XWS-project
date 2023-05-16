@@ -36,12 +36,7 @@ func (handler *ReservationHandler) GetAll(ctx context.Context, request *reservat
 	return response, nil
 }
 func (handler *ReservationHandler) CreateReservation(ctx context.Context, request *reservation.CreateReservationRequest) (*reservation.CreateReservationResponse, error) {
-	fmt.Println("In CreateReservation grpc api")
-	fmt.Print("Request.Reservation: ")
-	fmt.Println(request.Reservation)
 	modelReservation := mapNewReservation(request.Reservation)
-	fmt.Print("reservation after mapping: ")
-	fmt.Println(modelReservation)
 	err := handler.reservationService.CreateReservation(modelReservation)
 	if err != nil {
 		return nil, err
