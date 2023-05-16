@@ -17,6 +17,8 @@ import { CreateAccommodationComponent } from './components/create-accommodation/
 import { ViewHostAccommodationComponent } from './components/view-host-accommodation/view-host-accommodation.component';
 import { CreateAvailabilityComponent } from './components/create-availability/create-availability.component';
 import { UpdateUserComponent } from './components/update-user/update-user.component';
+import { GuestReservationsComponent } from './components/guest-reservations/guest-reservations.component';
+
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import { UpdateUserComponent } from './components/update-user/update-user.compon
     CreateAccommodationComponent,
     ViewHostAccommodationComponent,
     CreateAvailabilityComponent,
-    UpdateUserComponent
+    UpdateUserComponent,
+    GuestReservationsComponent
   ],
     imports: [
         BrowserModule,

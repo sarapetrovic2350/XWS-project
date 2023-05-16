@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
+import Swal from 'sweetalert2';
 import {FlightService} from "../../service/flight.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {ShowFlight} from "../../model/show-flight.model";
@@ -8,6 +9,9 @@ import { User } from 'src/app/model/user.model';
 import { UserService } from 'src/app/service/user.service';
 import {AccommodationService} from "../../service/accommodation.service";
 import {Accommodation} from "../../model/accommodation.model";
+
+import { Reservation } from 'src/app/model/reservation.model';
+import { ReservationService } from 'src/app/service/reservation.service';
 
 @Component({
   selector: 'app-home',
@@ -19,14 +23,14 @@ export class HomeComponent implements OnInit {
   //path: string = "../assets/images/plane.jpg";
   //alttext: string="image";
 
-  constructor(private accommodationService: AccommodationService, private router: Router, private userService: UserService) {}
+  constructor(private reservationService: ReservationService, private accommodationService: AccommodationService, private router: Router, private userService: UserService) {}
   startDate: Date = new Date()
   endDate: Date = new Date()
   country: string = ''
   city: string = ''
   numberOfGuests: number = 1
   public dataSource = new MatTableDataSource<Accommodation>();
-  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits'];
+  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits', 'commands'];
   public accommodations: Accommodation[] = [];
   public notFoundAccommodations: Accommodation[] = [];
   public accommodation: Accommodation = new Accommodation();
@@ -95,6 +99,46 @@ export class HomeComponent implements OnInit {
     this.endDate = new Date()
     this.isSearched = false;
     this.notFound = false;
+  }
+
+  reserve(id: string){
+    let userId = this.userService.getLoggedInUserId(); 
+    
+    var NewReservation = {
+      numberOfGuests: this.numberOfGuests,
+      startDate: this.startDate,
+      endDate: this.endDate, 
+      userId: userId, 
+      accommodationId: id
+    }
+
+    console.log(this.startDate); 
+    console.log(this.endDate); 
+
+    this.reservationService.createReservation(NewReservation).subscribe(
+      {
+        next: (res) => {
+          //this.router.navigate(['/show-host-accommodations']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully created new accommodation!',
+          })
+
+        },
+        error: (e) => {
+          
+          console.log(e);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'There are already reservations in that period.',
+          })
+
+        }
+
+      });
+
   }
 
   // public buyTicket(id: string) {

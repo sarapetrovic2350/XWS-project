@@ -3,6 +3,7 @@ package service
 import (
 	accommodation "common/proto/accommodation-service/pb"
 	"context"
+	"errors"
 	"fmt"
 	"reservation-service/model"
 	"reservation-service/repository"
@@ -28,14 +29,22 @@ func (service *ReservationService) CreateReservation(reservation *model.Reservat
 	for _, itr := range reservations {
 		if itr.AccommodationId == reservation.AccommodationId {
 			//reservationsByAccomodation = append(reservationsByAccomodation, itr)
-			if (reservation.StartDate == itr.StartDate || reservation.StartDate.After(itr.StartDate) && reservation.StartDate.Before(itr.EndDate)) ||
-				(reservation.EndDate == itr.EndDate || reservation.EndDate.Before(itr.EndDate) && reservation.EndDate.After(itr.StartDate)) {
-				return nil
-				//poruka da ne moze da napravi
-			}
-			if (reservation.StartDate == itr.StartDate || reservation.StartDate.Before(itr.StartDate)) &&
-				(reservation.EndDate == itr.EndDate || reservation.EndDate.After(itr.EndDate)) {
-				return nil
+			if itr.ReservationStatus != 1 {
+				if (reservation.StartDate == itr.StartDate || reservation.StartDate.After(itr.StartDate) && reservation.StartDate.Before(itr.EndDate)) ||
+					(reservation.EndDate == itr.EndDate || reservation.EndDate.Before(itr.EndDate) && reservation.EndDate.After(itr.StartDate)) {
+					//if itr.ReservationStatus == 1 {
+					//	return errors.New("Accommodation already has reservation!")
+					//}
+					//poruka da ne moze da napravi
+					return errors.New("Accommodation already has reservation!")
+				}
+				if (reservation.StartDate == itr.StartDate || reservation.StartDate.Before(itr.StartDate)) &&
+					(reservation.EndDate == itr.EndDate || reservation.EndDate.After(itr.EndDate)) {
+					//if itr.ReservationStatus == 1 {
+					//	return errors.New("Accommodation already has reservation!")
+					//}
+					return errors.New("Accommodation already has reservation!")
+				}
 			}
 		}
 	}
