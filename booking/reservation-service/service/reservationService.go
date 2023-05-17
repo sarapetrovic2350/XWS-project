@@ -98,7 +98,28 @@ func (service *ReservationService) GetPendingReservationsForHost(hostId string) 
 	}
 	return pendingReservations, nil
 }
-
+func (service *ReservationService) GetReservationsForHost(hostId string) (model.Reservations, error) {
+	fmt.Println("In GetReservationsForHost in reservation-service")
+	fmt.Println(hostId)
+	reservations, err := service.ReservationRepo.GetAll()
+	var hostReservations model.Reservations
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	for _, itr := range reservations {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInReservation, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		if accommodationInReservation == nil {
+			continue
+		}
+		if accommodationInReservation.Accommodation.HostID == hostId {
+			hostReservations = append(hostReservations, itr)
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	return hostReservations, nil
+}
 func (service *ReservationService) GetActiveReservationsByGuestId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)
 	fmt.Println("get active reservations by guest in reservation-service")
@@ -171,6 +192,36 @@ func (service *ReservationService) CancelReservation(id string) (*model.Reservat
 	reservation, err := service.GetById(id)
 	fmt.Println(reservation)
 	reservation.ReservationStatus = model.CANCELED
+	err = service.ReservationRepo.Delete(id)
+	if err != nil {
+		return nil, err
+	}
+	err = service.ReservationRepo.Insert(reservation)
+	if err != nil {
+		return nil, err
+	}
+	return reservation, nil
+}
+func (service *ReservationService) AcceptReservation(id string) (*model.Reservation, error) {
+	fmt.Println("Accept Reservation in reservation service")
+	reservation, err := service.GetById(id)
+	fmt.Println(reservation)
+	reservation.ReservationStatus = model.ACCEPTED
+	err = service.ReservationRepo.Delete(id)
+	if err != nil {
+		return nil, err
+	}
+	err = service.ReservationRepo.Insert(reservation)
+	if err != nil {
+		return nil, err
+	}
+	return reservation, nil
+}
+func (service *ReservationService) RejectReservation(id string) (*model.Reservation, error) {
+	fmt.Println("Reject Reservation in reservation service")
+	reservation, err := service.GetById(id)
+	fmt.Println(reservation)
+	reservation.ReservationStatus = model.REJECTED
 	err = service.ReservationRepo.Delete(id)
 	if err != nil {
 		return nil, err

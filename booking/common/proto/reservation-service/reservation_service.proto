@@ -36,6 +36,21 @@ service ReservationService {
       get: "/getPendingReservationsForHost/{id}"
     };
   }
+  rpc GetReservationsForHost(GetReservationsForHostRequest) returns (GetReservationsForHostResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsForHost/{id}"
+    };
+  }
+  rpc RejectPendingReservationByHost(RejectPendingReservationRequest) returns(ReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation/rejectPendingReservation/{id}"
+    };
+  }
+  rpc AcceptPendingReservationByHost(AcceptPendingReservationRequest) returns(ReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation/acceptPendingReservation/{id}"
+    };
+  }
 
   rpc DeletePendingReservationByGuest(DeleteReservationRequest) returns(DeleteReservationResponse) {
     option (google.api.http) = {
@@ -89,6 +104,7 @@ enum ReservationStatus {
   PENDING = 0;
   ACCEPTED = 1;
   CANCELED = 2;
+  REJECTED = 3;
 }
 message GetActiveReservationsRequest {
   string id = 1;
@@ -124,5 +140,20 @@ message GetPendingReservationsForHostRequest {
   string id = 1;
 }
 message GetPendingReservationsForHostResponse {
+  repeated Reservation reservations = 1;
+}
+message RejectPendingReservationRequest {
+  string id = 1;
+}
+message AcceptPendingReservationRequest {
+  string id = 1;
+}
+message ReservationResponse {
+  Reservation reservation = 1;
+}
+message GetReservationsForHostRequest {
+  string id = 1;
+}
+message GetReservationsForHostResponse {
   repeated Reservation reservations = 1;
 }
