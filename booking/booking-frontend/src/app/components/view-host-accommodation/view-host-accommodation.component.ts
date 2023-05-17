@@ -15,7 +15,7 @@ import { UserService } from 'src/app/service/user.service';
 export class ViewHostAccommodationComponent implements OnInit {
 
   public dataSource = new MatTableDataSource<Accommodation>();
-  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'commands'];
+  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'commands'];
   public accommodations: Accommodation[] = [];
   public accommodation: Accommodation | undefined = undefined;
 

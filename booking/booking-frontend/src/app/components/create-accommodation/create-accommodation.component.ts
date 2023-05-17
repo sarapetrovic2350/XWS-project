@@ -42,7 +42,7 @@ export class CreateAccommodationComponent implements OnInit {
     let userRole = this.userService.getLoggedInUserRole()
     // let userEmail = this.userService.getLoggedInUserEmail()
     // this.userService.getUserByEmail(userEmail).subscribe(res => {
-    //   this.user = res; 
+    //   this.user = res;
     //   console.log(this.user)
     // })
 
@@ -60,12 +60,16 @@ export class CreateAccommodationComponent implements OnInit {
   }
 
   onSubmit(){
-    
+
     let userId = this.userService.getLoggedInUserId()
 
     console.log(userId)
     this.accommodation.address.street = this.street;
     this.accommodation.address.number = this.streetNumber;
+    console.log(this.streetNumber)
+    console.log(this.accommodation.address.number)
+    console.log(this.street)
+    console.log(this.accommodation.address.street)
     this.accommodation.address.city = this.city;
     this.accommodation.address.country = this.country;
     if (this.benefits != null) {
@@ -74,7 +78,7 @@ export class CreateAccommodationComponent implements OnInit {
       }
     }
 
-    
+
     this.accommodation.benefits = this.auxT;
     //this.accommodation.hostId = userid;
     console.log(this.accommodation.hostId);
@@ -83,7 +87,7 @@ export class CreateAccommodationComponent implements OnInit {
       minNumberOfGuests: this.accommodation.minNumberOfGuests,
       maxNumberOfGuests: this.accommodation.maxNumberOfGuests,
       address: this.accommodation.address,
-      hostID: userId, 
+      hostID: userId,
       benefits: this.accommodation.benefits
     }
     console.log(NewAccommodation);
