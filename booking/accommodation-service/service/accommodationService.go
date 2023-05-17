@@ -71,34 +71,32 @@ func (service *AccommodationService) AddAvailabilityForAccommodation(accommodati
 	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
 	fmt.Println("reservation client created")
 	idString := accommodation2.Id.Hex()
-	fmt.Println(idString)
 	getReservationsByAccommodationRequest := reservation.GetReservationsByAccommodationRequest{Id: idString}
 	reservationsForAccommodation, err := reservationClient.GetReservationsByAccommodationId(context.TODO(), &getReservationsByAccommodationRequest)
 
-	fmt.Println("reservations for accommodation:")
-	fmt.Println(reservationsForAccommodation.GetReservations())
-	fmt.Println(reservationsForAccommodation)
 	for _, itr := range reservationsForAccommodation.Reservations {
-		startDate, _ := time.Parse("2006-02-01", itr.StartDate)
-		endDate, _ := time.Parse("2006-02-01", itr.EndDate)
-		if (availability.StartDate == startDate || startDate.Before(availability.StartDate)) &&
-			(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
-			return errors.New("reservation exists for given period of time")
-		}
-		if (availability.StartDate == startDate || startDate.After(availability.StartDate) && startDate.Before(availability.EndDate)) &&
-			(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
-			return errors.New("reservation exists for given period of time")
-		}
-		if (availability.StartDate == startDate || startDate.After(availability.StartDate)) &&
-			(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
-			return errors.New("reservation exists for given period of time")
-		}
-		if (availability.StartDate == startDate || startDate.Before(availability.StartDate) && endDate.After(availability.StartDate)) &&
-			(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
-			return errors.New("reservation exists for given period of time")
-		}
-		if availability.StartDate == endDate || availability.EndDate == startDate {
-			return errors.New("reservation exists for given period of time")
+		if itr.ReservationStatus == 1 {
+			startDate, _ := time.Parse("2006-02-01", itr.StartDate)
+			endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+			if (availability.StartDate == startDate || startDate.Before(availability.StartDate)) &&
+				(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if (availability.StartDate == startDate || startDate.After(availability.StartDate) && startDate.Before(availability.EndDate)) &&
+				(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if (availability.StartDate == startDate || startDate.After(availability.StartDate)) &&
+				(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if (availability.StartDate == startDate || startDate.Before(availability.StartDate) && endDate.After(availability.StartDate)) &&
+				(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if availability.StartDate == endDate || availability.EndDate == startDate {
+				return errors.New("reservation exists for given period of time")
+			}
 		}
 	}
 	newAvailabilities := append(accommodation2.Availabilities, availability)
