@@ -84,12 +84,13 @@ export class HomeComponent implements OnInit {
             this.availabilities = this.accommodations[i].availabilities
             var startDate1 = this.startDate;
             var endDate1 = this.endDate;
-            for (let i = 0; i < this.availabilities.length; i++) {
-              this.price = this.availabilities[i].price
-              this.priceSelection = this.availabilities[i].priceSelection.toString()
-              console.log(this.availabilities[i].priceSelection)
-              if (this.priceSelection == "PER_PERSON") {
-                // console.log(this.endDate.getTime())
+            for (let i = 0; i < this.availabilities.length; i++){
+              this.price  = this.availabilities[i].price
+              this.priceSelection = this.availabilities[i].priceSelection.toString() 
+              console.log(this.price)
+              console.log(this.priceSelection)
+              if(this.priceSelection == "PER_PERSON"){
+               // console.log(this.endDate.getTime())
                 //var sub = endDate1.getDate() - startDate1.getDate()
                 //console.log(this.endDate)
                 //console.log(this.startDate)

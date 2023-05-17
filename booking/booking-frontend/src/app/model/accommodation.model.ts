@@ -14,6 +14,7 @@ export class Accommodation {
         public endDate: string = '',
         public price: number = 0,
         public totalPrice: number  = 0,
+        public priceSelection: string = '',
         public availabilities: Availability[] = [],
 
       ) {}
