@@ -23,6 +23,7 @@ const (
 	PENDING  ReservationStatus = 0
 	ACCEPTED ReservationStatus = 1
 	CANCELED ReservationStatus = 2
+	REJECTED ReservationStatus = 3
 )
 
 type Reservations []*Reservation
