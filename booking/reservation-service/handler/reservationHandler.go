@@ -143,3 +143,37 @@ func (handler *ReservationHandler) GetPendingReservationsForHost(ctx context.Con
 	}
 	return response, nil
 }
+func (handler *ReservationHandler) GetReservationsForHost(ctx context.Context, request *reservation.GetReservationsForHostRequest) (*reservation.GetReservationsForHostResponse, error) {
+	fmt.Println("In GetReservationsForHost grpc api")
+	fmt.Println(request)
+	reservations, err := handler.reservationService.GetReservationsForHost(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetReservationsForHostResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range reservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+
+func (handler *ReservationHandler) RejectPendingReservationByHost(ctx context.Context, request *reservation.RejectPendingReservationRequest) (*reservation.ReservationResponse, error) {
+	rejectedReservation, err := handler.reservationService.RejectReservation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.ReservationResponse{
+		Reservation: mapReservation(rejectedReservation)}, nil
+}
+
+func (handler *ReservationHandler) AcceptPendingReservationByHost(ctx context.Context, request *reservation.AcceptPendingReservationRequest) (*reservation.ReservationResponse, error) {
+	acceptedReservation, err := handler.reservationService.AcceptReservation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.ReservationResponse{
+		Reservation: mapReservation(acceptedReservation)}, nil
+}
