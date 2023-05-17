@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="table-header">
+      <p class="table-title">Pending Requests</p>
+    </div>
+    <table  mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="From">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> From</th>
+        <td mat-cell *matCellDef="let reservation" class="cell-center">{{reservation.startDate}}</td>
+      </ng-container>
+      <ng-container matColumnDef="To">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> To</th>
+        <td mat-cell *matCellDef="let reservation" class="cell-center">{{reservation.endDate}}</td>
+      </ng-container>
+      <ng-container matColumnDef="AccommodationsName">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Accommodations Name</th>
+        <td mat-cell *matCellDef="let reservation" class="cell-center">{{reservation.name}}</td>
+      </ng-container>
+      <ng-container matColumnDef="City">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> City</th>
+        <td mat-cell *matCellDef="let reservation" class="cell-center">{{reservation.city}}</td>
+      </ng-container>
+      <ng-container matColumnDef="Country">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Country</th>
+        <td mat-cell *matCellDef="let reservation" class="cell-center">{{reservation.country}}</td>
+      </ng-container>
+      <ng-container matColumnDef="Status">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Status</th>
+        <td mat-cell *matCellDef="let reservation" class="cell-center">{{reservation.reservationStatus}}</td>
+      </ng-container>
+      <!-- <ng-container matColumnDef="commands">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let reservation">
+          <div class="commands">
+            <button *ngIf="reservation.reservationStatus === 'ACCEPTED'" (click)="cancel(reservation.id)">
+              <mat-icon color= "primary" matTooltip="cancel">cancel</mat-icon>
+            </button>
+            <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="deleteReservation(reservation.id)">
+              <mat-icon color= "primary" matTooltip="delete">delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container> -->
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    </div>

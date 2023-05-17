@@ -10,11 +10,11 @@ import {AccommodationService} from "../../service/accommodation.service";
 import {Accommodation} from "../../model/accommodation.model";
 
 @Component({
-  selector: 'app-view-reservations',
-  templateUrl: './view-reservations.component.html',
-  styleUrls: ['./view-reservations.component.css']
+  selector: 'app-view-pending-reservations',
+  templateUrl: './view-pending-reservations.component.html',
+  styleUrls: ['./view-pending-reservations.component.css']
 })
-export class ViewReservationsComponent implements OnInit {
+export class ViewPendingReservationsComponent implements OnInit {
 
   constructor(
     private reservationService: ReservationService, 
@@ -22,19 +22,18 @@ export class ViewReservationsComponent implements OnInit {
     private userService: UserService, 
     private accommodationService: AccommodationService) 
   {}
+
   startDate: Date = new Date()
   endDate: Date = new Date()
   public dataSource = new MatTableDataSource<Reservation>();
 
-  public displayedColumns = ['From', 'To', 'City', 'Country', 'AccommodationsName', 'Status', 'commands'];
-
+  public displayedColumns = ['From', 'To', 'City', 'Country', 'AccommodationsName', 'Status'];
   public reservations: Reservation[] = [];
   public reservation: Reservation = new Reservation();
 
   public accommodation: Accommodation = new Accommodation(); 
 
   
-
   ngOnInit(): void {
     let userId = this.userService.getLoggedInUserId();
 
@@ -66,7 +65,7 @@ export class ViewReservationsComponent implements OnInit {
             }); 
         
           }
-          this.dataSource.data = this.reservations;
+          this.dataSource.data = res.reservations;
 
           console.log(this.reservations)
 
@@ -77,56 +76,6 @@ export class ViewReservationsComponent implements OnInit {
           // this.isSearched = true;
           // this.dataSource.data = this.notFoundAccommodations;
           // console.log(e);
-        }
-      });
-  }
-
-  cancel(id: string){
-    this.reservationService.cancelReservation(id).subscribe(
-      {
-        next: (res) => {
-          this.router.navigate(['/view-reservations']);
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Successfully canceled reservation!',
-          })
-          window.location.reload();
-        },
-
-        error: (e) => {
-          console.log(e);
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong.',
-          })
-        }
-      });
-
-  }
-
-  deleteReservation(id: string){
-
-    this.reservationService.deleteReservation(id).subscribe(
-      {
-        next: (res) => {
-          this.router.navigate(['/view-reservations']);
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Successfully deleted reservation!',
-          })
-          window.location.reload();
-        },
-
-        error: (e) => {
-          console.log(e);
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong.',
-          })
         }
       });
   }
