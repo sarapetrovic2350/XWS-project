@@ -25,6 +25,7 @@ export class UpdateUserComponent implements OnInit {
     let userId = this.userService.getLoggedInUserId()
     this.userService.getUserByEmail(userEmail).subscribe(res => {
       this.user = res.user;
+      this.passwordRepeated = this.user.password
       console.log(res)
     })
   }

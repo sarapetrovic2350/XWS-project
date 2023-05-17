@@ -83,8 +83,11 @@ export class HomeComponent implements OnInit {
             for (let i = 0; i < this.availabilities.length; i++){
               this.price  = this.availabilities[i].price
               this.priceSelection = this.availabilities[i].priceSelection.toString() 
-              console.log(this.availabilities[i].priceSelection)
-              if(this.priceSelection == "PER_PERSON"){
+              console.log(this.price)
+              //alert(this.price)
+              //alert(this.priceSelection)
+              console.log(this.priceSelection)
+              if(this.accommodation.priceSelection == "PER_PERSON"){
                // console.log(this.endDate.getTime())
                 //var sub = endDate1.getDate() - startDate1.getDate()
                 //console.log(this.endDate)
@@ -99,7 +102,7 @@ export class HomeComponent implements OnInit {
               }
               
               //this.priceSelection = this.accommodation.availabilities[i].priceSelection
-            } 
+            }
           }
           this.dataSource.data = this.accommodations;
           console.log(this.accommodations)
