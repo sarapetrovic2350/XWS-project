@@ -27,7 +27,7 @@ export class ViewPendingReservationsComponent implements OnInit {
   endDate: Date = new Date()
   public dataSource = new MatTableDataSource<Reservation>();
 
-  public displayedColumns = ['From', 'To', 'City', 'Country', 'AccommodationsName', 'Status'];
+  public displayedColumns = ['From', 'To', 'City', 'Country', 'AccommodationsName', 'Status', 'commands', 'commands1'];
   public reservations: Reservation[] = [];
   public reservation: Reservation = new Reservation();
 
@@ -76,6 +76,54 @@ export class ViewPendingReservationsComponent implements OnInit {
           // this.isSearched = true;
           // this.dataSource.data = this.notFoundAccommodations;
           // console.log(e);
+        }
+      });
+  }
+
+  accept(id: string){
+    this.reservationService.AcceptPendingReservationByHost(id).subscribe(
+      {
+        next: (res) => {
+          this.router.navigate(['/view-reservations']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully accepted reservation!',
+          })
+          window.location.reload();
+        },
+
+        error: (e) => {
+          console.log(e);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong.',
+          })
+        }
+      });
+  }
+
+  reject(id: string){
+    this.reservationService.RejectPendingReservationByHost(id).subscribe(
+      {
+        next: (res) => {
+          this.router.navigate(['/view-reservations']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully rejected reservation!',
+          })
+          window.location.reload();
+        },
+
+        error: (e) => {
+          console.log(e);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong.',
+          })
         }
       });
   }

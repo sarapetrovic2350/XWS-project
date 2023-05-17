@@ -38,7 +38,7 @@ export class ViewReservationsComponent implements OnInit {
   ngOnInit(): void {
     let userId = this.userService.getLoggedInUserId();
 
-    this.reservationService.getPendingReservationsByHostId(userId).subscribe(
+    this.reservationService.getAllReservationsByGuestId(userId).subscribe(
       {
         next: (res) => {
           

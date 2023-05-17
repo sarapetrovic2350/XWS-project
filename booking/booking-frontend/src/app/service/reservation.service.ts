@@ -41,4 +41,12 @@ export class ReservationService {
   getPendingReservationsByHostId(id: string){
     return this.http.get<any>(this.apiHost1 + 'getPendingReservationsForHost/' + id, {headers: this.headers2});
   }
+
+  RejectPendingReservationByHost(id: any){
+    return this.http.post<Reservation>(this.apiHost + '/rejectPendingReservation/' + id, {headers: this.headers2});
+  }
+
+  AcceptPendingReservationByHost(id: any){
+    return this.http.post<Reservation>(this.apiHost + '/acceptPendingReservation/' + id, {headers: this.headers2});
+  } 
 }
