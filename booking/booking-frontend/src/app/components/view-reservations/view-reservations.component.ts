@@ -26,7 +26,7 @@ export class ViewReservationsComponent implements OnInit {
   endDate: Date = new Date()
   public dataSource = new MatTableDataSource<Reservation>();
 
-  public displayedColumns = ['From', 'To', 'City', 'Country', 'AccommodationsName', 'Status'];
+  public displayedColumns = ['From', 'To', 'City', 'Country', 'AccommodationsName', 'Status', 'commands'];
 
   public reservations: Reservation[] = [];
   public reservation: Reservation = new Reservation();
@@ -52,7 +52,7 @@ export class ViewReservationsComponent implements OnInit {
             // this.reservations[i].endDate = endDate.toUTCString().replace('GMT', '')
 
             console.log(this.reservations[i].accommodationId); 
-
+            console.log(this.reservations[i].reservationStatus); 
             this.accommodationService.getAccommodationById(this.reservations[i].accommodationId).subscribe({
               next: (res) => {
                 this.accommodation = res.accommodation;  
@@ -80,5 +80,9 @@ export class ViewReservationsComponent implements OnInit {
         }
       });
   }
+
+  cancel(){}
+
+  deleteReservation(){}
 
 }
