@@ -76,6 +76,28 @@ func (service *ReservationService) GetReservationsByAccommodationId(accommodatio
 	}
 	return reservationsForAccommodation, nil
 }
+func (service *ReservationService) GetPendingReservationsForHost(hostId string) (model.Reservations, error) {
+	fmt.Println("GetPendingReservationsForHost in reservation-service")
+	fmt.Println(hostId)
+	reservations, err := service.ReservationRepo.GetAll()
+	var pendingReservations model.Reservations
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	for _, itr := range reservations {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInReservation, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		if accommodationInReservation == nil {
+			continue
+		}
+		if accommodationInReservation.Accommodation.HostID == hostId && itr.ReservationStatus == 0 {
+			pendingReservations = append(pendingReservations, itr)
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	return pendingReservations, nil
+}
 
 func (service *ReservationService) GetActiveReservationsByGuestId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)

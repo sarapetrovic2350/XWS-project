@@ -127,3 +127,19 @@ func (handler *ReservationHandler) CancelReservationByGuest(ctx context.Context,
 	return &reservation.CancelReservationResponse{
 		Reservation: mapReservation(canceledReservation)}, nil
 }
+func (handler *ReservationHandler) GetPendingReservationsForHost(ctx context.Context, request *reservation.GetPendingReservationsForHostRequest) (*reservation.GetPendingReservationsForHostResponse, error) {
+	fmt.Println("In GetPendingReservationsForHost grpc api")
+	fmt.Println(request)
+	pendingReservations, err := handler.reservationService.GetPendingReservationsForHost(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetPendingReservationsForHostResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range pendingReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
