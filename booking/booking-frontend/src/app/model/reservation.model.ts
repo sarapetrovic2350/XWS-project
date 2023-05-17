@@ -1,5 +1,6 @@
 export class Reservation {
     constructor(
+        public id: string = '', 
         public numberOfGuests: number = 0, 
         public startDate: string = '', 
         public endDate: string = '',

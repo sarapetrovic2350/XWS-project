@@ -43,8 +43,31 @@ export class HomeComponent implements OnInit {
   public priceSelection: string = '';
   public availabilities: Availability[] = [];
 
+  isLoggedIn: boolean = false;
+  isHost: boolean = false;
+  isGuest: boolean = false;
+
   ngOnInit(): void {
     //this.role = this.userService.getLoggedInUserRole();
+    let userRole = this.userService.getLoggedInUserRole()
+    let userEmail = this.userService.getLoggedInUserEmail()
+    console.log(userEmail)
+    //this.userService.getUserByEmail(userEmail).subscribe(res => {
+      //this.user = res;
+      //console.log(this.user)
+    //})
+
+    if(userRole === "") {
+      this.isLoggedIn = false;
+    } else {
+      this.isLoggedIn = true;
+      if(userRole == "HOST") {
+        this.isHost = true;
+      }
+      if(userRole == "GUEST") {
+        this.isGuest = true;
+      }
+    }
   }
 
   searchAccommodations() {
@@ -152,7 +175,7 @@ export class HomeComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: 'Successfully created new accommodation!',
+            text: 'Successfully made a reservation!',
           })
 
         },

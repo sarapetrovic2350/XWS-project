@@ -1,6 +1,6 @@
 <div class="container">
     <div class="table-header">
-      <p class="table-title">My Reservations</p>
+      <p class="table-title">Pending Requests</p>
     </div>
     <table  mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="From">
@@ -31,11 +31,18 @@
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let reservation">
           <div class="commands">
-            <button *ngIf="reservation.reservationStatus === 'ACCEPTED'" (click)="cancel(reservation.id)">
-              <mat-icon color= "primary" matTooltip="cancel">cancel</mat-icon>
+            <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="accept(reservation.id)">
+              <mat-icon color= "primary" matTooltip="accept">add</mat-icon>
             </button>
-            <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="deleteReservation(reservation.id)">
-              <mat-icon color= "primary" matTooltip="delete">delete</mat-icon>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="commands1">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let reservation">
+          <div class="commands1">
+            <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="reject(reservation.id)">
+              <mat-icon color= "primary" matTooltip="reject">reject</mat-icon>
             </button>
           </div>
         </td>

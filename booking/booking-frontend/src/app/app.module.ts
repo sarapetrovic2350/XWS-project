@@ -19,6 +19,7 @@ import { CreateAvailabilityComponent } from './components/create-availability/cr
 import { UpdateUserComponent } from './components/update-user/update-user.component';
 import { GuestReservationsComponent } from './components/guest-reservations/guest-reservations.component';
 import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
+import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
 
 
 
@@ -36,7 +37,8 @@ import { ViewReservationsComponent } from './components/view-reservations/view-r
     CreateAvailabilityComponent,
     UpdateUserComponent,
     GuestReservationsComponent,
-    ViewReservationsComponent
+    ViewReservationsComponent,
+    ViewPendingReservationsComponent
   ],
     imports: [
         BrowserModule,
