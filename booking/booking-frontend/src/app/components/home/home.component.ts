@@ -109,7 +109,7 @@ export class HomeComponent implements OnInit {
             var endDate1 = this.endDate;
             for (let i = 0; i < this.availabilities.length; i++){
               this.price  = this.availabilities[i].price
-              this.priceSelection = this.availabilities[i].priceSelection.toString() 
+              this.priceSelection = this.availabilities[i].priceSelection.toString()
               console.log(this.price)
               console.log(this.priceSelection)
               if(this.priceSelection == "PER_PERSON"){
@@ -171,7 +171,7 @@ export class HomeComponent implements OnInit {
     this.reservationService.createReservation(NewReservation).subscribe(
       {
         next: (res) => {
-          //this.router.navigate(['/show-host-accommodations']);
+          this.router.navigate(['/view-reservations']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',

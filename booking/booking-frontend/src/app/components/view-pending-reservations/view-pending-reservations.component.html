@@ -32,7 +32,7 @@
         <td mat-cell *matCellDef="let reservation">
           <div class="commands">
             <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="accept(reservation.id)">
-              <mat-icon color= "primary" matTooltip="accept">add</mat-icon>
+              <mat-icon color= "primary" matTooltip="accept">check_circle</mat-icon>
             </button>
           </div>
         </td>
@@ -42,12 +42,12 @@
         <td mat-cell *matCellDef="let reservation">
           <div class="commands1">
             <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="reject(reservation.id)">
-              <mat-icon color= "primary" matTooltip="reject">reject</mat-icon>
+              <mat-icon color= "primary" matTooltip="reject">remove_circle</mat-icon>
             </button>
           </div>
         </td>
       </ng-container>
-    
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

@@ -29,7 +29,7 @@ func (service *ReservationService) CreateReservation(reservation *model.Reservat
 	for _, itr := range reservations {
 		if itr.AccommodationId == reservation.AccommodationId {
 			//reservationsByAccomodation = append(reservationsByAccomodation, itr)
-			if itr.ReservationStatus != 1 {
+			if itr.ReservationStatus == 1 {
 				if (reservation.StartDate == itr.StartDate || reservation.StartDate.After(itr.StartDate) && reservation.StartDate.Before(itr.EndDate)) ||
 					(reservation.EndDate == itr.EndDate || reservation.EndDate.Before(itr.EndDate) && reservation.EndDate.After(itr.StartDate)) {
 					//if itr.ReservationStatus == 1 {
