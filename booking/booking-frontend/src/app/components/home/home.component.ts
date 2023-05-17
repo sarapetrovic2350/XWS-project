@@ -152,7 +152,7 @@ export class HomeComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: 'Successfully created new accommodation!',
+            text: 'Successfully made a reservation!',
           })
 
         },

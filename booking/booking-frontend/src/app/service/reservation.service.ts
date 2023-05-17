@@ -29,4 +29,12 @@ export class ReservationService {
   getAllReservationsByGuestId(id: any){
     return this.http.get<any>(this.apiHost1 + 'getReservationsByUserId/' + id, {headers: this.headers2});
   }
+
+  cancelReservation(id: string){
+    return this.http.post<Reservation>(this.apiHost + '/cancelReservationByGuest/' + id, {headers: this.headers2});
+  }
+
+  deleteReservation(id: string){
+    return this.http.post<Reservation>(this.apiHost + '/deletePendingReservation/' + id, {headers: this.headers2});
+  }
 }

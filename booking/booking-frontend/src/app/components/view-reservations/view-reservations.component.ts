@@ -81,8 +81,54 @@ export class ViewReservationsComponent implements OnInit {
       });
   }
 
-  cancel(){}
+  cancel(id: string){
+    this.reservationService.cancelReservation(id).subscribe(
+      {
+        next: (res) => {
+          this.router.navigate(['/view-reservations']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully canceled reservation!',
+          })
+          window.location.reload();
+        },
 
-  deleteReservation(){}
+        error: (e) => {
+          console.log(e);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong.',
+          })
+        }
+      });
+
+  }
+
+  deleteReservation(id: string){
+
+    this.reservationService.deleteReservation(id).subscribe(
+      {
+        next: (res) => {
+          this.router.navigate(['/view-reservations']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully deleted reservation!',
+          })
+          window.location.reload();
+        },
+
+        error: (e) => {
+          console.log(e);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong.',
+          })
+        }
+      });
+  }
 
 }

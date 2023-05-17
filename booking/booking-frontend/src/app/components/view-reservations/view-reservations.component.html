@@ -31,10 +31,10 @@
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let reservation">
           <div class="commands">
-            <button *ngIf="reservation.reservationStatus === 'ACCEPTED'" (click)="cancel()">
+            <button *ngIf="reservation.reservationStatus === 'ACCEPTED'" (click)="cancel(reservation.id)">
               <mat-icon color= "primary" matTooltip="cancel">cancel</mat-icon>
             </button>
-            <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="deleteReservation()">
+            <button *ngIf="reservation.reservationStatus === 'PENDING'" (click)="deleteReservation(reservation.id)">
               <mat-icon color= "primary" matTooltip="delete">delete</mat-icon>
             </button>
           </div>
