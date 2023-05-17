@@ -129,9 +129,11 @@ func (service AccommodationService) SearchAccommodation(searchAccommodations *ac
 			endDate1 := strings.Split(searchAccommodations.SearchParams.EndDate, "T")
 			startDate, _ := time.Parse("2006-01-02", startDate1[0])
 			endDate, _ := time.Parse("2006-01-02", endDate1[0])
-			if startDate == availability.StartDate || startDate.After(availability.StartDate) &&
-				endDate == availability.EndDate || endDate.Before(availability.EndDate) {
+			if (startDate == availability.StartDate || startDate.After(availability.StartDate)) &&
+				(endDate == availability.EndDate || endDate.Before(availability.EndDate)) {
+				itr.Availabilities = itr.Availabilities[:0]
 				if itr.MinNumberOfGuests <= int(searchAccommodations.SearchParams.NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.SearchParams.NumberOfGuests) {
+					itr.Availabilities = append(itr.Availabilities, availability)
 					retAccommodations = append(retAccommodations, itr)
 				}
 

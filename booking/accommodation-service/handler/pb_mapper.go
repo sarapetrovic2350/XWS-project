@@ -47,7 +47,7 @@ func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model
 			Country:      accommodationPb.Address.Country,
 			City:         accommodationPb.Address.City,
 			Street:       accommodationPb.Address.Street,
-			StreetNumber: accommodationPb.Address.Street,
+			StreetNumber: accommodationPb.Address.Number,
 		},
 		HostID:   accommodationPb.HostID,
 		Benefits: accommodationPb.Benefits,
