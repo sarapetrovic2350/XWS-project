@@ -3,6 +3,7 @@ package service
 import (
 	accommodation "common/proto/accommodation-service/pb"
 	"context"
+	"errors"
 	"fmt"
 	"reservation-service/model"
 	"reservation-service/repository"
@@ -24,7 +25,31 @@ func NewReservationService(r model.ReservationStore, acs string) *ReservationSer
 
 func (service *ReservationService) CreateReservation(reservation *model.Reservation) error {
 	reservation.ReservationStatus = model.PENDING
-	err := service.ReservationRepo.Insert(reservation)
+	reservations, err := service.ReservationRepo.GetAll()
+	for _, itr := range reservations {
+		if itr.AccommodationId == reservation.AccommodationId {
+			//reservationsByAccomodation = append(reservationsByAccomodation, itr)
+			if itr.ReservationStatus != 1 {
+				if (reservation.StartDate == itr.StartDate || reservation.StartDate.After(itr.StartDate) && reservation.StartDate.Before(itr.EndDate)) ||
+					(reservation.EndDate == itr.EndDate || reservation.EndDate.Before(itr.EndDate) && reservation.EndDate.After(itr.StartDate)) {
+					//if itr.ReservationStatus == 1 {
+					//	return errors.New("Accommodation already has reservation!")
+					//}
+					//poruka da ne moze da napravi
+					return errors.New("Accommodation already has reservation!")
+				}
+				if (reservation.StartDate == itr.StartDate || reservation.StartDate.Before(itr.StartDate)) &&
+					(reservation.EndDate == itr.EndDate || reservation.EndDate.After(itr.EndDate)) {
+					//if itr.ReservationStatus == 1 {
+					//	return errors.New("Accommodation already has reservation!")
+					//}
+					return errors.New("Accommodation already has reservation!")
+				}
+			}
+		}
+	}
+
+	err = service.ReservationRepo.Insert(reservation)
 	if err != nil {
 		return err
 	}

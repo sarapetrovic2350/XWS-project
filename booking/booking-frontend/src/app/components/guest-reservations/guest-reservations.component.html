@@ -1,0 +1,33 @@
+<!-- <div class="container">
+    <div class="table-header">
+        <p class="table-title">My Accommodations</p>
+    </div>
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Name</th>
+            <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="MinNumberOfGuests">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Min Number Of Guests</th>
+            <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.minNumberOfGuests}}</td>
+        </ng-container>
+      <ng-container matColumnDef="MaxNumberOfGuests">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Max Number Of Guests </th>
+        <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.maxNumberOfGuests}}</td>
+      </ng-container>
+        <ng-container matColumnDef="commands">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let accommodation">
+                <div class="commands">
+                    <button (click)="makeAvailable(accommodation.id)">
+                        <mat-icon color= "primary" matTooltip="add availability">add</mat-icon>
+                    </button>
+                </div>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+ -->

@@ -53,6 +53,20 @@ func (repo *ReservationRepo) GetReservationsByUserId(userId string) (model.Reser
 	return retReservations, nil
 }
 
+func (repo *ReservationRepo) GetReservationsByAccommodationId(accommodationId string) (model.Reservations, error) {
+	reservations, err := repo.GetAll()
+	var retReservations model.Reservations
+	for _, itr := range reservations {
+		if itr.AccommodationId == accommodationId {
+			retReservations = append(retReservations, itr)
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	return retReservations, nil
+}
+
 func (repo *ReservationRepo) GetAll() (model.Reservations, error) {
 	// Initialise context (after 5 seconds timeout, abort operation)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
