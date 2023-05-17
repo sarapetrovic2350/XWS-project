@@ -31,15 +31,20 @@ service ReservationService {
       get: "/getActiveReservationsByHostId/{id}"
     };
   }
+  rpc GetPendingReservationsForHost(GetPendingReservationsForHostRequest) returns (GetPendingReservationsForHostResponse) {
+    option (google.api.http) = {
+      get: "/getPendingReservationsForHost/{id}"
+    };
+  }
 
   rpc DeletePendingReservationByGuest(DeleteReservationRequest) returns(DeleteReservationResponse) {
     option (google.api.http) = {
-      delete: "/reservation/deletePendingReservation/{id}"
+      post: "/reservation/deletePendingReservation/{id}"
     };
   }
   rpc CancelReservationByGuest(CancelReservationRequest) returns(CancelReservationResponse) {
     option (google.api.http) = {
-      delete: "/reservation/cancelReservationByGuest/{id}"
+      post: "/reservation/cancelReservationByGuest/{id}"
     };
   }
   rpc CreateReservation(CreateReservationRequest) returns(CreateReservationResponse) {
@@ -114,4 +119,10 @@ message CancelReservationRequest {
 }
 message CancelReservationResponse {
   Reservation reservation = 1;
+}
+message GetPendingReservationsForHostRequest {
+  string id = 1;
+}
+message GetPendingReservationsForHostResponse {
+  repeated Reservation reservations = 1;
 }
