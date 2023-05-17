@@ -14,7 +14,7 @@ export class ReservationService {
   headers2: HttpHeaders = new HttpHeaders({
   'Content-Type': 'application/json',
   });
-
+  apiHost1: string = 'http://localhost:8000/';
   constructor(private http: HttpClient) { }
 
   createReservation(reservation: any) {
@@ -23,10 +23,10 @@ export class ReservationService {
   }
 
   getActiveReservationsByGuestId(id: any){
-    return this.http.get<any[]>(this.apiHost + '/getActiveReservationsByGuestId/' + id, {headers: this.headers2});
+    return this.http.get<any[]>(this.apiHost + 'getActiveReservationsByGuestId/' + id, {headers: this.headers2});
   }
 
   getAllReservationsByGuestId(id: any){
-    return this.http.get<any[]>(this.apiHost + '/getReservationsByUserId/' + id, {headers: this.headers2});
+    return this.http.get<any>(this.apiHost1 + 'getReservationsByUserId/' + id, {headers: this.headers2});
   }
 }

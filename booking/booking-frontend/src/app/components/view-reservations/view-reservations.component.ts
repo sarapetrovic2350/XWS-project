@@ -31,6 +31,8 @@ export class ViewReservationsComponent implements OnInit {
   public reservations: Reservation[] = [];
   public reservation: Reservation = new Reservation();
 
+  public accommodation: Accommodation = new Accommodation(); 
+
   
 
   ngOnInit(): void {
@@ -38,20 +40,28 @@ export class ViewReservationsComponent implements OnInit {
 
     this.reservationService.getAllReservationsByGuestId(userId).subscribe(
       {
-        next: (data) => {
+        next: (res) => {
           
-          this.reservations = data;
+          this.reservations = res.reservations;
+          
           for (let i = 0; i < this.reservations.length; i++) {
-            let startDate = new Date(this.reservations[i].startDate)
-            this.reservations[i].startDate = startDate.toUTCString().replace('GMT', '')
-            let endDate = new Date(this.reservations[i].endDate)
-            this.reservations[i].endDate = endDate.toUTCString().replace('GMT', '')
+            console.log(this.reservations[i].accommodationId); 
+            // let startDate = new Date(this.reservations[i].startDate)
+            // this.reservations[i].startDate = startDate.toUTCString().replace('GMT', '')
+            // let endDate = new Date(this.reservations[i].endDate)
+            // this.reservations[i].endDate = endDate.toUTCString().replace('GMT', '')
+
+            console.log(this.reservations[i].accommodationId); 
 
             this.accommodationService.getAccommodationById(this.reservations[i].accommodationId).subscribe({
-              next: (res: Accommodation) => {
-                this.reservations[i].name = res.name; 
-                this.reservations[i].city = res.address.city; 
-                this.reservations[i].country = res.address.country; 
+              next: (res) => {
+                this.accommodation = res.accommodation;  
+
+                this.reservations[i].name = this.accommodation.name; 
+                this.reservations[i].city = this.accommodation.address.city; 
+                this.reservations[i].country = this.accommodation.address.country; 
+                
+
               }
             }); 
         
