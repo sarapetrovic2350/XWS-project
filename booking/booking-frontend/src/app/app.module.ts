@@ -16,6 +16,11 @@ import { HomeComponent } from './components/home/home.component';
 import { CreateAccommodationComponent } from './components/create-accommodation/create-accommodation.component';
 import { ViewHostAccommodationComponent } from './components/view-host-accommodation/view-host-accommodation.component';
 import { CreateAvailabilityComponent } from './components/create-availability/create-availability.component';
+import { UpdateUserComponent } from './components/update-user/update-user.component';
+import { GuestReservationsComponent } from './components/guest-reservations/guest-reservations.component';
+import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
+import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
+
 
 
 @NgModule({
@@ -29,7 +34,11 @@ import { CreateAvailabilityComponent } from './components/create-availability/cr
     HomeComponent,
     CreateAccommodationComponent,
     ViewHostAccommodationComponent,
-    CreateAvailabilityComponent
+    CreateAvailabilityComponent,
+    UpdateUserComponent,
+    GuestReservationsComponent,
+    ViewReservationsComponent,
+    ViewPendingReservationsComponent
   ],
     imports: [
         BrowserModule,

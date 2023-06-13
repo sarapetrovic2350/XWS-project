@@ -39,15 +39,23 @@ export class CreateAvailabilityComponent implements OnInit {
   isHost: boolean = false;
   isGuest: boolean = false;
   user: User = new User();
-  priceSelection: string = ''; 
+  //priceSelection: string = ''; 
+  //startDate: string = ''
+  accommodationId: string = ''
+  price: number = 1
+  startDate: Date = new Date()
+  endDate: Date = new Date()
+  priceSelection: number = 0
+
 
   ngOnInit(): void {
     // this.availability.accommodationId = this.router.params['id']; 
 
     this.route.params.subscribe((params: Params) => {
       this.accommodationService.getAccommodationById(params['id']).subscribe(res => {
-        this.accommodation = res;
-        console.log(this.accommodation);
+        console.log(params['id'])
+        this.accommodation = res.accommodation;
+        console.log(res);
       })
     });
 
@@ -72,24 +80,22 @@ export class CreateAvailabilityComponent implements OnInit {
     }
   }
 
-  onSubmit(){
-    this.availability.startDate = this.arrivalDateDateForm; 
-    this.availability.endDate = this.departureDateDateForm; 
-    
-    console.log(this.availability.startDate); 
-    console.log(this.availability.endDate);  
-    // if(this.selected == 'Per Person'){
-    //   this.availability.priceSelection = 0; 
-    // }else{
-    //   this.availability.priceSelection = 1; 
-    // }
-    
-    this.availability.accommodationId = this.accommodation.id; 
-    this.availability.priceSelection = Number(this.priceSelection); 
-    this.accommodationService.createAvailability(this.availability).subscribe(
+  onSubmit(){    
+    console.log(this.startDate); 
+    console.log(this.endDate);  
+    var accommodation = {
+      accommodationId : this.accommodation.id,
+      availability : {
+        startDate : this.startDate, 
+        endDate : this.endDate,
+        price : this.availability.price,
+        priceSelection : Number(this.priceSelection)
+      }
+    }
+      
+    this.accommodationService.createAvailability(accommodation).subscribe(
       {
         next: (res) => {
-          // dodati stranu koju ide !!!!!!!!!!!!!!!!!
           this.router.navigate(['/show-host-accommodations']);
           Swal.fire({
             icon: 'success',

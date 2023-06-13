@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
-import {FlightService} from "../../service/flight.service";
+import Swal from 'sweetalert2';
 import {MatTableDataSource} from "@angular/material/table";
-import {ShowFlight} from "../../model/show-flight.model";
-import {Flight} from "../../model/flight.model";
 import { User } from 'src/app/model/user.model';
 import { UserService } from 'src/app/service/user.service';
 import {AccommodationService} from "../../service/accommodation.service";
 import {Accommodation} from "../../model/accommodation.model";
+import { Availability } from 'src/app/model/availability.model';
+import { ReservationService } from 'src/app/service/reservation.service';
 
 @Component({
   selector: 'app-home',
@@ -19,26 +19,57 @@ export class HomeComponent implements OnInit {
   //path: string = "../assets/images/plane.jpg";
   //alttext: string="image";
 
-  constructor(private accommodationService: AccommodationService, private router: Router, private userService: UserService) {}
+  constructor(private reservationService: ReservationService, private accommodationService: AccommodationService, private router: Router, private userService: UserService) {
+  }
+
   startDate: Date = new Date()
   endDate: Date = new Date()
   country: string = ''
   city: string = ''
   numberOfGuests: number = 1
   public dataSource = new MatTableDataSource<Accommodation>();
-  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits'];
+
+  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits', 'Status', 'Price', 'commands'];
+
   public accommodations: Accommodation[] = [];
   public notFoundAccommodations: Accommodation[] = [];
   public accommodation: Accommodation = new Accommodation();
   isSearched: boolean = false;
   notFound: boolean = false;
-  totalPrice: number = 0;
+  public totalPrice: number = 0;
   public user: User = new User();
   role: string = "";
+  public price: number = 0;
+  public priceSelection: string = '';
+  public availabilities: Availability[] = [];
+
+  isLoggedIn: boolean = false;
+  isHost: boolean = false;
+  isGuest: boolean = false;
 
   ngOnInit(): void {
     //this.role = this.userService.getLoggedInUserRole();
+    let userRole = this.userService.getLoggedInUserRole()
+    let userEmail = this.userService.getLoggedInUserEmail()
+    console.log(userEmail)
+    //this.userService.getUserByEmail(userEmail).subscribe(res => {
+      //this.user = res;
+      //console.log(this.user)
+    //})
+
+    if(userRole === "") {
+      this.isLoggedIn = false;
+    } else {
+      this.isLoggedIn = true;
+      if(userRole == "HOST") {
+        this.isHost = true;
+      }
+      if(userRole == "GUEST") {
+        this.isGuest = true;
+      }
+    }
   }
+
   searchAccommodations() {
     console.log(this.startDate)
     console.log(this.endDate)
@@ -46,23 +77,19 @@ export class HomeComponent implements OnInit {
     console.log(this.city)
     console.log(this.numberOfGuests)
 
-    var newDate1 = new Date(this.startDate)
-    console.log(newDate1)
-    var newDate2 = new Date(newDate1.getFullYear(), newDate1.getMonth(), newDate1.getDate(), 2, 0, 0)
-    console.log(newDate2)
 
-    var newDate12 = new Date(this.endDate)
-    console.log(newDate12)
-    var newDate22 = new Date(newDate12.getFullYear(), newDate12.getMonth(), newDate12.getDate(), 2, 0, 0)
-    console.log(newDate22)
-
+    var searchParams
     var searchAccommodations = {
-      startDate: newDate1.toISOString(),
-      endDate: newDate12.toISOString(),
-      country: this.country,
-      city: this.city,
-      numberOfGuests: this.numberOfGuests
+      searchParams: {
+        country: this.country,
+        city: this.city,
+        numberOfGuests: this.numberOfGuests,
+        startDate: this.startDate,
+        endDate: this.endDate,
+      }
     }
+    console.log(searchAccommodations)
+
 
     this.accommodationService.searchAccommodations(searchAccommodations).subscribe(
       {
@@ -70,13 +97,39 @@ export class HomeComponent implements OnInit {
           console.log(res)
           this.isSearched = true;
           this.notFound = false;
-          this.accommodations = res;
+          this.accommodations = res.accommodations;
           for (let i = 0; i < this.accommodations.length; i++) {
-            let startDtae = new Date(this.accommodations[i].startDate)
-            this.accommodations[i].startDate = startDtae.toUTCString().replace('GMT', '')
-            let endDate = new Date(this.accommodations[i].endDate)
-            this.accommodations[i].endDate = endDate.toUTCString().replace('GMT', '')
+            //let startDate = new Date(this.accommodations[i].startDate)
+            //this.accommodations[i].startDate = startDate.toUTCString().replace('GMT', '')
+            //let endDate = new Date(this.accommodations[i].endDate)
+            //this.accommodations[i].endDate = endDate.toUTCString().replace('GMT', '')
+            console.log(this.accommodations[i].availabilities)
+            this.availabilities = this.accommodations[i].availabilities
+            var startDate1 = this.startDate;
+            var endDate1 = this.endDate;
+            for (let i = 0; i < this.availabilities.length; i++){
+              this.price  = this.availabilities[i].price
+              this.priceSelection = this.availabilities[i].priceSelection.toString()
+              console.log(this.price)
+              console.log(this.priceSelection)
+              if(this.priceSelection == "PER_PERSON"){
+               // console.log(this.endDate.getTime())
+                //var sub = endDate1.getDate() - startDate1.getDate()
+                //console.log(this.endDate)
+                //console.log(this.startDate)
+                //console.log(this.startDate.getDay())
+                //this.totalPrice = sub*this.price*this.numberOfGuests
+                //console.log(sub)
+                //console.log(this.totalPrice)
+              } else {
+                //var sub = this.endDate.getTime() - this.startDate.getTime()
+                //this.totalPrice = sub*this.price
+              }
+
+              //this.priceSelection = this.accommodation.availabilities[i].priceSelection
+            }
           }
+
           this.dataSource.data = this.accommodations;
           console.log(this.accommodations)
 
@@ -92,22 +145,53 @@ export class HomeComponent implements OnInit {
   }
 
   clearSearch() {
-    this.country= ''
+    this.country = ''
     this.city = ''
-    this.numberOfGuests= 1
+    this.numberOfGuests = 1
     this.startDate = new Date()
     this.endDate = new Date()
     this.isSearched = false;
     this.notFound = false;
   }
 
-  // public buyTicket(id: string) {
-  //   if(this.user == null){
-  //     this.router.navigate(['/login']);
-  //   }else if (this.user.role == "REGISTERED_USER"){
-  //     this.router.navigate(['createTicket/' + id ]);
-  //   }
-  // }
+  reserve(id: string) {
+    let userId = this.userService.getLoggedInUserId();
 
+    var NewReservation = {
+      numberOfGuests: this.numberOfGuests,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      userId: userId,
+      accommodationId: id
+    }
 
+    console.log(this.startDate);
+    console.log(this.endDate);
+
+    this.reservationService.createReservation(NewReservation).subscribe(
+      {
+        next: (res) => {
+          this.router.navigate(['/view-reservations']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully made a reservation!',
+          })
+
+        },
+        error: (e) => {
+
+          console.log(e);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'There are already reservations in that period.',
+          })
+
+        }
+
+      });
+
+  }
 }
+

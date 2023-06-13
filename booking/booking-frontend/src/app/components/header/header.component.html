@@ -10,6 +10,15 @@
     <button *ngIf="isHost" mat-button mat-ripple routerLink="/create-accommodation">
       <span>Create accommodation</span>
     </button>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/view-pending-reservations">
+      <span>Pending reservations</span>
+    </button>
+    <button *ngIf="isLoggedIn"  mat-button mat-ripple routerLink="/update-user">
+      <span>My informations</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/view-reservations">
+      <span>My reservations</span>
+    </button>
     <span class="example-spacer"></span>
     <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">
       <mat-icon>account_circle</mat-icon>

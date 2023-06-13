@@ -15,7 +15,7 @@ import { UserService } from 'src/app/service/user.service';
 export class ViewHostAccommodationComponent implements OnInit {
 
   public dataSource = new MatTableDataSource<Accommodation>();
-  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'commands'];
+  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'commands'];
   public accommodations: Accommodation[] = [];
   public accommodation: Accommodation | undefined = undefined;
 
@@ -26,24 +26,18 @@ export class ViewHostAccommodationComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private accommodationService: AccommodationService, 
+    private accommodationService: AccommodationService,
     private userService : UserService
   ) { }
 
   ngOnInit(): void {
     let userRole = this.userService.getLoggedInUserRole()
-    let userEmail = this.userService.getLoggedInUserEmail()
-    this.userService.getUserByEmail(userEmail).subscribe(res => {
-      this.user = res;
-      console.log(this.user)
-
-      this.accommodationService.getAccommodationByHostId(this.user.id).subscribe((data: any) => {
-        this.accommodations = data;
-        console.log(data);
-        this.dataSource.data = this.accommodations;
-        console.log(this.dataSource.data);
-      })
-
+    let userId = this.userService.getLoggedInUserId()
+      this.accommodationService.getAccommodationByHostId(userId).subscribe((data: any) => {
+      this.accommodations = data.accommodations;
+      console.log(this.accommodations);
+      this.dataSource.data = this.accommodations;
+      console.log(this.dataSource.data);
     })
 
     if(userRole === "") {
@@ -58,7 +52,7 @@ export class ViewHostAccommodationComponent implements OnInit {
       }
     }
 
-    
+
   }
 
   makeAvailable(id: string){

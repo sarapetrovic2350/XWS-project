@@ -7,7 +7,9 @@ import {ShowFlightsComponent} from "./components/show-flights/show-flights.compo
 import {HomeComponent} from "./components/home/home.component";
 import { ViewHostAccommodationComponent } from './components/view-host-accommodation/view-host-accommodation.component';
 import { CreateAvailabilityComponent } from './components/create-availability/create-availability.component';
-
+import { UpdateUserComponent } from './components/update-user/update-user.component';
+import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
+import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
 const routes: Routes = [
   {
     path: '',
@@ -32,6 +34,18 @@ const routes: Routes = [
   {
     path: 'createAvailability/:id', 
     component: CreateAvailabilityComponent
+  },
+  {
+    path: 'update-user', 
+    component: UpdateUserComponent
+  }, 
+  {
+    path: 'view-reservations', 
+    component: ViewReservationsComponent
+  }, 
+  {
+    path: 'view-pending-reservations', 
+    component: ViewPendingReservationsComponent
   }
 
 ];

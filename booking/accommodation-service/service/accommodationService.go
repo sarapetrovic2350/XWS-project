@@ -1,19 +1,29 @@
 package service
 
 import (
-	"Rest/dto"
-	"Rest/model"
-	"Rest/repository"
+	"accommodation-service/model"
+	"accommodation-service/repository"
+	accommodation "common/proto/accommodation-service/pb"
+	reservation "common/proto/reservation-service/pb"
+	"context"
+	"errors"
+	"fmt"
+	"strings"
+	"time"
 )
 
 type AccommodationService struct {
-	// NoSQL: injecting user repository
-	AccommodationRepo *repository.AccommodationRepo
-	AvailabilityRepo  *repository.AvailabilityRepo
+	// NoSQL: injecting AccommodationRepo
+	AccommodationRepo model.AccommodationStore
+	//AvailabilityRepo  *repository.AvailabilityRepo
+	ReservationClientAddress string
 }
 
-func NewAccommodationService(accommodationRepository *repository.AccommodationRepo, availabilityRepo *repository.AvailabilityRepo) *AccommodationService {
-	return &AccommodationService{accommodationRepository, availabilityRepo}
+func NewAccommodationService(accommodationRepository model.AccommodationStore, rca string) *AccommodationService {
+	return &AccommodationService{
+		AccommodationRepo:        accommodationRepository,
+		ReservationClientAddress: rca,
+	}
 }
 
 func (service *AccommodationService) CreateAccommodation(accommodation *model.Accommodation) error {
@@ -32,41 +42,8 @@ func (service *AccommodationService) GetAllAccommodations() (model.Accommodation
 	return accommodations, nil
 }
 
-func (service *AccommodationService) FindAccommodationsByEmail(email string) (*model.Accommodation, error) {
-	user, err := service.AccommodationRepo.FindAccommodationByEmail(email)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-func (service *AccommodationService) SearchAccommodation(searchAccommodations dto.SearchDTO) model.Accommodations {
-	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
-	var retAccommodations model.Accommodations
-	var availabilities model.Availabilities
-	for _, itr := range accommodations {
-		availabilities, _ = service.AvailabilityRepo.FindAvailabilitiesByAccommodationId(itr.Id.Hex())
-		for _, availability := range availabilities {
-			if (searchAccommodations.StartDate == availability.StartDate || searchAccommodations.StartDate.After(availability.StartDate)) &&
-				(searchAccommodations.EndDate == availability.EndDate || searchAccommodations.EndDate.Before(availability.EndDate)) {
-				if itr.MinNumberOfGuests <= searchAccommodations.NumberOfGuests && itr.MaxNumberOfGuests >= searchAccommodations.NumberOfGuests {
-					retAccommodations = append(retAccommodations, itr)
-				}
-
-			}
-
-		}
-
-	}
-	if retAccommodations != nil {
-		return retAccommodations
-	}
-	return nil
-}
-
 // dobavljanje smestaja po hostId-u, vlasnici smestaja
-func (service *AccommodationService) GetAccommodationByHostId(hostId string) (model.Accommodations, error) {
-	//user, _ = service.UserRepo.GetById(userId)
+func (service *AccommodationService) GetAccommodationsByHostId(hostId string) (model.Accommodations, error) {
 	accommodations, err := service.AccommodationRepo.GetAll()
 	var retAccommodations model.Accommodations
 	for _, itr := range accommodations {
@@ -87,4 +64,93 @@ func (service *AccommodationService) GetById(id string) (*model.Accommodation, e
 		return nil, err
 	}
 	return flight, nil
+}
+
+func (service *AccommodationService) AddAvailabilityForAccommodation(accommodation2 *model.Accommodation, availability *model.Availability) error {
+	fmt.Println("In AddAvailabilityForAccommodation accommodation service")
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	idString := accommodation2.Id.Hex()
+	getReservationsByAccommodationRequest := reservation.GetReservationsByAccommodationRequest{Id: idString}
+	reservationsForAccommodation, err := reservationClient.GetReservationsByAccommodationId(context.TODO(), &getReservationsByAccommodationRequest)
+
+	for _, itr := range reservationsForAccommodation.Reservations {
+		if itr.ReservationStatus == 1 {
+			startDate, _ := time.Parse("2006-02-01", itr.StartDate)
+			endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+			if (availability.StartDate == startDate || startDate.Before(availability.StartDate)) &&
+				(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if (availability.StartDate == startDate || startDate.After(availability.StartDate) && startDate.Before(availability.EndDate)) &&
+				(availability.EndDate == endDate || endDate.After(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if (availability.StartDate == startDate || startDate.After(availability.StartDate)) &&
+				(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if (availability.StartDate == startDate || startDate.Before(availability.StartDate) && endDate.After(availability.StartDate)) &&
+				(availability.EndDate == endDate || endDate.Before(availability.EndDate)) {
+				return errors.New("reservation exists for given period of time")
+			}
+			if availability.StartDate == endDate || availability.EndDate == startDate {
+				return errors.New("reservation exists for given period of time")
+			}
+		}
+	}
+	newAvailabilities := append(accommodation2.Availabilities, availability)
+	accommodation2.Availabilities = newAvailabilities
+	accommodationObjectID := (accommodation2.Id).Hex()
+	err = service.AccommodationRepo.Delete(accommodationObjectID)
+	if err != nil {
+		return err
+	}
+	err = service.AccommodationRepo.Insert(accommodation2)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service AccommodationService) SearchAccommodation(searchAccommodations *accommodation.GetAccommodationsByParamsRequest) model.Accommodations {
+	accommodations := service.AccommodationRepo.SearchAccommodation(searchAccommodations)
+	fmt.Println(accommodations)
+	for _, itr := range accommodations {
+		fmt.Println(itr.Name)
+	}
+	var retAccommodations model.Accommodations
+	for _, itr := range accommodations {
+		fmt.Println(itr.Availabilities)
+		for _, availability := range itr.Availabilities {
+			fmt.Println(searchAccommodations.SearchParams.StartDate)
+			fmt.Println(searchAccommodations.SearchParams.EndDate)
+			startDate1 := strings.Split(searchAccommodations.SearchParams.StartDate, "T")
+			endDate1 := strings.Split(searchAccommodations.SearchParams.EndDate, "T")
+			startDate, _ := time.Parse("2006-01-02", startDate1[0])
+			endDate, _ := time.Parse("2006-01-02", endDate1[0])
+			if (startDate == availability.StartDate || startDate.After(availability.StartDate)) &&
+				(endDate == availability.EndDate || endDate.Before(availability.EndDate)) {
+				itr.Availabilities = itr.Availabilities[:0]
+				if itr.MinNumberOfGuests <= int(searchAccommodations.SearchParams.NumberOfGuests) && itr.MaxNumberOfGuests >= int(searchAccommodations.SearchParams.NumberOfGuests) {
+					itr.Availabilities = append(itr.Availabilities, availability)
+					retAccommodations = append(retAccommodations, itr)
+				}
+
+			}
+
+		}
+
+	}
+	if retAccommodations != nil {
+		return retAccommodations
+	}
+	return nil
+}
+func (service *AccommodationService) Delete(id string) error {
+	err := service.AccommodationRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

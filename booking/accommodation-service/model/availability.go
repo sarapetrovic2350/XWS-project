@@ -8,12 +8,11 @@ import (
 )
 
 type Availability struct {
-	Id              primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	StartDate       time.Time          `json:"startDate" bson:"startDate"`
-	EndDate         time.Time          `json:"endDate" bson:"endDate"`
-	AccommodationId string             `json:"accommodationId" bson:"accommodationId"`
-	Price           float64            `json:"price" bson:"price"`
-	PriceSelection  PriceSelection     `json:"priceSelection" bson:"priceSelection"`
+	Id             primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	StartDate      time.Time          `json:"startDate" bson:"start_date"`
+	EndDate        time.Time          `json:"endDate" bson:"end_date"`
+	Price          float64            `json:"price" bson:"price"`
+	PriceSelection PriceSelection     `json:"priceSelection" bson:"price_selection"`
 }
 
 type PriceSelection int

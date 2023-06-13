@@ -9,20 +9,23 @@ import {Flight} from "../model/flight.model";
   providedIn: 'root'
 })
 export class UserService {
-  apiHost: string = 'http://localhost:8080/api/user/';
+  apiHost: string = 'http://localhost:8000/user';
   headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin' : '*',
     'Access-Control-Allow-Methods' : 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization' }  );
+  headers2: HttpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
   private user = new User();
   token: string = ""
 
   constructor(private http: HttpClient) { }
 
-  registerUser(user: User) {
-    return this.http.post<User>(this.apiHost, user);
+  registerUser(user: User): Observable<any> {
+    return this.http.post<User>(this.apiHost, user, {headers: this.headers2});
   }
 
   login(request: LoginRequest){
-    return this.http.post<any>(this.apiHost + 'login', request);
+    return this.http.post<any>(this.apiHost + '/login', request);
   }
   getDecodedAccessToken(token: string): any {
     try {
@@ -53,13 +56,35 @@ export class UserService {
       return decodedToken.email
     }
   }
-  getUserByEmail(email: string): Observable<User> {
-    return this.http.get<User>(this.apiHost + 'userByEmail/' + email);
+
+  getLoggedInUserId(): string {
+    const decodedToken = this.getDecodedAccessToken(localStorage.getItem("token")!);
+    if (decodedToken == null) {
+      return "";
+    } else {
+      return decodedToken.id
+    }
+  }
+
+  getUserByEmail(email: string): Observable<any> {
+    return this.http.get<any>(this.apiHost + '/' + email);
+  }
+
+  updateUser(user: User): Observable<any> {
+    console.log(user);
+    return this.http.post<User>(this.apiHost + '/update', user, {headers: this.headers2});
   }
 
 
   logout(){
     localStorage.clear();
     window.location.href = 'login';
+  }
+
+  deleteGuestAccount(id: any): Observable<any> {
+    return this.http.post<any>(this.apiHost + '/deleteGuest/' + id, {headers: this.headers});
+  }
+  deleteHostAccount(id: any): Observable<any> {
+    return this.http.post<any>(this.apiHost + '/deleteHost/' + id, {headers: this.headers});
   }
 }

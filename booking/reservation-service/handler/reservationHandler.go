@@ -1,88 +1,179 @@
 package handler
 
 import (
-	"Rest/model"
-	"Rest/service"
+	reservation "common/proto/reservation-service/pb"
 	"context"
-	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
+	"reservation-service/service"
 )
 
 type KeyProduct struct{}
 
 type ReservationHandler struct {
-	logger *log.Logger
-	// NoSQL: injecting user service
+	reservation.UnimplementedReservationServiceServer
 	reservationService *service.ReservationService
 }
 
-// NewUserHandler Injecting the logger makes this code much more testable.
-func NewReservationHandler(l *log.Logger, s *service.ReservationService) *ReservationHandler {
-	return &ReservationHandler{l, s}
-}
-
-func (handler *ReservationHandler) CreateReservation(rw http.ResponseWriter, h *http.Request) {
-	fmt.Println("creating")
-	var reservation model.Reservation
-	err := json.NewDecoder(h.Body).Decode(&reservation)
-	if err != nil {
-		//TODO log
-		rw.WriteHeader(http.StatusBadRequest)
-		return
+// NewReservationHandler Injecting the logger makes this code much more testable.
+func NewReservationHandler(s *service.ReservationService) *ReservationHandler {
+	return &ReservationHandler{
+		reservationService: s,
 	}
-	fmt.Println(reservation)
-	err = handler.reservationService.CreateReservation(&reservation)
-	if err != nil {
-		fmt.Println(err)
-		rw.WriteHeader(http.StatusExpectationFailed)
-	}
-	rw.WriteHeader(http.StatusCreated)
-	rw.Header().Set("Content-Type", "application/json")
 }
-
-func (handler *ReservationHandler) GetAllReservations(rw http.ResponseWriter, h *http.Request) {
+func (handler *ReservationHandler) GetAll(ctx context.Context, request *reservation.GetAllRequest) (*reservation.GetAllResponse, error) {
+	fmt.Println("In GetAll grpc api")
 	reservations, err := handler.reservationService.GetAllReservations()
 	if err != nil {
-		handler.logger.Print("Database exception: ", err)
+		return nil, err
 	}
-
-	if reservations == nil {
-		return
+	response := &reservation.GetAllResponse{
+		Reservations: []*reservation.Reservation{},
 	}
-
-	err = reservations.ToJSON(rw)
+	for _, modelReservation := range reservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) CreateReservation(ctx context.Context, request *reservation.CreateReservationRequest) (*reservation.CreateReservationResponse, error) {
+	modelReservation := mapNewReservation(request.Reservation)
+	err := handler.reservationService.CreateReservation(modelReservation)
 	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		handler.logger.Fatal("Unable to convert to json :", err)
-		return
+		return nil, err
 	}
+	return &reservation.CreateReservationResponse{
+		Reservation: mapReservation(modelReservation),
+	}, nil
+}
+func (handler *ReservationHandler) GetReservationsByAccommodationId(ctx context.Context, request *reservation.GetReservationsByAccommodationRequest) (*reservation.GetReservationsByAccommodationResponse, error) {
+	fmt.Println("In GetReservationsByAccommodationId grpc api")
+	fmt.Println(request)
+	activeReservations, err := handler.reservationService.GetReservationsByAccommodationId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetReservationsByAccommodationResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range activeReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) GetActiveReservationsByGuestId(ctx context.Context, request *reservation.GetActiveReservationsRequest) (*reservation.GetActiveReservationsResponse, error) {
+	fmt.Println("In GetActiveReservationsByGuestId grpc api")
+	fmt.Println(request)
+	activeReservations, err := handler.reservationService.GetActiveReservationsByGuestId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetActiveReservationsResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range activeReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) GetReservationsByUserId(ctx context.Context, request *reservation.GetReservationsByUserIdRequest) (*reservation.GetReservationsByUserIdResponse, error) {
+	fmt.Println("In GetReservationsByUserId grpc api")
+	fmt.Println(request)
+	reservations, err := handler.reservationService.GetReservationsByUserId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetReservationsByUserIdResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range reservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) GetActiveReservationsByHostId(ctx context.Context, request *reservation.GetActiveReservationsRequest) (*reservation.GetActiveReservationsResponse, error) {
+	fmt.Println("In GetActiveReservationsByHostId grpc api")
+	fmt.Println(request)
+	activeReservations, err := handler.reservationService.GetActiveReservationsByHostId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetActiveReservationsResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range activeReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
 }
 
-func (handler *ReservationHandler) MiddlewareReservationDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		reservation := &model.Reservation{}
-		err := reservation.FromJSON(h.Body)
-		if err != nil {
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-			handler.logger.Fatal(err)
-			return
-		}
-
-		ctx := context.WithValue(h.Context(), KeyProduct{}, reservation)
-		h = h.WithContext(ctx)
-
-		next.ServeHTTP(rw, h)
-	})
+func (handler *ReservationHandler) DeletePendingReservationByGuest(ctx context.Context, request *reservation.DeleteReservationRequest) (*reservation.DeleteReservationResponse, error) {
+	deletedReservation, err := handler.reservationService.GetById(request.Id)
+	err = handler.reservationService.Delete(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.DeleteReservationResponse{
+		Reservation: mapReservation(deletedReservation)}, nil
+}
+func (handler *ReservationHandler) CancelReservationByGuest(ctx context.Context, request *reservation.CancelReservationRequest) (*reservation.CancelReservationResponse, error) {
+	canceledReservation, err := handler.reservationService.CancelReservation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.CancelReservationResponse{
+		Reservation: mapReservation(canceledReservation)}, nil
+}
+func (handler *ReservationHandler) GetPendingReservationsForHost(ctx context.Context, request *reservation.GetPendingReservationsForHostRequest) (*reservation.GetPendingReservationsForHostResponse, error) {
+	fmt.Println("In GetPendingReservationsForHost grpc api")
+	fmt.Println(request)
+	pendingReservations, err := handler.reservationService.GetPendingReservationsForHost(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetPendingReservationsForHostResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range pendingReservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
+}
+func (handler *ReservationHandler) GetReservationsForHost(ctx context.Context, request *reservation.GetReservationsForHostRequest) (*reservation.GetReservationsForHostResponse, error) {
+	fmt.Println("In GetReservationsForHost grpc api")
+	fmt.Println(request)
+	reservations, err := handler.reservationService.GetReservationsForHost(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetReservationsForHostResponse{
+		Reservations: []*reservation.Reservation{},
+	}
+	for _, modelReservation := range reservations {
+		current := mapReservation(modelReservation)
+		response.Reservations = append(response.Reservations, current)
+	}
+	return response, nil
 }
 
-func (handler *ReservationHandler) MiddlewareContentTypeSet(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		handler.logger.Println("Method [", h.Method, "] - Hit path :", h.URL.Path)
+func (handler *ReservationHandler) RejectPendingReservationByHost(ctx context.Context, request *reservation.RejectPendingReservationRequest) (*reservation.ReservationResponse, error) {
+	rejectedReservation, err := handler.reservationService.RejectReservation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.ReservationResponse{
+		Reservation: mapReservation(rejectedReservation)}, nil
+}
 
-		rw.Header().Add("Content-Type", "application/json")
-
-		next.ServeHTTP(rw, h)
-	})
+func (handler *ReservationHandler) AcceptPendingReservationByHost(ctx context.Context, request *reservation.AcceptPendingReservationRequest) (*reservation.ReservationResponse, error) {
+	acceptedReservation, err := handler.reservationService.AcceptReservation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &reservation.ReservationResponse{
+		Reservation: mapReservation(acceptedReservation)}, nil
 }

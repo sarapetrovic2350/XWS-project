@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+option go_package = "common/accommodation";
+package accommodation;
+
+import "google/api/annotations.proto";
+
+service AccommodationService {
+  rpc GetAll(GetAllRequest) returns (AccommodationsResponse) {
+    option (google.api.http) = {
+      get: "/accommodation"
+    };
+  }
+  rpc GetAccommodationById(GetAccommodationByIdRequest) returns (AccommodationResponse) {
+    option (google.api.http) = {
+      get: "/accommodation/{id}"
+    };
+  }
+  rpc GetAccommodationsByHostId(GetAccommodationsByHostIdRequest) returns (AccommodationsResponse) {
+    option (google.api.http) = {
+      get: "/accommodation/byHost/{hostId}"
+    };
+  }
+  rpc DeleteAccommodation(DeleteAccommodationRequest) returns(AccommodationResponse){
+    option (google.api.http) = {
+      post: "/accommodation/delete/{id}"
+      body: "*"
+    };
+  }
+  rpc DeleteAccommodationsByHostId(DeleteAccommodationsByHostIdRequest) returns(AccommodationsResponse){
+    option (google.api.http) = {
+      post: "/accommodation/deleteByHost/{id}"
+      body: "*"
+    };
+  }
+  rpc CreateAccommodation(CreateAccommodationRequest) returns(AccommodationResponse) {
+    option (google.api.http) = {
+      post: "/accommodation"
+      body: "accommodation"
+    };
+  }
+  rpc CreateAvailability(CreateAvailabilityRequest) returns(AccommodationResponse) {
+    option (google.api.http) = {
+      post: "/accommodation/createAvailability"
+      body: "availabilityForAccommodation"
+    };
+  }
+  rpc Search(GetAccommodationsByParamsRequest) returns (AccommodationsResponse) {
+    option (google.api.http) = {
+      post: "/accommodation/search"
+      body: "*"
+    };
+  }
+}
+
+message GetAllRequest{
+}
+
+message GetAccommodationsByHostIdRequest {
+  string hostId = 1;
+}
+message GetAccommodationByIdRequest {
+  string id = 1;
+}
+
+message DeleteAccommodationRequest {
+  string id = 1;
+}
+message DeleteAccommodationsByHostIdRequest {
+  string id = 1;
+}
+message CreateAccommodationRequest {
+  NewAccommodation accommodation = 1;
+}
+message GetAccommodationsByParamsRequest {
+  SearchParams searchParams = 1;
+}
+
+message SearchParams{
+  string city = 1;
+  string country = 2;
+  uint32 numberOfGuests = 3;
+  string startDate = 4;
+  string endDate = 5;
+}
+
+message AccommodationResponse {
+  Accommodation accommodation = 1;
+}
+
+message AccommodationsResponse{
+  repeated Accommodation accommodations = 1;
+}
+
+message Accommodation {
+  string id = 1;
+  string name = 2;
+  int32 minNumberOfGuests = 3;
+  int32 maxNumberOfGuests = 4;
+  AddressDTO address = 5;
+  string hostID = 6;
+  repeated string benefits = 7;
+  repeated Availability availabilities = 8;
+}
+
+message CreateAvailabilityRequest{
+  NewAvailabilityForAccommodation availabilityForAccommodation = 1;
+}
+
+message NewAvailabilityForAccommodation {
+  string accommodationId = 1;
+  NewAvailability availability = 2;
+}
+message NewAvailability {
+  string startDate = 1;
+  string endDate = 2;
+  float price = 3;
+  PriceSelection priceSelection = 4;
+}
+
+message CreateAvailabilityResponse{
+  Availability availability = 1;
+}
+
+message Availability {
+  string id = 1;
+  string startDate = 2;
+  string endDate = 3;
+  float price = 4;
+  PriceSelection priceSelection = 5;
+}
+
+enum PriceSelection {
+  PER_PERSON = 0;
+  PER_ACCOMMODATION = 1;
+}
+
+message NewAccommodation {
+  string name = 1;
+  int32 minNumberOfGuests = 2;
+  int32 maxNumberOfGuests = 3;
+  AddressDTO address = 4;
+  string hostID = 5;
+  repeated string benefits = 6;
+  repeated Availability availabilities = 7;
+}
+
+message AddressDTO {
+  string street = 1;
+  string city = 2;
+  string country = 3;
+  string number = 4;
+}

@@ -2,91 +2,106 @@ version: "3.8"
 
 services:
 
-  gateway:
-    image: nginx:1.19.8-alpine
-    ports:
-      - "8080:8080"
-    networks:
-      - backend
-    volumes:
-      - ./Gateway/nginx.conf:/etc/nginx/nginx.conf
-      - ./Gateway/api_gateway.conf:/etc/nginx/api_gateway.conf
-      
-  user-service:
-    image: user-service:compose_build
-    restart: on-failure
+  api-gateway:
+    image: api-gateway
+    container_name: api-gateway
     build:
-      context: ./user-service
-      dockerfile: Dockerfile
-    networks:
-      - backend
+      context: .
+      dockerfile: ./api-gateway/Dockerfile
+    restart: on-failure
+    ports:
+      - ${GATEWAY_PORT}:${GATEWAY_PORT}
     environment:
-      PORT: ${USER_SERVICE_PORT}
+      GATEWAY_PORT: ${GATEWAY_PORT}
+      USER_SERVICE_DOMAIN: ${USER_SERVICE_DOMAIN}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      RESERVATION_SERVICE_DOMAIN: ${RESERVATION_SERVICE_DOMAIN}
+      RESERVATION_SERVICE_PORT: ${RESERVATION_SERVICE_PORT}
+      ACCOMMODATION_SERVICE_DOMAIN: ${ACCOMMODATION_SERVICE_DOMAIN}
+      ACCOMMODATION_SERVICE_PORT: ${ACCOMMODATION_SERVICE_PORT}
+
+    networks:
+      - network
+
+  user-service:
+    image: user-service
+    container_name: user-service
+    build:
+      context: .
+      dockerfile: ./user-service/Dockerfile
+    restart: on-failure
+    environment:
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       USER_DB_DOMAIN: ${USER_DB_DOMAIN}
       USER_DB_PORT: ${USER_DB_PORT}
+      RESERVATION_SERVICE_PORT: ${RESERVATION_SERVICE_PORT}
+      RESERVATION_SERVICE_DOMAIN: ${RESERVATION_SERVICE_DOMAIN}
+      ACCOMMODATION_SERVICE_PORT: ${ACCOMMODATION_SERVICE_PORT}
+      ACCOMMODATION_SERVICE_DOMAIN: ${ACCOMMODATION_SERVICE_DOMAIN}
     depends_on:
       - user_db
+    networks:
+      - network
 
   user_db:
     image: mongo
     container_name: user_db
     restart: on-failure
     networks:
-      - backend
+      - network
     ports:
       - "27017:27017"
-
-  accommodation_db:
-    image: mongo
-    container_name: accommodation_db
-    restart: on-failure
-    networks:
-      - backend
-
-  accommodation-service:
-    image: accommodation-service:compose_build
-    restart: on-failure
-    build:
-      context: ./accommodation-service
-      dockerfile: Dockerfile
-    networks:
-      - backend
-    environment:
-      USER_SERVICE_DOMAIN: ${USER_SERVICE_DOMAIN}
-      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
-      ACCOMMODATION_DB_DOMAIN: ${ACCOMMODATION_DB_DOMAIN}
-      ACCOMMODATION_DB_PORT: ${ACCOMMODATION_DB_PORT}
-      PORT: ${ACCOMMODATION_SERVICE_PORT}
-    depends_on:
-      - accommodation_db
 
   reservation_db:
     image: mongo
     container_name: reservation_db
     restart: on-failure
     networks:
-      - backend
+      - network
 
   reservation-service:
-    image: reservation-service:compose_build
-    restart: on-failure
+    image: reservation-service
+    container_name: reservation-service
     build:
-      context: ./reservation-service
-      dockerfile: Dockerfile
-    networks:
-      - backend
+      context: .
+      dockerfile: ./reservation-service/Dockerfile
+    restart: on-failure
     environment:
-      USER_SERVICE_DOMAIN: ${USER_SERVICE_DOMAIN}
-      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
-      ACCOMMODATION_DB_DOMAIN: ${ACCOMMODATION_DB_DOMAIN}
-      ACCOMMODATION_DB_PORT: ${ACCOMMODATION_DB_PORT}
+      RESERVATION_SERVICE_PORT: ${RESERVATION_SERVICE_PORT}
       RESERVATION_DB_DOMAIN: ${RESERVATION_DB_DOMAIN}
       RESERVATION_DB_PORT: ${RESERVATION_DB_PORT}
-      PORT: ${RESERVATION_SERVICE_PORT}
+      ACCOMMODATION_SERVICE_PORT: ${ACCOMMODATION_SERVICE_PORT}
+      ACCOMMODATION_SERVICE_DOMAIN: ${ACCOMMODATION_SERVICE_DOMAIN}
     depends_on:
       - reservation_db
+    networks:
+      - network
+
+  accommodation-service:
+    image: accommodation-service
+    container_name: accommodation-service
+    build:
+      context: .
+      dockerfile: ./accommodation-service/Dockerfile
+    restart: on-failure
+    environment:
+      ACCOMMODATION_SERVICE_PORT: ${ACCOMMODATION_SERVICE_PORT}
+      ACCOMMODATION_DB_DOMAIN: ${ACCOMMODATION_DB_DOMAIN}
+      ACCOMMODATION_DB_PORT: ${ACCOMMODATION_DB_PORT}
+      RESERVATION_SERVICE_PORT: ${RESERVATION_SERVICE_PORT}
+      RESERVATION_SERVICE_DOMAIN: ${RESERVATION_SERVICE_DOMAIN}
+    depends_on:
+      - accommodation_db
+    networks:
+      - network
+
+  accommodation_db:
+    image: mongo
+    container_name: accommodation_db
+    restart: on-failure
+    networks:
+      - network
 
 networks:
-  backend:
-    name: booking
+  network:
     driver: bridge

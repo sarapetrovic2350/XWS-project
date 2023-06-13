@@ -8,6 +8,7 @@ import (
 
 type Accommodation struct {
 	Id                primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Availabilities    []*Availability    `json:"availabilities" bson:"availabilities"`
 	Name              string             `json:"name" bson:"name"`
 	MinNumberOfGuests int                `json:"minNumberOfGuests" bson:"min_number_of_guests"`
 	MaxNumberOfGuests int                `json:"maxNumberOfGuests" bson:"max_number_of_guests"`

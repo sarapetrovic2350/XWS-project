@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+option go_package = "common/reservation";
+package reservation;
+
+import "google/api/annotations.proto";
+
+service ReservationService {
+  rpc GetAll(GetAllRequest) returns (GetAllResponse) {
+    option (google.api.http) = {
+      get: "/reservation"
+    };
+  }
+  rpc GetActiveReservationsByGuestId(GetActiveReservationsRequest) returns (GetActiveReservationsResponse) {
+    option (google.api.http) = {
+      get: "/getActiveReservationsByGuestId/{id}"
+    };
+  }
+  rpc GetReservationsByUserId(GetReservationsByUserIdRequest) returns (GetReservationsByUserIdResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsByUserId/{id}"
+    };
+  }
+  rpc GetReservationsByAccommodationId(GetReservationsByAccommodationRequest) returns (GetReservationsByAccommodationResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsByAccommodationId/{id}"
+    };
+  }
+  rpc GetActiveReservationsByHostId(GetActiveReservationsRequest) returns (GetActiveReservationsResponse) {
+    option (google.api.http) = {
+      get: "/getActiveReservationsByHostId/{id}"
+    };
+  }
+  rpc GetPendingReservationsForHost(GetPendingReservationsForHostRequest) returns (GetPendingReservationsForHostResponse) {
+    option (google.api.http) = {
+      get: "/getPendingReservationsForHost/{id}"
+    };
+  }
+  rpc GetReservationsForHost(GetReservationsForHostRequest) returns (GetReservationsForHostResponse) {
+    option (google.api.http) = {
+      get: "/getReservationsForHost/{id}"
+    };
+  }
+  rpc RejectPendingReservationByHost(RejectPendingReservationRequest) returns(ReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation/rejectPendingReservation/{id}"
+    };
+  }
+  rpc AcceptPendingReservationByHost(AcceptPendingReservationRequest) returns(ReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation/acceptPendingReservation/{id}"
+    };
+  }
+
+  rpc DeletePendingReservationByGuest(DeleteReservationRequest) returns(DeleteReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation/deletePendingReservation/{id}"
+    };
+  }
+  rpc CancelReservationByGuest(CancelReservationRequest) returns(CancelReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation/cancelReservationByGuest/{id}"
+    };
+  }
+  rpc CreateReservation(CreateReservationRequest) returns(CreateReservationResponse) {
+    option (google.api.http) = {
+      post: "/reservation"
+      body: "reservation"
+    };
+  }
+}
+message GetAllRequest{
+}
+
+message GetAllResponse{
+  repeated Reservation reservations = 1;
+}
+message CreateReservationRequest {
+  NewReservation reservation = 1;
+}
+message CreateReservationResponse {
+  Reservation reservation = 1;
+}
+
+message NewReservation {
+  int32 numberOfGuests = 1;
+  string startDate = 2;
+  string endDate = 3;
+  string userId = 4;
+  string accommodationId = 5;
+}
+
+message Reservation {
+  string id = 1;
+  int32 numberOfGuests = 2;
+  string startDate = 3;
+  string endDate = 4;
+  string userId = 5;
+  string accommodationId = 6;
+  ReservationStatus reservationStatus = 7;
+}
+
+enum ReservationStatus {
+  PENDING = 0;
+  ACCEPTED = 1;
+  CANCELED = 2;
+  REJECTED = 3;
+}
+message GetActiveReservationsRequest {
+  string id = 1;
+}
+message GetReservationsByUserIdRequest {
+  string id = 1;
+}
+message GetReservationsByUserIdResponse {
+  repeated Reservation reservations = 1;
+}
+message GetActiveReservationsResponse {
+  repeated Reservation reservations = 1;
+}
+message GetReservationsByAccommodationRequest {
+  string id = 1;
+}
+message GetReservationsByAccommodationResponse {
+  repeated Reservation reservations = 1;
+}
+message DeleteReservationRequest{
+  string id = 1;
+}
+message DeleteReservationResponse{
+  Reservation reservation = 1;
+}
+message CancelReservationRequest {
+  string id = 1;
+}
+message CancelReservationResponse {
+  Reservation reservation = 1;
+}
+message GetPendingReservationsForHostRequest {
+  string id = 1;
+}
+message GetPendingReservationsForHostResponse {
+  repeated Reservation reservations = 1;
+}
+message RejectPendingReservationRequest {
+  string id = 1;
+}
+message AcceptPendingReservationRequest {
+  string id = 1;
+}
+message ReservationResponse {
+  Reservation reservation = 1;
+}
+message GetReservationsForHostRequest {
+  string id = 1;
+}
+message GetReservationsForHostResponse {
+  repeated Reservation reservations = 1;
+}
