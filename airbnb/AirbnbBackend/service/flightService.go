@@ -16,6 +16,7 @@ func NewFlightService(r *repository.FlightRepo) *FlightService {
 }
 
 func (service *FlightService) CreateFlight(flight *model.Flight) error {
+	flight.FlightStatus = model.ONTIME
 	err := service.FlightRepo.Insert(flight)
 	if err != nil {
 		return err
@@ -58,6 +59,15 @@ func (service *FlightService) UpdateFlight(id string, flight *model.Flight) erro
 
 func (service *FlightService) DeleteFlight(id string) error {
 	err := service.FlightRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *FlightService) CancelFlight(id string, flight *model.Flight) error {
+	flight.FlightStatus = model.CANCELLED
+	err := service.FlightRepo.Update(id, flight)
 	if err != nil {
 		return err
 	}
