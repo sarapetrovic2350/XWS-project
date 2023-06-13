@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"Rest/model"
+	"time"
+)
 
 type Login struct {
 	Email    string `json:"email"`
@@ -8,13 +11,14 @@ type Login struct {
 }
 
 type PurchasedTickets struct {
-	Id              string `json:"id"`
-	DateOfPurchase  string `json:"dateOfPurchase"`
-	DateOfDeparture string `json:"dateOfDeparture"`
-	Departure       string `json:"departure"`
-	Arrival         string `json:"arrival"`
-	NumberOfTickets int    `json:"numberOfTickets"`
-	TotalPrice      int    `json:"totalPrice"`
+	Id              string             `json:"id"`
+	DateOfPurchase  string             `json:"dateOfPurchase"`
+	DateOfDeparture string             `json:"dateOfDeparture"`
+	Departure       string             `json:"departure"`
+	Arrival         string             `json:"arrival"`
+	NumberOfTickets int                `json:"numberOfTickets"`
+	TotalPrice      int                `json:"totalPrice"`
+	FlightStatus    model.FlightStatus `json:"flightStatus"`
 }
 type FlightDTO struct {
 	Id                 string `json:"id"`

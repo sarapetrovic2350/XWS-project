@@ -61,7 +61,7 @@ func (service *TicketService) GetByUserId(userId string) ([]dto.PurchasedTickets
 			flight, _ := service.FlightRepo.GetById(itr.IdFlight)
 			retTickets = append(retTickets, dto.PurchasedTickets{Id: itr.Id.String(), DateOfPurchase: itr.DateOfPurchase.String(),
 				DateOfDeparture: flight.DepartureDateTime.String(), Departure: flight.Departure, Arrival: flight.Arrival, NumberOfTickets: itr.NumberOfTickets,
-				TotalPrice: itr.TotalPrice})
+				TotalPrice: itr.TotalPrice, FlightStatus: flight.FlightStatus})
 		}
 	}
 

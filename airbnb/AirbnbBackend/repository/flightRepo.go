@@ -101,6 +101,7 @@ func (repo *FlightRepo) Update(id string, flight *model.Flight) error {
 		"price":                 flight.Price,
 		"total_number_of_seats": flight.TotalNumberOfSeats,
 		"available_seats":       flight.AvailableSeats,
+		"flight_status":         flight.FlightStatus,
 	}}
 	result, err := flightsCollection.UpdateOne(ctx, filter, update)
 	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)

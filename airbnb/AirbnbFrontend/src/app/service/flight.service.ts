@@ -34,5 +34,8 @@ export class FlightService {
     return this.http.post<Flight[]>(this.apiHost + 'flights/searchFlights', searchFlights);
   }
 
+  cancelFlight(id: any): Observable<any>{
+    return this.http.put<any>(this.apiHost + 'flights/cancelFlight/' + id, {headers: this.headers});
+  }
 
 }
