@@ -11,6 +11,12 @@ service RatingService {
       get: "/ratingsHost"
     };
   }
+  rpc CreateRatingForHost(CreateRatingForHostRequest) returns (CreateRatingForHostResponse) {
+    option (google.api.http) = {
+      post: "/createRatingForHost"
+      body: "ratingHost"
+    };
+  }
 }
 message GetAllRatingsHostRequest{
 }
@@ -22,4 +28,15 @@ message RatingHost {
   string hostId = 2;
   string guestId = 3;
   int32 rate = 4;
+}
+message NewRatingHost {
+  string hostId = 1;
+  string guestId = 2;
+  int32 rate = 3;
+}
+message CreateRatingForHostRequest {
+  NewRatingHost ratingHost = 1;
+}
+message CreateRatingForHostResponse {
+  RatingHost ratingHost = 1;
 }

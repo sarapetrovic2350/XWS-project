@@ -33,3 +33,13 @@ func (handler *RatingHandler) GetAllRatingsHost(ctx context.Context, request *ra
 	}
 	return response, nil
 }
+func (handler *RatingHandler) CreateRatingForHost(ctx context.Context, request *rating.CreateRatingForHostRequest) (*rating.CreateRatingForHostResponse, error) {
+	modelRatingHost := mapNewRatingHost(request.RatingHost)
+	err := handler.ratingService.CreateRatingForHost(modelRatingHost)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.CreateRatingForHostResponse{
+		RatingHost: mapRatingHost(modelRatingHost),
+	}, nil
+}

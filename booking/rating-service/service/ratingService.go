@@ -1,7 +1,14 @@
 package service
 
 import (
+	accommodation "common/proto/accommodation-service/pb"
+	reservation "common/proto/reservation-service/pb"
+	"context"
+	"errors"
+	"fmt"
 	"rating-service/model"
+	"rating-service/repository"
+	"time"
 )
 
 type RatingService struct {
@@ -25,4 +32,38 @@ func (service *RatingService) GetAllRatingsHost() (model.RatingsHost, error) {
 		return nil, err
 	}
 	return users, nil
+}
+func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) error {
+	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
+	if areValidPastReservationsForGuest {
+		err := service.RatingRepo.InsertRatingHost(ratingHost)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return errors.New("guest does not have a reservation in past that is not canceled")
+
+}
+func (service *RatingService) CheckPastReservationsForGuest(hostId string, guestId string) bool {
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	getReservationsByGuestIdRequest := reservation.GetReservationsByUserIdRequest{Id: guestId}
+	reservationsForGuest, _ := reservationClient.GetReservationsByUserId(context.TODO(), &getReservationsByGuestIdRequest)
+	fmt.Println(reservationsForGuest.Reservations)
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	for _, itr := range reservationsForGuest.Reservations {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInReservation, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		fmt.Println(accommodationInReservation)
+		if accommodationInReservation == nil {
+			continue
+		}
+		endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+		if endDate.Before(time.Now()) && accommodationInReservation.Accommodation.HostID == hostId && itr.ReservationStatus == 1 {
+			return true
+		}
+	}
+	return false
 }
