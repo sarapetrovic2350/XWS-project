@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "common/rating";
+package rating;
+
+import "google/api/annotations.proto";
+
+service RatingService {
+  rpc GetAllRatingsHost(GetAllRatingsHostRequest) returns (GetAllRatingsHostResponse) {
+    option (google.api.http) = {
+      get: "/ratingsHost"
+    };
+  }
+}
+message GetAllRatingsHostRequest{
+}
+message GetAllRatingsHostResponse{
+  repeated RatingHost ratingsHost = 1;
+}
+message RatingHost {
+  string id = 1;
+  string hostId = 2;
+  string guestId = 3;
+  int32 rate = 4;
+}

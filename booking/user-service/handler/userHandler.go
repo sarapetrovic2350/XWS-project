@@ -8,8 +8,6 @@ import (
 	"user-service/service"
 )
 
-type KeyProduct struct{}
-
 type UserHandler struct {
 	user.UnimplementedUserServiceServer
 	userService *service.UserService
