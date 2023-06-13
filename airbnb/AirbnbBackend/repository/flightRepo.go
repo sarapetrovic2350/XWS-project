@@ -137,7 +137,8 @@ func (repo *FlightRepo) SearchFlights(searchCriteria dto.SearchDTO) model.Flight
 
 	end := time.Date(searchCriteria.Date.Year(), searchCriteria.Date.Month(), searchCriteria.Date.Day(), 23, 59, 59, 999999999, time.UTC)
 	fmt.Println(end)
-	filter := bson.M{"departure": searchCriteria.Departure, "arrival": searchCriteria.Arrival, "departure_date_time": bson.M{"$gte": searchCriteria.Date, "$lt": end}, "available_seats": bson.M{"$gte": searchCriteria.AvailableSeats}}
+	filter := bson.M{"departure": searchCriteria.Departure, "arrival": searchCriteria.Arrival, "departure_date_time": bson.M{"$gte": searchCriteria.Date, "$lt": end}, "available_seats": bson.M{"$gte": searchCriteria.AvailableSeats},
+		"flight_status": model.ONTIME}
 
 	var flights model.Flights
 	flightsCollection := repo.getCollection()
