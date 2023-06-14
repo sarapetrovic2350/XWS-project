@@ -13,4 +13,5 @@ type RatingStore interface {
 	//InsertRatingAccommodation(rh *RatingAccommodation) error
 	DeleteAll()
 	DeleteRatingForHost(id string) error
+	GetAllRatingHostByHostId(id string) (*RatingsHost, error)
 }

@@ -41,6 +41,14 @@ func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, e
 	return ratingHost, nil
 }
 
+func (service *RatingService) GetAllRatingHostByHostId(id string) (*model.RatingsHost, error) {
+	ratingsHost, err := service.RatingRepo.GetAllRatingHostByHostId(id)
+	if err != nil {
+		return nil, err
+	}
+	return ratingsHost, nil
+}
+
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
 	if areValidPastReservationsForGuest {
@@ -54,6 +62,23 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 	return nil, errors.New("guest does not have a reservation in past that is not canceled")
 
 }
+
+func (service *RatingService) GetAvgRatingForHost(id string) (float32, error) {
+	ratingsHost, err := service.RatingRepo.GetAllRatingHostByHostId(id)
+	if err != nil {
+		return 0.0, err
+	}
+
+	ratings := *ratingsHost
+	var totalRating uint32
+	for _, rating := range ratings {
+		totalRating += rating.Rate
+	}
+
+	avgRating := float32(totalRating) / float32(len(ratings))
+	return avgRating, nil
+}
+
 func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
 	ratingAccommodation.Date = time.Now()
 	fmt.Println(ratingAccommodation)
