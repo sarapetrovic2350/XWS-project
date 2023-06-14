@@ -72,7 +72,6 @@ func (repo *RatingRepo) InsertRatingHost(rh *model.RatingHost) error {
 	return nil
 }
 func (repo *RatingRepo) InsertRatingAccommodation(rh *model.RatingAccommodation) error {
-	fmt.Println("repo")
 	result, err := repo.ratingsAccommodation.InsertOne(context.TODO(), rh)
 	if err != nil {
 		return err

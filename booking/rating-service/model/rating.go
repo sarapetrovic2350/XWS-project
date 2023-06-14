@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"io"
+	"time"
 )
 
 type RatingHost struct {
@@ -11,12 +12,14 @@ type RatingHost struct {
 	HostId  string             `json:"hostId" bson:"host_id"`
 	GuestId string             `json:"guestId" bson:"guest_id"`
 	Rate    uint32             `json:"rate" bson:"rate"`
+	Date    time.Time          `json:"date" bson:"date"`
 }
 type RatingAccommodation struct {
 	Id              primitive.ObjectID `bson:"_id" json:"id"`
 	AccommodationId string             `json:"accommodationId" bson:"accommodation_id"`
 	GuestId         string             `json:"guestId" bson:"guest_id"`
 	Rate            uint32             `json:"rate" bson:"rate"`
+	Date            time.Time          `json:"date" bson:"date"`
 }
 
 type RatingsHost []*RatingHost

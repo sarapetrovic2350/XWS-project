@@ -41,26 +41,27 @@ func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, e
 	return ratingHost, nil
 }
 
-func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) error {
+func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
 	if areValidPastReservationsForGuest {
+		ratingHost.Date = time.Now()
 		err := service.RatingRepo.InsertRatingHost(ratingHost)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		return nil
+		return ratingHost, nil
 	}
-	return errors.New("guest does not have a reservation in past that is not canceled")
+	return nil, errors.New("guest does not have a reservation in past that is not canceled")
 
 }
-func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) error {
-	fmt.Println("CreateRatingForAccommodation service")
+func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
+	ratingAccommodation.Date = time.Now()
 	fmt.Println(ratingAccommodation)
 	err := service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return ratingAccommodation, nil
 }
 func (service *RatingService) CheckPastReservationsForGuest(hostId string, guestId string) bool {
 	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)

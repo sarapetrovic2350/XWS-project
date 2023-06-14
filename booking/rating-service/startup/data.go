@@ -3,6 +3,7 @@ package startup
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"rating-service/model"
+	"time"
 )
 
 var ratingsHost = []*model.RatingHost{
@@ -11,6 +12,7 @@ var ratingsHost = []*model.RatingHost{
 		HostId:  "host1Id",
 		GuestId: "guest1Id",
 		Rate:    5,
+		Date:    time.Now(),
 	},
 }
 var ratingsAccommodation = []*model.RatingAccommodation{
@@ -19,6 +21,7 @@ var ratingsAccommodation = []*model.RatingAccommodation{
 		AccommodationId: "accommodationId1",
 		GuestId:         "guest1Id",
 		Rate:            5,
+		Date:            time.Now(),
 	},
 }
 

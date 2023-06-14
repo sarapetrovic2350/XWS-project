@@ -45,22 +45,26 @@ message RatingHost {
   string hostId = 2;
   string guestId = 3;
   int32 rate = 4;
+  string date = 5;
 }
 message NewRatingHost {
   string hostId = 1;
   string guestId = 2;
   int32 rate = 3;
+  string date = 4;
 }
 message RatingAccommodation {
   string id = 1;
   string accommodationId = 2;
   string guestId = 3;
   int32 rate = 4;
+  string date = 5;
 }
 message NewRatingAccommodation {
   string accommodationId = 1;
   string guestId = 2;
   int32 rate = 3;
+  string date = 4;
 }
 message CreateRatingForHostRequest {
   NewRatingHost ratingHost = 1;
