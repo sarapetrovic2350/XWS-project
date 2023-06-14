@@ -50,6 +50,11 @@ service RatingService {
       body: "ratingAccommodation"
     };
   }
+  rpc GetAvgRatingForHost(GetAvgRatingForHostRequest) returns (GetAvgRatingForHostResponse) {
+    option (google.api.http) = {
+      get: "/getAvgRatingForHost/{hostId}"
+    };
+  }
 }
 message GetAllRatingsHostRequest{
 }
@@ -87,6 +92,7 @@ message NewRatingAccommodation {
   int32 rate = 3;
   string date = 4;
 }
+
 message CreateRatingForHostRequest {
   NewRatingHost ratingHost = 1;
 }
@@ -122,4 +128,10 @@ message UpdateRatingForAccommodationRequest{
 }
 message UpdateRatingForAccommodationResponse{
   RatingAccommodation ratingAccommodation = 1;
+}
+message GetAvgRatingForHostRequest{
+  string hostId = 1;
+}
+message GetAvgRatingForHostResponse{
+  float avgRating = 1;
 }

@@ -47,6 +47,13 @@ export class HomeComponent implements OnInit {
   isHost: boolean = false;
   isGuest: boolean = false;
 
+  public filteredAccommodations: Accommodation[] = [];
+  public minPrice: number = 0;
+  public maxPrice: number = Infinity;
+  public selectedBenefits: string[] = [];
+  public benefits: string[] = ['Wifi', 'Free Parking', 'Private Bathroom', 'Shared Bathroom', 'Kitchen',
+  'Air Conditioner'];
+
   ngOnInit(): void {
     //this.role = this.userService.getLoggedInUserRole();
     let userRole = this.userService.getLoggedInUserRole()
@@ -99,39 +106,19 @@ export class HomeComponent implements OnInit {
           this.notFound = false;
           this.accommodations = res.accommodations;
           for (let i = 0; i < this.accommodations.length; i++) {
-            //let startDate = new Date(this.accommodations[i].startDate)
-            //this.accommodations[i].startDate = startDate.toUTCString().replace('GMT', '')
-            //let endDate = new Date(this.accommodations[i].endDate)
-            //this.accommodations[i].endDate = endDate.toUTCString().replace('GMT', '')
-            console.log(this.accommodations[i].availabilities)
             this.availabilities = this.accommodations[i].availabilities
             var startDate1 = this.startDate;
             var endDate1 = this.endDate;
             for (let i = 0; i < this.availabilities.length; i++){
               this.price  = this.availabilities[i].price
               this.priceSelection = this.availabilities[i].priceSelection.toString()
-              console.log(this.price)
-              console.log(this.priceSelection)
-              if(this.priceSelection == "PER_PERSON"){
-               // console.log(this.endDate.getTime())
-                //var sub = endDate1.getDate() - startDate1.getDate()
-                //console.log(this.endDate)
-                //console.log(this.startDate)
-                //console.log(this.startDate.getDay())
-                //this.totalPrice = sub*this.price*this.numberOfGuests
-                //console.log(sub)
-                //console.log(this.totalPrice)
-              } else {
-                //var sub = this.endDate.getTime() - this.startDate.getTime()
-                //this.totalPrice = sub*this.price
-              }
 
-              //this.priceSelection = this.accommodation.availabilities[i].priceSelection
             }
           }
 
-          this.dataSource.data = this.accommodations;
-          console.log(this.accommodations)
+          this.filterAccommodations();
+          this.dataSource.data = this.filteredAccommodations;
+          
 
         },
 
@@ -152,6 +139,35 @@ export class HomeComponent implements OnInit {
     this.endDate = new Date()
     this.isSearched = false;
     this.notFound = false;
+  }
+
+  filterAccommodations() {
+    this.filteredAccommodations = this.accommodations.filter((acc: any) => {
+      const price = acc.availabilities[0].price;
+      const selectedBenefits = this.selectedBenefits;
+
+      // Proveri da li accommodation sadrži sve selektovane benefite
+      const hasSelectedBenefits = selectedBenefits.every((benefit: string) =>
+        acc.benefits.some((accBenefit: any) => accBenefit == benefit)
+      );
+
+      return (
+        (this.minPrice === undefined || price >= this.minPrice) &&
+        (this.maxPrice === undefined || price <= this.maxPrice) &&
+        (selectedBenefits.length === 0 || hasSelectedBenefits)
+      );
+    });
+  }
+
+  toggleBenefitSelection(benefit: string) {
+    const index = this.selectedBenefits.indexOf(benefit);
+    if (index > -1) {
+      // Ako je benefit već selektovan, ukloni ga iz niza selectedBenefits
+      this.selectedBenefits.splice(index, 1);
+    } else {
+      // Ako benefit nije selektovan, dodaj ga u niz selectedBenefits
+      this.selectedBenefits.push(benefit);
+    }
   }
 
   reserve(id: string) {

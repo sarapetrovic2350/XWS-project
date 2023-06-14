@@ -55,6 +55,13 @@ func (service *RatingService) GetRatingAccommodationById(id string) (*model.Rati
 	}
 	return ratingAccommodation, nil
 }
+func (service *RatingService) GetAllRatingHostByHostId(id string) (model.RatingsHost, error) {
+	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
+	if err != nil {
+		return nil, err
+	}
+	return ratingsHost, nil
+}
 
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
@@ -69,6 +76,28 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 	return nil, errors.New("guest does not have a reservation in past that is not canceled")
 
 }
+
+func (service *RatingService) GetAvgRatingForHost(id string) (float32, error) {
+	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
+	println("usao u servis ispis", ratingsHost)
+	if err != nil {
+		return 0.0, err
+	}
+
+	//ratings := *ratingsHost
+	var totalRating uint32
+	for _, rating := range ratingsHost {
+		println("usao u for")
+		println(totalRating)
+		println(rating.Rate)
+		totalRating += rating.Rate
+	}
+
+	avgRating := float32(totalRating) / float32(len(ratingsHost))
+	println(avgRating)
+	return avgRating, nil
+}
+
 func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
 	isGuestStayedAtAccommodation := service.CheckIfGuestStayedAtAccommodation(ratingAccommodation.AccommodationId, ratingAccommodation.GuestId)
 	if isGuestStayedAtAccommodation {

@@ -15,4 +15,5 @@ type RatingStore interface {
 	DeleteAll()
 	DeleteRatingForHost(id string) error
 	DeleteRatingForAccommodation(id string) error
+	GetAllRatingsHostByHostId(id string) (RatingsHost, error)
 }
