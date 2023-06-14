@@ -19,7 +19,7 @@ func NewRatingHandler(s *service.RatingService) *RatingHandler {
 	}
 }
 func (handler *RatingHandler) GetAllRatingsHost(ctx context.Context, request *rating.GetAllRatingsHostRequest) (*rating.GetAllRatingsHostResponse, error) {
-	fmt.Println("In GetAll grpc api")
+	fmt.Println("In GetAllRatingsHost grpc api")
 	ratingsHost, err := handler.ratingService.GetAllRatingsHost()
 	if err != nil {
 		return nil, err
@@ -30,6 +30,22 @@ func (handler *RatingHandler) GetAllRatingsHost(ctx context.Context, request *ra
 	for _, modelRatingHost := range ratingsHost {
 		current := mapRatingHost(modelRatingHost)
 		response.RatingsHost = append(response.RatingsHost, current)
+	}
+	return response, nil
+}
+
+func (handler *RatingHandler) GetAllRatingsAccommodation(ctx context.Context, request *rating.GetAllRatingsAccommodationRequest) (*rating.GetAllRatingsAccommodationResponse, error) {
+	fmt.Println("In GetAllRatingsAccommodation grpc api")
+	ratingsAccommodation, err := handler.ratingService.GetAllRatingsAccommodation()
+	if err != nil {
+		return nil, err
+	}
+	response := &rating.GetAllRatingsAccommodationResponse{
+		RatingsAccommodation: []*rating.RatingAccommodation{},
+	}
+	for _, modelRatingAccommodation := range ratingsAccommodation {
+		current := mapRatingAccommodation(modelRatingAccommodation)
+		response.RatingsAccommodation = append(response.RatingsAccommodation, current)
 	}
 	return response, nil
 }
@@ -45,8 +61,6 @@ func (handler *RatingHandler) CreateRatingForHost(ctx context.Context, request *
 	}, nil
 }
 func (handler *RatingHandler) CreateRatingForAccommodation(ctx context.Context, request *rating.CreateRatingForAccommodationRequest) (*rating.CreateRatingForAccommodationResponse, error) {
-	fmt.Println("CreateRatingForAccommodation handler")
-	fmt.Println(request.RatingAccommodation)
 	modelRatingAccommodation := mapNewRatingAccommodation(request.RatingAccommodation)
 	createdRating, err := handler.ratingService.CreateRatingForAccommodation(modelRatingAccommodation)
 	if err != nil {
@@ -76,6 +90,29 @@ func (handler *RatingHandler) UpdateRatingForHost(ctx context.Context, request *
 	}
 	return &rating.UpdateRatingForHostResponse{
 		RatingHost: mapRatingHost(updatedRating)}, nil
+}
+
+func (handler *RatingHandler) DeleteRatingForAccommodation(ctx context.Context, request *rating.DeleteRatingForAccommodationRequest) (*rating.DeleteRatingForAccommodationResponse, error) {
+	deletedRating, err := handler.ratingService.GetRatingAccommodationById(request.Id)
+	err = handler.ratingService.DeleteRatingForAccommodation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.DeleteRatingForAccommodationResponse{
+		RatingAccommodation: mapRatingAccommodation(deletedRating)}, nil
+}
+
+func (handler *RatingHandler) UpdateRatingForAccommodation(ctx context.Context, request *rating.UpdateRatingForAccommodationRequest) (*rating.UpdateRatingForAccommodationResponse, error) {
+	fmt.Print("Request.RatingHost: ")
+	modelRatingAccommodation := mapUpdatedRatingAccommodation(request.RatingAccommodation)
+	fmt.Print("rating host after mapping: ")
+	fmt.Println(modelRatingAccommodation)
+	updatedRating, err := handler.ratingService.UpdateRatingForAccommodation(modelRatingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.UpdateRatingForAccommodationResponse{
+		RatingAccommodation: mapRatingAccommodation(updatedRating)}, nil
 }
 
 func (handler *RatingHandler) GetAvgRatingForHost(ctx context.Context, request *rating.GetAvgRatingForHostRequest) (*rating.GetAvgRatingForHostResponse, error) {

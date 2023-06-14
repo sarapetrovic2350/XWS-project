@@ -3,12 +3,13 @@ package repository
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"rating-service/model"
 	"strings"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const (
@@ -51,6 +52,21 @@ func (repo *RatingRepo) GetAllRatingsHost() (model.RatingsHost, error) {
 	}
 	return ratingsHost, nil
 }
+func (repo *RatingRepo) GetAllRatingsAccommodation() (model.RatingsAccommodation, error) {
+	// Initialise context (after 5 seconds timeout, abort operation)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var ratingsAccommodation model.RatingsAccommodation
+	ratingsCursor, err := repo.ratingsAccommodation.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	if err = ratingsCursor.All(ctx, &ratingsAccommodation); err != nil {
+		return nil, err
+	}
+	return ratingsAccommodation, nil
+}
 
 func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -63,6 +79,19 @@ func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) 
 		return nil, err
 	}
 	return &ratingHost, nil
+}
+
+func (repo *RatingRepo) GetRatingAccommodationById(id string) (*model.RatingAccommodation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var ratingAccommodation model.RatingAccommodation
+	objID, _ := primitive.ObjectIDFromHex(id)
+	err := repo.ratingsAccommodation.FindOne(ctx, bson.M{"_id": objID}).Decode(&ratingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return &ratingAccommodation, nil
 }
 
 // pronadji sve ocene koje ima neki host
@@ -116,6 +145,20 @@ func (repo *RatingRepo) DeleteRatingForHost(id string) error {
 	fmt.Print(objID)
 	filter := bson.D{{Key: "_id", Value: objID}}
 	_, err := repo.ratingsHost.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *RatingRepo) DeleteRatingForAccommodation(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	fmt.Print(id)
+	objID, _ := primitive.ObjectIDFromHex(id)
+	fmt.Print(objID)
+	filter := bson.D{{Key: "_id", Value: objID}}
+	_, err := repo.ratingsAccommodation.DeleteOne(ctx, filter)
 	if err != nil {
 		return err
 	}

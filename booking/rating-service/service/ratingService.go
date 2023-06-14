@@ -27,11 +27,18 @@ func NewRatingService(r model.RatingStore, rca string, aca string) *RatingServic
 }
 
 func (service *RatingService) GetAllRatingsHost() (model.RatingsHost, error) {
-	users, err := service.RatingRepo.GetAllRatingsHost()
+	ratingsHost, err := service.RatingRepo.GetAllRatingsHost()
 	if err != nil {
 		return nil, err
 	}
-	return users, nil
+	return ratingsHost, nil
+}
+func (service *RatingService) GetAllRatingsAccommodation() (model.RatingsAccommodation, error) {
+	ratingsAccommodation, err := service.RatingRepo.GetAllRatingsAccommodation()
+	if err != nil {
+		return nil, err
+	}
+	return ratingsAccommodation, nil
 }
 func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, error) {
 	ratingHost, err := service.RatingRepo.GetRatingHostById(id)
@@ -41,6 +48,13 @@ func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, e
 	return ratingHost, nil
 }
 
+func (service *RatingService) GetRatingAccommodationById(id string) (*model.RatingAccommodation, error) {
+	ratingAccommodation, err := service.RatingRepo.GetRatingAccommodationById(id)
+	if err != nil {
+		return nil, err
+	}
+	return ratingAccommodation, nil
+}
 func (service *RatingService) GetAllRatingHostByHostId(id string) (model.RatingsHost, error) {
 	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
 	if err != nil {
@@ -85,13 +99,17 @@ func (service *RatingService) GetAvgRatingForHost(id string) (float32, error) {
 }
 
 func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
-	ratingAccommodation.Date = time.Now()
-	fmt.Println(ratingAccommodation)
-	err := service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
-	if err != nil {
-		return nil, err
+	isGuestStayedAtAccommodation := service.CheckIfGuestStayedAtAccommodation(ratingAccommodation.AccommodationId, ratingAccommodation.GuestId)
+	if isGuestStayedAtAccommodation {
+		ratingAccommodation.Date = time.Now()
+		fmt.Println(ratingAccommodation)
+		err := service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
+		if err != nil {
+			return nil, err
+		}
+		return ratingAccommodation, nil
 	}
-	return ratingAccommodation, nil
+	return nil, errors.New("guest did not stay at accommodation he wants to rate")
 }
 func (service *RatingService) CheckPastReservationsForGuest(hostId string, guestId string) bool {
 	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
@@ -115,6 +133,28 @@ func (service *RatingService) CheckPastReservationsForGuest(hostId string, guest
 	}
 	return false
 }
+func (service *RatingService) CheckIfGuestStayedAtAccommodation(accommodationId string, guestId string) bool {
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	getReservationsByGuestIdRequest := reservation.GetReservationsByUserIdRequest{Id: guestId}
+	reservationsForGuest, _ := reservationClient.GetReservationsByUserId(context.TODO(), &getReservationsByGuestIdRequest)
+	fmt.Println(reservationsForGuest.Reservations)
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	for _, itr := range reservationsForGuest.Reservations {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInReservation, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		fmt.Println(accommodationInReservation)
+		if accommodationInReservation == nil {
+			continue
+		}
+		endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+		if endDate.Before(time.Now()) && accommodationInReservation.Accommodation.Id == accommodationId && itr.ReservationStatus == 1 {
+			return true
+		}
+	}
+	return false
+}
 func (service *RatingService) DeleteRatingForHost(id string) error {
 	err := service.RatingRepo.DeleteRatingForHost(id)
 	if err != nil {
@@ -122,6 +162,15 @@ func (service *RatingService) DeleteRatingForHost(id string) error {
 	}
 	return nil
 }
+
+func (service *RatingService) DeleteRatingForAccommodation(id string) error {
+	err := service.RatingRepo.DeleteRatingForAccommodation(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	fmt.Println("UpdateRatingForHost service")
 	oldRatingForHost, err := service.GetRatingHostById(ratingHost.Id.Hex())
@@ -136,4 +185,20 @@ func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) 
 		return nil, err
 	}
 	return ratingHost, nil
+}
+
+func (service *RatingService) UpdateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
+	fmt.Println("UpdateRatingForHost service")
+	oldRatingForHost, err := service.GetRatingAccommodationById(ratingAccommodation.Id.Hex())
+	fmt.Println(ratingAccommodation)
+	err = service.RatingRepo.DeleteRatingForAccommodation(oldRatingForHost.Id.Hex())
+	if err != nil {
+		return nil, err
+	}
+	ratingAccommodation.Date = time.Now()
+	err = service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return ratingAccommodation, nil
 }
