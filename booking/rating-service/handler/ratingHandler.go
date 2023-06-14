@@ -77,3 +77,17 @@ func (handler *RatingHandler) UpdateRatingForHost(ctx context.Context, request *
 	return &rating.UpdateRatingForHostResponse{
 		RatingHost: mapRatingHost(updatedRating)}, nil
 }
+
+func (handler *RatingHandler) GetAvgRatingForHost(ctx context.Context, request *rating.GetAvgRatingForHostRequest) (*rating.GetAvgRatingForHostResponse, error) {
+	fmt.Println("In GetAll grpc api")
+	avgRating, err := handler.ratingService.GetAvgRatingForHost(request.String())
+	if err != nil {
+		return nil, err
+	}
+
+	response := &rating.GetAvgRatingForHostResponse{
+		AvgRating: avgRating,
+	}
+
+	return response, nil
+}

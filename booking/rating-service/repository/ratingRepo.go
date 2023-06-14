@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"rating-service/model"
+	"strings"
 	"time"
 )
 
@@ -63,6 +64,29 @@ func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) 
 	}
 	return &ratingHost, nil
 }
+
+// pronadji sve ocene koje ima neki host
+func (repo *RatingRepo) GetAllRatingsHostByHostId(id string) (model.RatingsHost, error) {
+
+	ratings, err := repo.GetAllRatingsHost()
+	println("svi rejtinzi", ratings)
+	var retRatings model.RatingsHost
+	for _, itr := range ratings {
+		println(itr.HostId)
+		println(id)
+		if strings.TrimSpace(itr.HostId) == strings.TrimSpace(id) {
+			println("ispunjen uslov")
+			retRatings = append(retRatings, itr)
+			println(retRatings)
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	println("kraj repa, svi ratinzi hosta", retRatings)
+	return retRatings, nil
+}
+
 func (repo *RatingRepo) InsertRatingHost(rh *model.RatingHost) error {
 	result, err := repo.ratingsHost.InsertOne(context.TODO(), rh)
 	if err != nil {
