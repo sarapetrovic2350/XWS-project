@@ -41,6 +41,14 @@ func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, e
 	return ratingHost, nil
 }
 
+func (service *RatingService) GetRatingAccommodationById(id string) (*model.RatingAccommodation, error) {
+	ratingAccommodation, err := service.RatingRepo.GetRatingAccommodationById(id)
+	if err != nil {
+		return nil, err
+	}
+	return ratingAccommodation, nil
+}
+
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
 	if areValidPastReservationsForGuest {
@@ -118,6 +126,15 @@ func (service *RatingService) DeleteRatingForHost(id string) error {
 	}
 	return nil
 }
+
+func (service *RatingService) DeleteRatingForAccommodation(id string) error {
+	err := service.RatingRepo.DeleteRatingForAccommodation(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	fmt.Println("UpdateRatingForHost service")
 	oldRatingForHost, err := service.GetRatingHostById(ratingHost.Id.Hex())
@@ -132,4 +149,20 @@ func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) 
 		return nil, err
 	}
 	return ratingHost, nil
+}
+
+func (service *RatingService) UpdateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
+	fmt.Println("UpdateRatingForHost service")
+	oldRatingForHost, err := service.GetRatingAccommodationById(ratingAccommodation.Id.Hex())
+	fmt.Println(ratingAccommodation)
+	err = service.RatingRepo.DeleteRatingForAccommodation(oldRatingForHost.Id.Hex())
+	if err != nil {
+		return nil, err
+	}
+	ratingAccommodation.Date = time.Now()
+	err = service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return ratingAccommodation, nil
 }

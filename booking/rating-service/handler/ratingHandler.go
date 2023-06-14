@@ -75,3 +75,26 @@ func (handler *RatingHandler) UpdateRatingForHost(ctx context.Context, request *
 	return &rating.UpdateRatingForHostResponse{
 		RatingHost: mapRatingHost(updatedRating)}, nil
 }
+
+func (handler *RatingHandler) DeleteRatingForAccommodation(ctx context.Context, request *rating.DeleteRatingForAccommodationRequest) (*rating.DeleteRatingForAccommodationResponse, error) {
+	deletedRating, err := handler.ratingService.GetRatingAccommodationById(request.Id)
+	err = handler.ratingService.DeleteRatingForAccommodation(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.DeleteRatingForAccommodationResponse{
+		RatingAccommodation: mapRatingAccommodation(deletedRating)}, nil
+}
+
+func (handler *RatingHandler) UpdateRatingForAccommodation(ctx context.Context, request *rating.UpdateRatingForAccommodationRequest) (*rating.UpdateRatingForAccommodationResponse, error) {
+	fmt.Print("Request.RatingHost: ")
+	modelRatingAccommodation := mapUpdatedRatingAccommodation(request.RatingAccommodation)
+	fmt.Print("rating host after mapping: ")
+	fmt.Println(modelRatingAccommodation)
+	updatedRating, err := handler.ratingService.UpdateRatingForAccommodation(modelRatingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.UpdateRatingForAccommodationResponse{
+		RatingAccommodation: mapRatingAccommodation(updatedRating)}, nil
+}

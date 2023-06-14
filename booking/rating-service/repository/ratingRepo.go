@@ -63,6 +63,20 @@ func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) 
 	}
 	return &ratingHost, nil
 }
+
+func (repo *RatingRepo) GetRatingAccommodationById(id string) (*model.RatingAccommodation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var ratingAccommodation model.RatingAccommodation
+	objID, _ := primitive.ObjectIDFromHex(id)
+	err := repo.ratingsHost.FindOne(ctx, bson.M{"_id": objID}).Decode(&ratingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return &ratingAccommodation, nil
+}
+
 func (repo *RatingRepo) InsertRatingHost(rh *model.RatingHost) error {
 	result, err := repo.ratingsHost.InsertOne(context.TODO(), rh)
 	if err != nil {
@@ -92,6 +106,20 @@ func (repo *RatingRepo) DeleteRatingForHost(id string) error {
 	fmt.Print(objID)
 	filter := bson.D{{Key: "_id", Value: objID}}
 	_, err := repo.ratingsHost.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *RatingRepo) DeleteRatingForAccommodation(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	fmt.Print(id)
+	objID, _ := primitive.ObjectIDFromHex(id)
+	fmt.Print(objID)
+	filter := bson.D{{Key: "_id", Value: objID}}
+	_, err := repo.ratingsAccommodation.DeleteOne(ctx, filter)
 	if err != nil {
 		return err
 	}

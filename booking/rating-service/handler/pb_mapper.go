@@ -60,3 +60,14 @@ func mapRatingAccommodation(modelRatingAccommodation *model.RatingAccommodation)
 	}
 	return ratingAccommodationPb
 }
+
+func mapUpdatedRatingAccommodation(ratingHostPb *rating.RatingAccommodation) *model.RatingAccommodation {
+	RatingAccommodationId, _ := primitive.ObjectIDFromHex(ratingHostPb.Id)
+	ratingAccommodation := &model.RatingAccommodation{
+		Id:              RatingAccommodationId,
+		AccommodationId: ratingHostPb.AccommodationId,
+		GuestId:         ratingHostPb.GuestId,
+		Rate:            uint32(ratingHostPb.Rate),
+	}
+	return ratingAccommodation
+}
