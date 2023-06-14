@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"rating-service/model"
+	"strings"
 	"time"
 )
 
@@ -66,26 +67,23 @@ func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) 
 
 // pronadji sve ocene koje ima neki host
 func (repo *RatingRepo) GetAllRatingsHostByHostId(id string) (model.RatingsHost, error) {
-	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//defer cancel()
-	//
-	//var ratingHosts model.RatingsHost
-	//err := repo.ratingsHost.Find(ctx, bson.M{"host_id": id}).Decode(&ratingHosts)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//return &ratingHosts, nil
 
 	ratings, err := repo.GetAllRatingsHost()
+	println("svi rejtinzi", ratings)
 	var retRatings model.RatingsHost
 	for _, itr := range ratings {
-		if itr.HostId == id {
+		println(itr.HostId)
+		println(id)
+		if strings.TrimSpace(itr.HostId) == strings.TrimSpace(id) {
+			println("ispunjen uslov")
 			retRatings = append(retRatings, itr)
+			println(retRatings)
 		}
 	}
 	if err != nil {
 		return nil, err
 	}
+	println("kraj repa, svi ratinzi hosta", retRatings)
 	return retRatings, nil
 }
 
