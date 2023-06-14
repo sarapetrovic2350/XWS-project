@@ -122,17 +122,18 @@ func (service *RatingService) DeleteRatingForHost(id string) error {
 	}
 	return nil
 }
-func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) error {
+func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	fmt.Println("UpdateRatingForHost service")
 	oldRatingForHost, err := service.GetRatingHostById(ratingHost.Id.Hex())
 	fmt.Println(ratingHost)
 	err = service.RatingRepo.DeleteRatingForHost(oldRatingForHost.Id.Hex())
 	if err != nil {
-		return err
+		return nil, err
 	}
+	ratingHost.Date = time.Now()
 	err = service.RatingRepo.InsertRatingHost(ratingHost)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return ratingHost, nil
 }

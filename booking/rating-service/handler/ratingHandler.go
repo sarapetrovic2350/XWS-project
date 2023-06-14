@@ -70,12 +70,12 @@ func (handler *RatingHandler) UpdateRatingForHost(ctx context.Context, request *
 	modelRatingHost := mapUpdatedRatingHost(request.RatingHost)
 	fmt.Print("rating host after mapping: ")
 	fmt.Println(modelRatingHost)
-	err := handler.ratingService.UpdateRatingForHost(modelRatingHost)
+	updatedRating, err := handler.ratingService.UpdateRatingForHost(modelRatingHost)
 	if err != nil {
 		return nil, err
 	}
 	return &rating.UpdateRatingForHostResponse{
-		RatingHost: mapRatingHost(modelRatingHost)}, nil
+		RatingHost: mapRatingHost(updatedRating)}, nil
 }
 
 func (handler *RatingHandler) GetAvgRatingForHost(ctx context.Context, request *rating.GetAvgRatingForHostRequest) (*rating.GetAvgRatingForHostResponse, error) {
