@@ -45,8 +45,6 @@ func (handler *RatingHandler) CreateRatingForHost(ctx context.Context, request *
 	}, nil
 }
 func (handler *RatingHandler) CreateRatingForAccommodation(ctx context.Context, request *rating.CreateRatingForAccommodationRequest) (*rating.CreateRatingForAccommodationResponse, error) {
-	fmt.Println("CreateRatingForAccommodation handler")
-	fmt.Println(request.RatingAccommodation)
 	modelRatingAccommodation := mapNewRatingAccommodation(request.RatingAccommodation)
 	createdRating, err := handler.ratingService.CreateRatingForAccommodation(modelRatingAccommodation)
 	if err != nil {

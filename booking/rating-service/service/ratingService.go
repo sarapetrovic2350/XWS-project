@@ -55,13 +55,17 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 
 }
 func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) (*model.RatingAccommodation, error) {
-	ratingAccommodation.Date = time.Now()
-	fmt.Println(ratingAccommodation)
-	err := service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
-	if err != nil {
-		return nil, err
+	isGuestStayedAtAccommodation := service.CheckIfGuestStayedAtAccommodation(ratingAccommodation.AccommodationId, ratingAccommodation.GuestId)
+	if isGuestStayedAtAccommodation {
+		ratingAccommodation.Date = time.Now()
+		fmt.Println(ratingAccommodation)
+		err := service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
+		if err != nil {
+			return nil, err
+		}
+		return ratingAccommodation, nil
 	}
-	return ratingAccommodation, nil
+	return nil, errors.New("guest did not stay at accommodation he wants to rate")
 }
 func (service *RatingService) CheckPastReservationsForGuest(hostId string, guestId string) bool {
 	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
@@ -80,6 +84,28 @@ func (service *RatingService) CheckPastReservationsForGuest(hostId string, guest
 		}
 		endDate, _ := time.Parse("2006-02-01", itr.EndDate)
 		if endDate.Before(time.Now()) && accommodationInReservation.Accommodation.HostID == hostId && itr.ReservationStatus == 1 {
+			return true
+		}
+	}
+	return false
+}
+func (service *RatingService) CheckIfGuestStayedAtAccommodation(accommodationId string, guestId string) bool {
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+	getReservationsByGuestIdRequest := reservation.GetReservationsByUserIdRequest{Id: guestId}
+	reservationsForGuest, _ := reservationClient.GetReservationsByUserId(context.TODO(), &getReservationsByGuestIdRequest)
+	fmt.Println(reservationsForGuest.Reservations)
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	for _, itr := range reservationsForGuest.Reservations {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInReservation, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		fmt.Println(accommodationInReservation)
+		if accommodationInReservation == nil {
+			continue
+		}
+		endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+		if endDate.Before(time.Now()) && accommodationInReservation.Accommodation.Id == accommodationId && itr.ReservationStatus == 1 {
 			return true
 		}
 	}

@@ -34,6 +34,17 @@ service RatingService {
       body: "ratingHost"
     };
   }
+  rpc DeleteRatingForAccommodation(DeleteRatingForAccommodationRequest) returns (DeleteRatingForAccommodationResponse) {
+    option (google.api.http) = {
+      post: "/deleteRatingForAccommodation/{id}"
+    };
+  }
+  rpc UpdateRatingForAccommodation(UpdateRatingForAccommodationRequest) returns (UpdateRatingForAccommodationResponse) {
+    option (google.api.http) = {
+      post: "/updateRatingForAccommodation"
+      body: "ratingAccommodation"
+    };
+  }
 }
 message GetAllRatingsHostRequest{
 }
@@ -88,5 +99,17 @@ message CreateRatingForAccommodationRequest{
   NewRatingAccommodation ratingAccommodation = 1;
 }
 message CreateRatingForAccommodationResponse{
+  RatingAccommodation ratingAccommodation = 1;
+}
+message DeleteRatingForAccommodationRequest{
+  string id = 1;
+}
+message DeleteRatingForAccommodationResponse{
+  RatingAccommodation ratingAccommodation = 1;
+}
+message UpdateRatingForAccommodationRequest{
+  RatingAccommodation ratingAccommodation = 1;
+}
+message UpdateRatingForAccommodationResponse{
   RatingAccommodation ratingAccommodation = 1;
 }
