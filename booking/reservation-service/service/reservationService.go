@@ -137,7 +137,7 @@ func (service *ReservationService) GetActiveReservationsByGuestId(userId string)
 }
 func (service *ReservationService) GetReservationsByUserId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)
-	fmt.Println("get active reservations by guest in reservation-service")
+	fmt.Println("get reservations by guest in reservation-service")
 	reservations, err := service.ReservationRepo.GetReservationsByUserId(userId)
 	if err != nil {
 		return nil, err

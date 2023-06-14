@@ -10,6 +10,8 @@ type Config struct {
 	ReservationPort     string
 	AccommodationDomain string
 	AccommodationPort   string
+	RatingDomain        string
+	RatingPort          string
 	AllowedCorsOrigin   string
 }
 
@@ -22,6 +24,8 @@ func NewConfig() *Config {
 		ReservationPort:     os.Getenv("RESERVATION_SERVICE_PORT"),
 		AccommodationDomain: os.Getenv("ACCOMMODATION_SERVICE_DOMAIN"),
 		AccommodationPort:   os.Getenv("ACCOMMODATION_SERVICE_PORT"),
+		RatingDomain:        os.Getenv("RATING_SERVICE_DOMAIN"),
+		RatingPort:          os.Getenv("RATING_SERVICE_PORT"),
 		AllowedCorsOrigin:   "http://localhost:4200",
 	}
 }

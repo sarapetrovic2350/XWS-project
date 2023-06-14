@@ -19,22 +19,6 @@ func mapReservation(modelReservation *model.Reservation) *reservation.Reservatio
 	}
 	return reservationPb
 }
-func mapReservationPbToModel(reservationPb reservation.Reservation) *model.Reservation {
-	startDate, _ := time.Parse("2006-01-02", reservationPb.StartDate)
-	endDate, _ := time.Parse("2006-01-02", reservationPb.EndDate)
-	reservationId, _ := primitive.ObjectIDFromHex(reservationPb.Id)
-
-	reservation := &model.Reservation{
-		Id:                reservationId,
-		NumberOfGuests:    int(reservationPb.NumberOfGuests),
-		StartDate:         startDate,
-		EndDate:           endDate,
-		UserId:            reservationPb.UserId,
-		AccommodationId:   reservationPb.AccommodationId,
-		ReservationStatus: model.ReservationStatus(reservationPb.ReservationStatus),
-	}
-	return reservation
-}
 func mapNewReservation(reservationPb *reservation.NewReservation) *model.Reservation {
 	startDate, _ := time.Parse("2006-01-02", reservationPb.StartDate)
 	endDate, _ := time.Parse("2006-01-02", reservationPb.EndDate)

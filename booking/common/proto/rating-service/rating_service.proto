@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+option go_package = "common/rating";
+package rating;
+
+import "google/api/annotations.proto";
+
+service RatingService {
+  rpc GetAllRatingsHost(GetAllRatingsHostRequest) returns (GetAllRatingsHostResponse) {
+    option (google.api.http) = {
+      get: "/ratingsHost"
+    };
+  }
+  rpc CreateRatingForHost(CreateRatingForHostRequest) returns (CreateRatingForHostResponse) {
+    option (google.api.http) = {
+      post: "/createRatingForHost"
+      body: "ratingHost"
+    };
+  }
+  rpc CreateRatingForAccommodation(CreateRatingForAccommodationRequest) returns (CreateRatingForAccommodationResponse) {
+    option (google.api.http) = {
+      post: "/createRatingForAccommodation"
+      body: "ratingAccommodation"
+    };
+  }
+  rpc DeleteRatingForHost(DeleteRatingForHostRequest) returns (DeleteRatingForHostResponse) {
+    option (google.api.http) = {
+      post: "/deleteRatingForHost/{id}"
+    };
+  }
+  rpc UpdateRatingForHost(UpdateRatingForHostRequest) returns (UpdateRatingForHostResponse) {
+    option (google.api.http) = {
+      post: "/updateRatingForHost"
+      body: "ratingHost"
+    };
+  }
+}
+message GetAllRatingsHostRequest{
+}
+message GetAllRatingsHostResponse{
+  repeated RatingHost ratingsHost = 1;
+}
+message RatingHost {
+  string id = 1;
+  string hostId = 2;
+  string guestId = 3;
+  int32 rate = 4;
+  string date = 5;
+}
+message NewRatingHost {
+  string hostId = 1;
+  string guestId = 2;
+  int32 rate = 3;
+  string date = 4;
+}
+message RatingAccommodation {
+  string id = 1;
+  string accommodationId = 2;
+  string guestId = 3;
+  int32 rate = 4;
+  string date = 5;
+}
+message NewRatingAccommodation {
+  string accommodationId = 1;
+  string guestId = 2;
+  int32 rate = 3;
+  string date = 4;
+}
+message CreateRatingForHostRequest {
+  NewRatingHost ratingHost = 1;
+}
+message CreateRatingForHostResponse {
+  RatingHost ratingHost = 1;
+}
+message DeleteRatingForHostRequest{
+  string id = 1;
+}
+message DeleteRatingForHostResponse{
+  RatingHost ratingHost = 1;
+}
+message UpdateRatingForHostRequest{
+  RatingHost ratingHost = 1;
+}
+message UpdateRatingForHostResponse{
+  RatingHost ratingHost = 1;
+}
+message CreateRatingForAccommodationRequest{
+  NewRatingAccommodation ratingAccommodation = 1;
+}
+message CreateRatingForAccommodationResponse{
+  RatingAccommodation ratingAccommodation = 1;
+}

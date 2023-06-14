@@ -63,6 +63,19 @@ func (service *UserService) GetAllUsers() (model.Users, error) {
 	}
 	return users, nil
 }
+func (service *UserService) GetAllHostUsers() (model.Users, error) {
+	users, err := service.UserRepo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	var hostUsers model.Users
+	for _, itr := range users {
+		if itr.Role == "HOST" {
+			hostUsers = append(hostUsers, itr)
+		}
+	}
+	return hostUsers, nil
+}
 
 func (service *UserService) FindUserByEmail(email string) (*model.User, error) {
 	user, err := service.UserRepo.FindUserByEmail(email)
