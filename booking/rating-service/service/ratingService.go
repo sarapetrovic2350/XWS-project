@@ -56,11 +56,18 @@ func (service *RatingService) GetRatingAccommodationById(id string) (*model.Rati
 	return ratingAccommodation, nil
 }
 func (service *RatingService) GetAllRatingHostByHostId(id string) (model.RatingsHost, error) {
-	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
+	fmt.Println("in GetAllRatingHostByHostId service")
+	ratings, err := service.RatingRepo.GetAllRatingsHost()
 	if err != nil {
 		return nil, err
 	}
-	return ratingsHost, nil
+	var ratingsForHost model.RatingsHost
+	for _, itr := range ratings {
+		if itr.HostId == id {
+			ratingsForHost = append(ratingsForHost, itr)
+		}
+	}
+	return ratingsForHost, nil
 }
 
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
@@ -78,23 +85,15 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 }
 
 func (service *RatingService) GetAvgRatingForHost(id string) (float32, error) {
-	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
-	println("usao u servis ispis", ratingsHost)
+	ratingsForHost, err := service.GetAllRatingHostByHostId(id)
 	if err != nil {
 		return 0.0, err
 	}
-
-	//ratings := *ratingsHost
 	var totalRating uint32
-	for _, rating := range ratingsHost {
-		println("usao u for")
-		println(totalRating)
-		println(rating.Rate)
+	for _, rating := range ratingsForHost {
 		totalRating += rating.Rate
 	}
-
-	avgRating := float32(totalRating) / float32(len(ratingsHost))
-	println(avgRating)
+	avgRating := float32(totalRating) / float32(len(ratingsForHost))
 	return avgRating, nil
 }
 
