@@ -33,6 +33,14 @@ func (service *RatingService) GetAllRatingsHost() (model.RatingsHost, error) {
 	}
 	return users, nil
 }
+func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, error) {
+	ratingHost, err := service.RatingRepo.GetRatingHostById(id)
+	if err != nil {
+		return nil, err
+	}
+	return ratingHost, nil
+}
+
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) error {
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
 	if areValidPastReservationsForGuest {
@@ -66,4 +74,25 @@ func (service *RatingService) CheckPastReservationsForGuest(hostId string, guest
 		}
 	}
 	return false
+}
+func (service *RatingService) Delete(id string) error {
+	err := service.RatingRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) error {
+	fmt.Println("UpdateRatingForHost service")
+	oldRatingForHost, err := service.GetRatingHostById(ratingHost.Id.Hex())
+	fmt.Println(ratingHost)
+	err = service.RatingRepo.Delete(oldRatingForHost.Id.Hex())
+	if err != nil {
+		return err
+	}
+	err = service.RatingRepo.InsertRatingHost(ratingHost)
+	if err != nil {
+		return err
+	}
+	return nil
 }

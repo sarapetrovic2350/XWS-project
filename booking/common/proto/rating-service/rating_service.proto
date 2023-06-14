@@ -17,6 +17,17 @@ service RatingService {
       body: "ratingHost"
     };
   }
+  rpc DeleteRatingForHost(DeleteRatingForHostRequest) returns (DeleteRatingForHostResponse) {
+    option (google.api.http) = {
+      post: "/deleteRatingForHost/{id}"
+    };
+  }
+  rpc UpdateRatingForHost(UpdateRatingForHostRequest) returns (UpdateRatingForHostResponse) {
+    option (google.api.http) = {
+      post: "/updateRatingForHost"
+      body: "ratingHost"
+    };
+  }
 }
 message GetAllRatingsHostRequest{
 }
@@ -38,5 +49,17 @@ message CreateRatingForHostRequest {
   NewRatingHost ratingHost = 1;
 }
 message CreateRatingForHostResponse {
+  RatingHost ratingHost = 1;
+}
+message DeleteRatingForHostRequest{
+  string id = 1;
+}
+message DeleteRatingForHostResponse{
+  RatingHost ratingHost = 1;
+}
+message UpdateRatingForHostRequest{
+  RatingHost ratingHost = 1;
+}
+message UpdateRatingForHostResponse{
   RatingHost ratingHost = 1;
 }

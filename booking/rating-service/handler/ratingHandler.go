@@ -33,6 +33,7 @@ func (handler *RatingHandler) GetAllRatingsHost(ctx context.Context, request *ra
 	}
 	return response, nil
 }
+
 func (handler *RatingHandler) CreateRatingForHost(ctx context.Context, request *rating.CreateRatingForHostRequest) (*rating.CreateRatingForHostResponse, error) {
 	modelRatingHost := mapNewRatingHost(request.RatingHost)
 	err := handler.ratingService.CreateRatingForHost(modelRatingHost)
@@ -42,4 +43,25 @@ func (handler *RatingHandler) CreateRatingForHost(ctx context.Context, request *
 	return &rating.CreateRatingForHostResponse{
 		RatingHost: mapRatingHost(modelRatingHost),
 	}, nil
+}
+func (handler *RatingHandler) DeleteRatingForHost(ctx context.Context, request *rating.DeleteRatingForHostRequest) (*rating.DeleteRatingForHostResponse, error) {
+	deletedRating, err := handler.ratingService.GetRatingHostById(request.Id)
+	err = handler.ratingService.Delete(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.DeleteRatingForHostResponse{
+		RatingHost: mapRatingHost(deletedRating)}, nil
+}
+func (handler *RatingHandler) UpdateRatingForHost(ctx context.Context, request *rating.UpdateRatingForHostRequest) (*rating.UpdateRatingForHostResponse, error) {
+	fmt.Print("Request.RatingHost: ")
+	modelRatingHost := mapUpdatedRatingHost(request.RatingHost)
+	fmt.Print("rating host after mapping: ")
+	fmt.Println(modelRatingHost)
+	err := handler.ratingService.UpdateRatingForHost(modelRatingHost)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.UpdateRatingForHostResponse{
+		RatingHost: mapRatingHost(modelRatingHost)}, nil
 }

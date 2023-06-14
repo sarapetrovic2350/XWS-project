@@ -34,7 +34,21 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *user.GetAllRequ
 	}
 	return response, nil
 }
-
+func (handler *UserHandler) GetAllHosts(ctx context.Context, request *user.GetAllHostsRequest) (*user.GetAllHostsResponse, error) {
+	fmt.Println("In GetAllHosts grpc api")
+	hostUsers, err := handler.userService.GetAllHostUsers()
+	if err != nil {
+		return nil, err
+	}
+	response := &user.GetAllHostsResponse{
+		Users: []*user.User{},
+	}
+	for _, modelUser := range hostUsers {
+		current := mapUser(modelUser)
+		response.Users = append(response.Users, current)
+	}
+	return response, nil
+}
 func (handler *UserHandler) CreateUser(ctx context.Context, request *user.CreateUserRequest) (*user.CreateUserResponse, error) {
 	fmt.Println("In CreateUser grpc api")
 	fmt.Print("Request.User: ")
