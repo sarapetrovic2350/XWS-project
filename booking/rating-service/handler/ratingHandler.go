@@ -117,7 +117,7 @@ func (handler *RatingHandler) UpdateRatingForAccommodation(ctx context.Context, 
 
 func (handler *RatingHandler) GetAvgRatingForHost(ctx context.Context, request *rating.GetAvgRatingForHostRequest) (*rating.GetAvgRatingForHostResponse, error) {
 	fmt.Println("In GetAll grpc api")
-	avgRating, err := handler.ratingService.GetAvgRatingForHost(request.String())
+	avgRating, err := handler.ratingService.GetAvgRatingForHost(request.HostId)
 	if err != nil {
 		return nil, err
 	}
@@ -126,5 +126,22 @@ func (handler *RatingHandler) GetAvgRatingForHost(ctx context.Context, request *
 		AvgRating: avgRating,
 	}
 
+	return response, nil
+}
+func (handler *RatingHandler) GetRatingsForHost(ctx context.Context, request *rating.GetRatingsForHostRequest) (*rating.GetRatingsForHostResponse, error) {
+	fmt.Println("In GetRatingsForHost grpc api")
+	fmt.Println(request)
+	ratingsForHost, err := handler.ratingService.GetAllRatingHostByHostId(request.Id)
+	fmt.Println(ratingsForHost)
+	if err != nil {
+		return nil, err
+	}
+	response := &rating.GetRatingsForHostResponse{
+		RatingsHost: []*rating.RatingHost{},
+	}
+	for _, modelRatingHost := range ratingsForHost {
+		current := mapRatingHost(modelRatingHost)
+		response.RatingsHost = append(response.RatingsHost, current)
+	}
 	return response, nil
 }

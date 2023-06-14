@@ -16,6 +16,11 @@ service RatingService {
       get: "/ratingsAccommodation"
     };
   }
+  rpc GetRatingsForHost(GetRatingsForHostRequest) returns (GetRatingsForHostResponse) {
+    option (google.api.http) = {
+      get: "/getRatingsForHost/{id}"
+    };
+  }
   rpc CreateRatingForHost(CreateRatingForHostRequest) returns (CreateRatingForHostResponse) {
     option (google.api.http) = {
       post: "/createRatingForHost"
@@ -134,4 +139,10 @@ message GetAvgRatingForHostRequest{
 }
 message GetAvgRatingForHostResponse{
   float avgRating = 1;
+}
+message GetRatingsForHostRequest{
+  string id = 1;
+}
+message GetRatingsForHostResponse {
+  repeated RatingHost ratingsHost = 1;
 }

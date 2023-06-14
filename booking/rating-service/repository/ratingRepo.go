@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"rating-service/model"
-	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -92,28 +91,6 @@ func (repo *RatingRepo) GetRatingAccommodationById(id string) (*model.RatingAcco
 		return nil, err
 	}
 	return &ratingAccommodation, nil
-}
-
-// pronadji sve ocene koje ima neki host
-func (repo *RatingRepo) GetAllRatingsHostByHostId(id string) (model.RatingsHost, error) {
-
-	ratings, err := repo.GetAllRatingsHost()
-	println("svi rejtinzi", ratings)
-	var retRatings model.RatingsHost
-	for _, itr := range ratings {
-		println(itr.HostId)
-		println(id)
-		if strings.TrimSpace(itr.HostId) == strings.TrimSpace(id) {
-			println("ispunjen uslov")
-			retRatings = append(retRatings, itr)
-			println(retRatings)
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	println("kraj repa, svi ratinzi hosta", retRatings)
-	return retRatings, nil
 }
 
 func (repo *RatingRepo) InsertRatingHost(rh *model.RatingHost) error {
