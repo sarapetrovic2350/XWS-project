@@ -27,11 +27,18 @@ func NewRatingService(r model.RatingStore, rca string, aca string) *RatingServic
 }
 
 func (service *RatingService) GetAllRatingsHost() (model.RatingsHost, error) {
-	users, err := service.RatingRepo.GetAllRatingsHost()
+	ratingsHost, err := service.RatingRepo.GetAllRatingsHost()
 	if err != nil {
 		return nil, err
 	}
-	return users, nil
+	return ratingsHost, nil
+}
+func (service *RatingService) GetAllRatingsAccommodation() (model.RatingsAccommodation, error) {
+	ratingsAccommodation, err := service.RatingRepo.GetAllRatingsAccommodation()
+	if err != nil {
+		return nil, err
+	}
+	return ratingsAccommodation, nil
 }
 func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, error) {
 	ratingHost, err := service.RatingRepo.GetRatingHostById(id)

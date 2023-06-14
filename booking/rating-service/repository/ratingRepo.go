@@ -50,6 +50,21 @@ func (repo *RatingRepo) GetAllRatingsHost() (model.RatingsHost, error) {
 	}
 	return ratingsHost, nil
 }
+func (repo *RatingRepo) GetAllRatingsAccommodation() (model.RatingsAccommodation, error) {
+	// Initialise context (after 5 seconds timeout, abort operation)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var ratingsAccommodation model.RatingsAccommodation
+	ratingsCursor, err := repo.ratingsAccommodation.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	if err = ratingsCursor.All(ctx, &ratingsAccommodation); err != nil {
+		return nil, err
+	}
+	return ratingsAccommodation, nil
+}
 
 func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -70,7 +85,7 @@ func (repo *RatingRepo) GetRatingAccommodationById(id string) (*model.RatingAcco
 
 	var ratingAccommodation model.RatingAccommodation
 	objID, _ := primitive.ObjectIDFromHex(id)
-	err := repo.ratingsHost.FindOne(ctx, bson.M{"_id": objID}).Decode(&ratingAccommodation)
+	err := repo.ratingsAccommodation.FindOne(ctx, bson.M{"_id": objID}).Decode(&ratingAccommodation)
 	if err != nil {
 		return nil, err
 	}

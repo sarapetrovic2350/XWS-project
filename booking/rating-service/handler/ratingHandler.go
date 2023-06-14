@@ -19,7 +19,7 @@ func NewRatingHandler(s *service.RatingService) *RatingHandler {
 	}
 }
 func (handler *RatingHandler) GetAllRatingsHost(ctx context.Context, request *rating.GetAllRatingsHostRequest) (*rating.GetAllRatingsHostResponse, error) {
-	fmt.Println("In GetAll grpc api")
+	fmt.Println("In GetAllRatingsHost grpc api")
 	ratingsHost, err := handler.ratingService.GetAllRatingsHost()
 	if err != nil {
 		return nil, err
@@ -30,6 +30,22 @@ func (handler *RatingHandler) GetAllRatingsHost(ctx context.Context, request *ra
 	for _, modelRatingHost := range ratingsHost {
 		current := mapRatingHost(modelRatingHost)
 		response.RatingsHost = append(response.RatingsHost, current)
+	}
+	return response, nil
+}
+
+func (handler *RatingHandler) GetAllRatingsAccommodation(ctx context.Context, request *rating.GetAllRatingsAccommodationRequest) (*rating.GetAllRatingsAccommodationResponse, error) {
+	fmt.Println("In GetAllRatingsAccommodation grpc api")
+	ratingsAccommodation, err := handler.ratingService.GetAllRatingsAccommodation()
+	if err != nil {
+		return nil, err
+	}
+	response := &rating.GetAllRatingsAccommodationResponse{
+		RatingsAccommodation: []*rating.RatingAccommodation{},
+	}
+	for _, modelRatingAccommodation := range ratingsAccommodation {
+		current := mapRatingAccommodation(modelRatingAccommodation)
+		response.RatingsAccommodation = append(response.RatingsAccommodation, current)
 	}
 	return response, nil
 }
