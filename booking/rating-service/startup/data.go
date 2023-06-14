@@ -13,6 +13,14 @@ var ratingsHost = []*model.RatingHost{
 		Rate:    5,
 	},
 }
+var ratingsAccommodation = []*model.RatingAccommodation{
+	{
+		Id:              getObjectId("test1_id"),
+		AccommodationId: "accommodationId1",
+		GuestId:         "guest1Id",
+		Rate:            5,
+	},
+}
 
 func getObjectId(id string) primitive.ObjectID {
 	if objectId, err := primitive.ObjectIDFromHex(id); err == nil {

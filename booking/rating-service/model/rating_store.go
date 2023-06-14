@@ -9,7 +9,8 @@ type RatingStore interface {
 	GetRatingHost(id primitive.ObjectID) (*RatingHost, error)
 	//GetRatingAccommodation(id primitive.ObjectID) (*RatingAccommodation, error)
 	InsertRatingHost(rh *RatingHost) error
+	InsertRatingAccommodation(ra *RatingAccommodation) error
 	//InsertRatingAccommodation(rh *RatingAccommodation) error
 	DeleteAll()
-	Delete(id string) error
+	DeleteRatingForHost(id string) error
 }

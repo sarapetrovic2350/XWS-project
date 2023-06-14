@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type RatingServiceClient interface {
 	GetAllRatingsHost(ctx context.Context, in *GetAllRatingsHostRequest, opts ...grpc.CallOption) (*GetAllRatingsHostResponse, error)
 	CreateRatingForHost(ctx context.Context, in *CreateRatingForHostRequest, opts ...grpc.CallOption) (*CreateRatingForHostResponse, error)
+	CreateRatingForAccommodation(ctx context.Context, in *CreateRatingForAccommodationRequest, opts ...grpc.CallOption) (*CreateRatingForAccommodationResponse, error)
 	DeleteRatingForHost(ctx context.Context, in *DeleteRatingForHostRequest, opts ...grpc.CallOption) (*DeleteRatingForHostResponse, error)
 	UpdateRatingForHost(ctx context.Context, in *UpdateRatingForHostRequest, opts ...grpc.CallOption) (*UpdateRatingForHostResponse, error)
 }
@@ -54,6 +55,15 @@ func (c *ratingServiceClient) CreateRatingForHost(ctx context.Context, in *Creat
 	return out, nil
 }
 
+func (c *ratingServiceClient) CreateRatingForAccommodation(ctx context.Context, in *CreateRatingForAccommodationRequest, opts ...grpc.CallOption) (*CreateRatingForAccommodationResponse, error) {
+	out := new(CreateRatingForAccommodationResponse)
+	err := c.cc.Invoke(ctx, "/rating.RatingService/CreateRatingForAccommodation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *ratingServiceClient) DeleteRatingForHost(ctx context.Context, in *DeleteRatingForHostRequest, opts ...grpc.CallOption) (*DeleteRatingForHostResponse, error) {
 	out := new(DeleteRatingForHostResponse)
 	err := c.cc.Invoke(ctx, "/rating.RatingService/DeleteRatingForHost", in, out, opts...)
@@ -78,6 +88,7 @@ func (c *ratingServiceClient) UpdateRatingForHost(ctx context.Context, in *Updat
 type RatingServiceServer interface {
 	GetAllRatingsHost(context.Context, *GetAllRatingsHostRequest) (*GetAllRatingsHostResponse, error)
 	CreateRatingForHost(context.Context, *CreateRatingForHostRequest) (*CreateRatingForHostResponse, error)
+	CreateRatingForAccommodation(context.Context, *CreateRatingForAccommodationRequest) (*CreateRatingForAccommodationResponse, error)
 	DeleteRatingForHost(context.Context, *DeleteRatingForHostRequest) (*DeleteRatingForHostResponse, error)
 	UpdateRatingForHost(context.Context, *UpdateRatingForHostRequest) (*UpdateRatingForHostResponse, error)
 	mustEmbedUnimplementedRatingServiceServer()
@@ -92,6 +103,9 @@ func (UnimplementedRatingServiceServer) GetAllRatingsHost(context.Context, *GetA
 }
 func (UnimplementedRatingServiceServer) CreateRatingForHost(context.Context, *CreateRatingForHostRequest) (*CreateRatingForHostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateRatingForHost not implemented")
+}
+func (UnimplementedRatingServiceServer) CreateRatingForAccommodation(context.Context, *CreateRatingForAccommodationRequest) (*CreateRatingForAccommodationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRatingForAccommodation not implemented")
 }
 func (UnimplementedRatingServiceServer) DeleteRatingForHost(context.Context, *DeleteRatingForHostRequest) (*DeleteRatingForHostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRatingForHost not implemented")
@@ -148,6 +162,24 @@ func _RatingService_CreateRatingForHost_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RatingService_CreateRatingForAccommodation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRatingForAccommodationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RatingServiceServer).CreateRatingForAccommodation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rating.RatingService/CreateRatingForAccommodation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RatingServiceServer).CreateRatingForAccommodation(ctx, req.(*CreateRatingForAccommodationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RatingService_DeleteRatingForHost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteRatingForHostRequest)
 	if err := dec(in); err != nil {
@@ -198,6 +230,10 @@ var RatingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateRatingForHost",
 			Handler:    _RatingService_CreateRatingForHost_Handler,
+		},
+		{
+			MethodName: "CreateRatingForAccommodation",
+			Handler:    _RatingService_CreateRatingForAccommodation_Handler,
 		},
 		{
 			MethodName: "DeleteRatingForHost",

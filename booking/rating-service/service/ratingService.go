@@ -53,6 +53,15 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 	return errors.New("guest does not have a reservation in past that is not canceled")
 
 }
+func (service *RatingService) CreateRatingForAccommodation(ratingAccommodation *model.RatingAccommodation) error {
+	fmt.Println("CreateRatingForAccommodation service")
+	fmt.Println(ratingAccommodation)
+	err := service.RatingRepo.InsertRatingAccommodation(ratingAccommodation)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func (service *RatingService) CheckPastReservationsForGuest(hostId string, guestId string) bool {
 	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
 	fmt.Println("reservation client created")
@@ -75,8 +84,8 @@ func (service *RatingService) CheckPastReservationsForGuest(hostId string, guest
 	}
 	return false
 }
-func (service *RatingService) Delete(id string) error {
-	err := service.RatingRepo.Delete(id)
+func (service *RatingService) DeleteRatingForHost(id string) error {
+	err := service.RatingRepo.DeleteRatingForHost(id)
 	if err != nil {
 		return err
 	}
@@ -86,7 +95,7 @@ func (service *RatingService) UpdateRatingForHost(ratingHost *model.RatingHost) 
 	fmt.Println("UpdateRatingForHost service")
 	oldRatingForHost, err := service.GetRatingHostById(ratingHost.Id.Hex())
 	fmt.Println(ratingHost)
-	err = service.RatingRepo.Delete(oldRatingForHost.Id.Hex())
+	err = service.RatingRepo.DeleteRatingForHost(oldRatingForHost.Id.Hex())
 	if err != nil {
 		return err
 	}

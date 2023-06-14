@@ -44,9 +44,21 @@ func (handler *RatingHandler) CreateRatingForHost(ctx context.Context, request *
 		RatingHost: mapRatingHost(modelRatingHost),
 	}, nil
 }
+func (handler *RatingHandler) CreateRatingForAccommodation(ctx context.Context, request *rating.CreateRatingForAccommodationRequest) (*rating.CreateRatingForAccommodationResponse, error) {
+	fmt.Println("CreateRatingForAccommodation handler")
+	fmt.Println(request.RatingAccommodation)
+	modelRatingAccommodation := mapNewRatingAccommodation(request.RatingAccommodation)
+	err := handler.ratingService.CreateRatingForAccommodation(modelRatingAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.CreateRatingForAccommodationResponse{
+		RatingAccommodation: mapRatingAccommodation(modelRatingAccommodation),
+	}, nil
+}
 func (handler *RatingHandler) DeleteRatingForHost(ctx context.Context, request *rating.DeleteRatingForHostRequest) (*rating.DeleteRatingForHostResponse, error) {
 	deletedRating, err := handler.ratingService.GetRatingHostById(request.Id)
-	err = handler.ratingService.Delete(request.Id)
+	err = handler.ratingService.DeleteRatingForHost(request.Id)
 	if err != nil {
 		return nil, err
 	}

@@ -51,6 +51,12 @@ func (server *Server) initRatingRepository(client *mongo.Client) model.RatingSto
 			log.Fatal(err)
 		}
 	}
+	for _, RatingAccommodation := range ratingsAccommodation {
+		err := store.InsertRatingAccommodation(RatingAccommodation)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	return store
 }
 
