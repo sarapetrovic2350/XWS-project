@@ -207,12 +207,21 @@ func request_RatingService_GetAvgRatingForHost_0(ctx context.Context, marshaler 
 	var protoReq GetAvgRatingForHostRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["hostId"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "hostId")
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.HostId); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+
+	protoReq.HostId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "hostId", err)
 	}
 
 	msg, err := client.GetAvgRatingForHost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -224,12 +233,21 @@ func local_request_RatingService_GetAvgRatingForHost_0(ctx context.Context, mars
 	var protoReq GetAvgRatingForHostRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["hostId"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "hostId")
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.HostId); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+
+	protoReq.HostId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "hostId", err)
 	}
 
 	msg, err := server.GetAvgRatingForHost(ctx, &protoReq)
@@ -368,7 +386,7 @@ func RegisterRatingServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 
 	})
 
-	mux.Handle("POST", pattern_RatingService_GetAvgRatingForHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_RatingService_GetAvgRatingForHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -376,7 +394,7 @@ func RegisterRatingServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/rating.RatingService/GetAvgRatingForHost", runtime.WithHTTPPathPattern("/getAvgRatingForHost"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/rating.RatingService/GetAvgRatingForHost", runtime.WithHTTPPathPattern("/getAvgRatingForHost/{hostId}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -544,13 +562,13 @@ func RegisterRatingServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 
 	})
 
-	mux.Handle("POST", pattern_RatingService_GetAvgRatingForHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_RatingService_GetAvgRatingForHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/rating.RatingService/GetAvgRatingForHost", runtime.WithHTTPPathPattern("/getAvgRatingForHost"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/rating.RatingService/GetAvgRatingForHost", runtime.WithHTTPPathPattern("/getAvgRatingForHost/{hostId}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -580,7 +598,7 @@ var (
 
 	pattern_RatingService_UpdateRatingForHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"updateRatingForHost"}, ""))
 
-	pattern_RatingService_GetAvgRatingForHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"getAvgRatingForHost"}, ""))
+	pattern_RatingService_GetAvgRatingForHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"getAvgRatingForHost", "hostId"}, ""))
 )
 
 var (

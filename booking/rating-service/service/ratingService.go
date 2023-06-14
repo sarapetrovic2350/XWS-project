@@ -41,8 +41,8 @@ func (service *RatingService) GetRatingHostById(id string) (*model.RatingHost, e
 	return ratingHost, nil
 }
 
-func (service *RatingService) GetAllRatingHostByHostId(id string) (*model.RatingsHost, error) {
-	ratingsHost, err := service.RatingRepo.GetAllRatingHostByHostId(id)
+func (service *RatingService) GetAllRatingHostByHostId(id string) (model.RatingsHost, error) {
+	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
 	if err != nil {
 		return nil, err
 	}
@@ -64,18 +64,18 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 }
 
 func (service *RatingService) GetAvgRatingForHost(id string) (float32, error) {
-	ratingsHost, err := service.RatingRepo.GetAllRatingHostByHostId(id)
+	ratingsHost, err := service.RatingRepo.GetAllRatingsHostByHostId(id)
 	if err != nil {
 		return 0.0, err
 	}
 
-	ratings := *ratingsHost
+	//ratings := *ratingsHost
 	var totalRating uint32
-	for _, rating := range ratings {
+	for _, rating := range ratingsHost {
 		totalRating += rating.Rate
 	}
 
-	avgRating := float32(totalRating) / float32(len(ratings))
+	avgRating := float32(totalRating) / float32(len(ratingsHost))
 	return avgRating, nil
 }
 

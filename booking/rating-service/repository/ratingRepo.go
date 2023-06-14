@@ -65,16 +65,28 @@ func (repo *RatingRepo) GetRatingHostById(id string) (*model.RatingHost, error) 
 }
 
 // pronadji sve ocene koje ima neki host
-func (repo *RatingRepo) GetAllRatingHostByHostId(id string) (*model.RatingsHost, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+func (repo *RatingRepo) GetAllRatingsHostByHostId(id string) (model.RatingsHost, error) {
+	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	//defer cancel()
+	//
+	//var ratingHosts model.RatingsHost
+	//err := repo.ratingsHost.Find(ctx, bson.M{"host_id": id}).Decode(&ratingHosts)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//return &ratingHosts, nil
 
-	var ratingHosts model.RatingsHost
-	err := repo.ratingsHost.Find(ctx, bson.M{"host_id": id}).Decode(&ratingHosts)
+	ratings, err := repo.GetAllRatingsHost()
+	var retRatings model.RatingsHost
+	for _, itr := range ratings {
+		if itr.HostId == id {
+			retRatings = append(retRatings, itr)
+		}
+	}
 	if err != nil {
 		return nil, err
 	}
-	return &ratingHosts, nil
+	return retRatings, nil
 }
 
 func (repo *RatingRepo) InsertRatingHost(rh *model.RatingHost) error {
