@@ -53,6 +53,8 @@ export class RatingService {
   getRatingsForHost(hostId : any): Observable<any[]>{
     return this.http.get<any[]>(this.apiHost + 'getRatingsForHost/' + hostId, {headers: this.headers2});
   }
-
+  getAverageRatingForHost(hostId: string): Observable<any> {
+    return this.http.get<any>(this.apiHost + 'getAvgRatingForHost/' + hostId, {headers: this.headers2});
+  }
 
 }
