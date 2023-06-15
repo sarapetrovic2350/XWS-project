@@ -203,3 +203,16 @@ func (handler *ReservationHandler) GetDurationOfPastReservationsByHostId(ctx con
 
 	return response, nil
 }
+
+func (handler *ReservationHandler) GetAcceptanceRateByHostId(ctx context.Context, request *reservation.GetAcceptanceRateByHostIdRequest) (*reservation.GetAcceptanceRateByHostIdResponse, error) {
+	fmt.Println("In GetAll grpc api acceptance percentage ")
+	percentage, err := handler.reservationService.GetAcceptanceRateByHostId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetAcceptanceRateByHostIdResponse{
+		Percentage: percentage,
+	}
+
+	return response, nil
+}

@@ -266,3 +266,31 @@ func (service *ReservationService) GetDurationOfPastReservationsByHostId(hostId 
 	}
 	return totalDays, nil
 }
+
+func (service *ReservationService) GetAcceptanceRateByHostId(hostId string) (float32, error) {
+	reservationsByHostId, err := service.GetReservationsForHost(hostId)
+	if err != nil {
+		return 0.0, err
+	}
+	var totalReservations float32
+	var canceledReservations float32
+	for _, itr := range reservationsByHostId {
+		print(&itr)
+		print(itr.ReservationStatus)
+		if itr.EndDate.Before(time.Now()) && itr.ReservationStatus == 1 {
+			totalReservations = totalReservations + 1
+			println(canceledReservations)
+			println(totalReservations)
+		} else if itr.EndDate.Before(time.Now()) && itr.ReservationStatus == 2 {
+			canceledReservations = canceledReservations + 1
+			totalReservations = totalReservations + 1
+			println(canceledReservations)
+			println(totalReservations)
+		}
+	}
+	var acceptencePercentage float32
+	acceptencePercentage = (canceledReservations / totalReservations) * 100
+	println(acceptencePercentage)
+
+	return acceptencePercentage, nil
+}
