@@ -23,6 +23,9 @@ import {
 import {
   EditRatingAccommodationComponent
 } from "./components/edit-rating-accommodation/edit-rating-accommodation.component";
+import {
+  ShowRatingsAccommodationsHostComponent
+} from "./components/show-ratings-accommodations-host/show-ratings-accommodations-host.component";
 
 const routes: Routes = [
   {
@@ -98,6 +101,10 @@ const routes: Routes = [
     path: 'edit-rating-accommodation/:id',
     component: EditRatingAccommodationComponent
   },
+  {
+    path: 'show-ratings-accommodations',
+    component: ShowRatingsAccommodationsHostComponent
+  }
 
 
 ];

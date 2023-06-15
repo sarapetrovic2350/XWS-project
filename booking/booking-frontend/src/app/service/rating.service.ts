@@ -32,6 +32,9 @@ export class RatingService {
   getRatingsAccommodationByGuestId(guestId: any): Observable<any[]> {
     return this.http.get<any[]>(this.apiHost + 'ratingsAccommodation/' + guestId, {headers: this.headers2});
   }
+  getRatingsAccommodationsForHost(hostId: string): Observable<any[]> {
+    return this.http.get<any[]>(this.apiHost + 'getRatingsAccommodationsByHost/' + hostId, {headers: this.headers2});
+  }
   updateRatingForHost(ratingHost: RatingHost): Observable<any> {
     return this.http.post<any>(this.apiHost + 'updateRatingForHost', ratingHost, {headers: this.headers2})
   }
