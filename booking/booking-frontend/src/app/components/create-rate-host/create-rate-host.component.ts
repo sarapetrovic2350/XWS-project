@@ -19,7 +19,7 @@ export class CreateRateHostComponent implements OnInit {
     private ratinService: RatingService) { }
 
   title = 'Rate host';
-  submitted = false;  
+  submitted = false;
 
   user: User = new User();
   guest: User = new User();
@@ -54,7 +54,7 @@ export class CreateRateHostComponent implements OnInit {
     this.ratinService.createRatingForHost(this.ratingHost).subscribe(
       {
         next: (res) => {
-          //this.router.navigate(['/show-host-accommodations']);
+          this.router.navigate(['/ratings-host-by-guest']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',
