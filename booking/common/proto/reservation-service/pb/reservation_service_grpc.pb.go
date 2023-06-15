@@ -31,6 +31,7 @@ type ReservationServiceClient interface {
 	GetReservationsForHost(ctx context.Context, in *GetReservationsForHostRequest, opts ...grpc.CallOption) (*GetReservationsForHostResponse, error)
 	GetNumberOfPastReservationsByHostId(ctx context.Context, in *GetNumberOfPastReservationsByHostRequest, opts ...grpc.CallOption) (*GetNumberOfPastReservationsByHostResponse, error)
 	GetDurationOfPastReservationsByHostId(ctx context.Context, in *GetDurationOfPastReservationsByHostIdRequest, opts ...grpc.CallOption) (*GetDurationOfPastReservationsByHostIdResponse, error)
+	GetAcceptanceRateByHostId(ctx context.Context, in *GetAcceptanceRateByHostIdRequest, opts ...grpc.CallOption) (*GetAcceptanceRateByHostIdResponse, error)
 	RejectPendingReservationByHost(ctx context.Context, in *RejectPendingReservationRequest, opts ...grpc.CallOption) (*ReservationResponse, error)
 	AcceptPendingReservationByHost(ctx context.Context, in *AcceptPendingReservationRequest, opts ...grpc.CallOption) (*ReservationResponse, error)
 	DeletePendingReservationByGuest(ctx context.Context, in *DeleteReservationRequest, opts ...grpc.CallOption) (*DeleteReservationResponse, error)
@@ -127,6 +128,15 @@ func (c *reservationServiceClient) GetDurationOfPastReservationsByHostId(ctx con
 	return out, nil
 }
 
+func (c *reservationServiceClient) GetAcceptanceRateByHostId(ctx context.Context, in *GetAcceptanceRateByHostIdRequest, opts ...grpc.CallOption) (*GetAcceptanceRateByHostIdResponse, error) {
+	out := new(GetAcceptanceRateByHostIdResponse)
+	err := c.cc.Invoke(ctx, "/reservation.ReservationService/GetAcceptanceRateByHostId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *reservationServiceClient) RejectPendingReservationByHost(ctx context.Context, in *RejectPendingReservationRequest, opts ...grpc.CallOption) (*ReservationResponse, error) {
 	out := new(ReservationResponse)
 	err := c.cc.Invoke(ctx, "/reservation.ReservationService/RejectPendingReservationByHost", in, out, opts...)
@@ -185,6 +195,7 @@ type ReservationServiceServer interface {
 	GetReservationsForHost(context.Context, *GetReservationsForHostRequest) (*GetReservationsForHostResponse, error)
 	GetNumberOfPastReservationsByHostId(context.Context, *GetNumberOfPastReservationsByHostRequest) (*GetNumberOfPastReservationsByHostResponse, error)
 	GetDurationOfPastReservationsByHostId(context.Context, *GetDurationOfPastReservationsByHostIdRequest) (*GetDurationOfPastReservationsByHostIdResponse, error)
+	GetAcceptanceRateByHostId(context.Context, *GetAcceptanceRateByHostIdRequest) (*GetAcceptanceRateByHostIdResponse, error)
 	RejectPendingReservationByHost(context.Context, *RejectPendingReservationRequest) (*ReservationResponse, error)
 	AcceptPendingReservationByHost(context.Context, *AcceptPendingReservationRequest) (*ReservationResponse, error)
 	DeletePendingReservationByGuest(context.Context, *DeleteReservationRequest) (*DeleteReservationResponse, error)
@@ -223,6 +234,9 @@ func (UnimplementedReservationServiceServer) GetNumberOfPastReservationsByHostId
 }
 func (UnimplementedReservationServiceServer) GetDurationOfPastReservationsByHostId(context.Context, *GetDurationOfPastReservationsByHostIdRequest) (*GetDurationOfPastReservationsByHostIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDurationOfPastReservationsByHostId not implemented")
+}
+func (UnimplementedReservationServiceServer) GetAcceptanceRateByHostId(context.Context, *GetAcceptanceRateByHostIdRequest) (*GetAcceptanceRateByHostIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAcceptanceRateByHostId not implemented")
 }
 func (UnimplementedReservationServiceServer) RejectPendingReservationByHost(context.Context, *RejectPendingReservationRequest) (*ReservationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RejectPendingReservationByHost not implemented")
@@ -414,6 +428,24 @@ func _ReservationService_GetDurationOfPastReservationsByHostId_Handler(srv inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReservationService_GetAcceptanceRateByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAcceptanceRateByHostIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).GetAcceptanceRateByHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/reservation.ReservationService/GetAcceptanceRateByHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).GetAcceptanceRateByHostId(ctx, req.(*GetAcceptanceRateByHostIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ReservationService_RejectPendingReservationByHost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RejectPendingReservationRequest)
 	if err := dec(in); err != nil {
@@ -546,6 +578,10 @@ var ReservationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDurationOfPastReservationsByHostId",
 			Handler:    _ReservationService_GetDurationOfPastReservationsByHostId_Handler,
+		},
+		{
+			MethodName: "GetAcceptanceRateByHostId",
+			Handler:    _ReservationService_GetAcceptanceRateByHostId_Handler,
 		},
 		{
 			MethodName: "RejectPendingReservationByHost",

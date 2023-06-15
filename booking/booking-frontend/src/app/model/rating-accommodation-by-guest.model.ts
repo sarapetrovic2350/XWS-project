@@ -1,12 +1,11 @@
-export class RatingHostByGuest {
+export class RatingAccommodationByGuest {
   constructor(
     public id: string = '',
-    public hostId: string = '',
+    public accommodationId: string = '',
     public guestId: string = '',
-    public hostName: string = '',
-    public hostSurname: string = '',
+    public accommodationName: string = '',
     public rate:  number = 0,
     public date: string = '',
-    
+
   ){}
 }

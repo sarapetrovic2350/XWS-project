@@ -28,6 +28,9 @@ import { ShowAccommodationsComponent } from './components/show-accommodations/sh
 import { CreateRateAccommodationComponent } from './components/create-rate-accommodation/create-rate-accommodation.component';
 import { RatingsHostByGuestComponent } from './components/ratings-host-by-guest/ratings-host-by-guest.component';
 import { EditRatingHostComponent } from './components/edit-rating-host/edit-rating-host.component';
+import { ShowRatingsForHostComponent } from './components/show-ratings-for-host/show-ratings-for-host.component';
+import { RatingsAccommodationByGuestComponent } from './components/ratings-accommodation-by-guest/ratings-accommodation-by-guest.component';
+import { EditRatingAccommodationComponent } from './components/edit-rating-accommodation/edit-rating-accommodation.component';
 
 
 
@@ -53,6 +56,9 @@ import { EditRatingHostComponent } from './components/edit-rating-host/edit-rati
     CreateRateAccommodationComponent,
     RatingsHostByGuestComponent,
     EditRatingHostComponent,
+    ShowRatingsForHostComponent,
+    RatingsAccommodationByGuestComponent,
+    EditRatingAccommodationComponent
   ],
     imports: [
         BrowserModule,

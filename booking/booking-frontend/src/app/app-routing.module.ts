@@ -15,7 +15,14 @@ import { CreateRateHostComponent } from './components/create-rate-host/create-ra
 import { ShowAccommodationsComponent } from './components/show-accommodations/show-accommodations.component';
 import { CreateRateAccommodationComponent } from './components/create-rate-accommodation/create-rate-accommodation.component';
 import { RatingsHostByGuestComponent } from './components/ratings-host-by-guest/ratings-host-by-guest.component';
-import {EditRatingHostComponent} from "./components/edit-rating-host/edit-rating-host.component";
+import { EditRatingHostComponent} from "./components/edit-rating-host/edit-rating-host.component";
+import { ShowRatingsForHostComponent } from './components/show-ratings-for-host/show-ratings-for-host.component';
+import {
+  RatingsAccommodationByGuestComponent
+} from "./components/ratings-accommodation-by-guest/ratings-accommodation-by-guest.component";
+import {
+  EditRatingAccommodationComponent
+} from "./components/edit-rating-accommodation/edit-rating-accommodation.component";
 
 const routes: Routes = [
   {
@@ -78,7 +85,19 @@ const routes: Routes = [
   {
     path: 'edit-rating-host/:id',
     component: EditRatingHostComponent
-  }
+  },
+  {
+    path: 'show-ratings',
+    component: ShowRatingsForHostComponent
+  },
+  {
+    path: 'ratings-accommodation-by-guest',
+    component: RatingsAccommodationByGuestComponent
+  },
+  {
+    path: 'edit-rating-accommodation/:id',
+    component: EditRatingAccommodationComponent
+  },
 
 
 ];
