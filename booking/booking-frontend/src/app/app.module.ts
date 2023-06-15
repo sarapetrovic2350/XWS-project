@@ -21,6 +21,9 @@ import { GuestReservationsComponent } from './components/guest-reservations/gues
 import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
 import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
 import { ShowHostsComponent } from './components/show-hosts/show-hosts.component';
+import { CreateRateHostComponent } from './components/create-rate-host/create-rate-host.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 
 
@@ -40,7 +43,8 @@ import { ShowHostsComponent } from './components/show-hosts/show-hosts.component
     GuestReservationsComponent,
     ViewReservationsComponent,
     ViewPendingReservationsComponent,
-    ShowHostsComponent
+    ShowHostsComponent,
+    CreateRateHostComponent
   ],
     imports: [
         BrowserModule,
@@ -48,7 +52,9 @@ import { ShowHostsComponent } from './components/show-hosts/show-hosts.component
         BrowserAnimationsModule,
         AngularMaterialModule,
         HttpClientModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule
     ],
   providers: [],
   bootstrap: [AppComponent]

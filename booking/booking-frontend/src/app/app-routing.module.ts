@@ -11,6 +11,7 @@ import { UpdateUserComponent } from './components/update-user/update-user.compon
 import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
 import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
 import { ShowHostsComponent } from './components/show-hosts/show-hosts.component';
+import { CreateRateHostComponent } from './components/create-rate-host/create-rate-host.component';
 
 const routes: Routes = [
   {
@@ -52,6 +53,10 @@ const routes: Routes = [
   {
     path: 'show-hosts', 
     component: ShowHostsComponent
+  },
+  {
+    path: 'rating-host/:email', 
+    component: CreateRateHostComponent
   }
 
 

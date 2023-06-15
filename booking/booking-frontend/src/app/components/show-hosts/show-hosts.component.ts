@@ -12,18 +12,16 @@ import { UserService } from 'src/app/service/user.service';
 export class ShowHostsComponent implements OnInit {
   
   public dataSource = new MatTableDataSource<User>();
-  public displayedColumns = ['Name', 'Surname', 'Email', 'Address'];
+  public displayedColumns = ['Name', 'Surname', 'Email', 'Address', 'rate'];
   public users: User[] = [];
   public user: User | undefined = undefined;
 
   isLoggedIn: boolean = false;
   isHost: boolean = false;
   isGuest: boolean = false;
-  //user: User = new User();
 
   constructor(
     private router: Router,
-    //private accommodationService: AccommodationService,
     private userService : UserService
   ) { }
 
@@ -38,6 +36,10 @@ export class ShowHostsComponent implements OnInit {
     })
 
 
+  }
+
+  rateHost(email:any){
+    this.router.navigate(['rating-host/' + email ]);
   }
 
 }
