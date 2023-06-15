@@ -38,5 +38,9 @@ export class RatingService {
   DeleteRatingForHost(id: string) {
     return this.http.post<RatingHost>(this.apiHost + 'deleteRatingForHost/' + id, {headers: this.headers2});
 }
+  getRatingsForHost(hostId : any): Observable<any[]>{
+    return this.http.get<any[]>(this.apiHost + 'getRatingsForHost/' + hostId, {headers: this.headers2});
+  }
+
 
 }
