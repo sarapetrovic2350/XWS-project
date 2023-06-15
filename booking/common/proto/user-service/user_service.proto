@@ -56,6 +56,11 @@ service UserService {
       body: "user"
     };
   }
+  rpc GetIfHostIsSuperHost(GetIfHostIsSuperHostRequest) returns (GetIfHostIsSuperHostResponse) {
+    option (google.api.http) = {
+      get: "/getIfHostIsSuperhost/{id}"
+    };
+  }
 }
 message GetUserByEmailResponse{
   User user = 1;
@@ -135,4 +140,11 @@ message GetUserByIdRequest{
 }
 message GetUserByIdResponse{
   User user = 1;
+}
+message GetIfHostIsSuperHostRequest{
+  string id = 1;
+}
+
+message GetIfHostIsSuperHostResponse{
+  bool isSuperHost = 1;
 }

@@ -160,3 +160,15 @@ func (handler *UserHandler) mustEmbedUnimplementedUserServiceServer() {
 	//TODO implement me
 	panic("implement me")
 }
+
+func (handler *UserHandler) GetIfHostIsSuperHost(ctx context.Context, request *user.GetIfHostIsSuperHostRequest) (*user.GetIfHostIsSuperHostResponse, error) {
+	fmt.Println("In GetUserByEmail grpc api")
+	fmt.Print("Request.Email: ")
+	isSuperHost, err := handler.userService.GetIfHostIsSuperHost(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user.GetIfHostIsSuperHostResponse{
+		IsSuperHost: isSuperHost,
+	}, nil
+}

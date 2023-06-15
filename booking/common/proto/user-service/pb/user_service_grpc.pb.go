@@ -31,6 +31,7 @@ type UserServiceClient interface {
 	DeleteGuestUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	DeleteHostUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
+	GetIfHostIsSuperHost(ctx context.Context, in *GetIfHostIsSuperHostRequest, opts ...grpc.CallOption) (*GetIfHostIsSuperHostResponse, error)
 }
 
 type userServiceClient struct {
@@ -122,6 +123,15 @@ func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserReques
 	return out, nil
 }
 
+func (c *userServiceClient) GetIfHostIsSuperHost(ctx context.Context, in *GetIfHostIsSuperHostRequest, opts ...grpc.CallOption) (*GetIfHostIsSuperHostResponse, error) {
+	out := new(GetIfHostIsSuperHostResponse)
+	err := c.cc.Invoke(ctx, "/user.UserService/GetIfHostIsSuperHost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -135,6 +145,7 @@ type UserServiceServer interface {
 	DeleteGuestUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	DeleteHostUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+	GetIfHostIsSuperHost(context.Context, *GetIfHostIsSuperHostRequest) (*GetIfHostIsSuperHostResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -168,6 +179,9 @@ func (UnimplementedUserServiceServer) DeleteHostUser(context.Context, *DeleteUse
 }
 func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedUserServiceServer) GetIfHostIsSuperHost(context.Context, *GetIfHostIsSuperHostRequest) (*GetIfHostIsSuperHostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIfHostIsSuperHost not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -344,6 +358,24 @@ func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetIfHostIsSuperHost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetIfHostIsSuperHostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetIfHostIsSuperHost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/GetIfHostIsSuperHost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetIfHostIsSuperHost(ctx, req.(*GetIfHostIsSuperHostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +418,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUser",
 			Handler:    _UserService_UpdateUser_Handler,
+		},
+		{
+			MethodName: "GetIfHostIsSuperHost",
+			Handler:    _UserService_GetIfHostIsSuperHost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
