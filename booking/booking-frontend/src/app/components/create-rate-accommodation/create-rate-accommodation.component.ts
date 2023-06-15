@@ -25,7 +25,7 @@ export class CreateRateAccommodationComponent implements OnInit {
   ) { }
 
   title = 'Rate accommodation';
-  submitted = false;  
+  submitted = false;
 
   accommodation: Accommodation = new Accommodation();
   user: User = new User();
@@ -60,7 +60,7 @@ export class CreateRateAccommodationComponent implements OnInit {
     this.ratinService.createRatingForAccommodation(this.ratingAccommodation).subscribe(
       {
         next: (res) => {
-          //this.router.navigate(['/show-host-accommodations']);
+          this.router.navigate(['/ratings-accommodation-by-guest']);
           Swal.fire({
             icon: 'success',
             title: 'Success!',

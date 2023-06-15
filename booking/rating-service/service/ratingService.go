@@ -83,6 +83,20 @@ func (service *RatingService) GetAllRatingHostByGuestId(id string) (model.Rating
 	}
 	return ratingsByGuest, nil
 }
+func (service *RatingService) GetAllRatingAccommodationByGuestId(id string) (model.RatingsAccommodation, error) {
+	fmt.Println("in GetAllRatingAccommodationByGuestId service")
+	ratings, err := service.RatingRepo.GetAllRatingsAccommodation()
+	if err != nil {
+		return nil, err
+	}
+	var ratingsByGuest model.RatingsAccommodation
+	for _, itr := range ratings {
+		if itr.GuestId == id {
+			ratingsByGuest = append(ratingsByGuest, itr)
+		}
+	}
+	return ratingsByGuest, nil
+}
 
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
