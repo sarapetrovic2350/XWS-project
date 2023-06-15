@@ -64,7 +64,7 @@ export class CreateRateAccommodationComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: 'Successfully rated host!',
+            text: 'Successfully rated accommodation!',
           })
 
         },

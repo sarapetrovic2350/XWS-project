@@ -7,5 +7,6 @@ export class RatingHostByGuest {
     public hostSurname: string = '',
     public rate:  number = 0,
     public date: string = '',
+    
   ){}
 }
