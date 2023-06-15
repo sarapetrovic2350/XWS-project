@@ -86,7 +86,13 @@ func (service *UserService) FindUserByEmail(email string) (*model.User, error) {
 	}
 	return user, nil
 }
-
+func (service *UserService) FindUserById(id string) (*model.User, error) {
+	user, err := service.UserRepo.FindUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
 func GenerateJWT(email string, role string, id string) (string, error) {
 	var sampleSecretKey = []byte("SecretYouShouldHide")
 	claims := jwt.MapClaims{}

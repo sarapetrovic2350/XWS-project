@@ -20,10 +20,13 @@
       <span>My reservations</span>
     </button>
     <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/show-hosts">
-      <span>Show hosts</span>
+      <span>Rate hosts</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/ratings-host-by-guest">
+      <span>My ratings for hosts</span>
     </button>
     <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/show-accommodations">
-      <span>Show accommodations</span>
+      <span>Rate accommodations</span>
     </button>
     <span class="example-spacer"></span>
     <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">

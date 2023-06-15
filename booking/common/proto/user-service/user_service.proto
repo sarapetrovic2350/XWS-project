@@ -21,6 +21,11 @@ service UserService {
       get: "/user/{email}"
     };
   }
+  rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse) {
+    option (google.api.http) = {
+      get: "/userById/{id}"
+    };
+  }
   rpc CreateUser(CreateUserRequest) returns(CreateUserResponse) {
     option (google.api.http) = {
       post: "/user"
@@ -130,7 +135,12 @@ message User {
   string password = 6;
   AddressDTO address = 7;
 }
-
+message GetUserByIdRequest{
+  string id = 1;
+}
+message GetUserByIdResponse{
+  User user = 1;
+}
 message GetIfHostIsSuperHostRequest{
   string id = 1;
 }

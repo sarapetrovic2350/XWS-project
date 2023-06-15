@@ -8,5 +8,6 @@ type UserStore interface {
 	Insert(user *User) error
 	DeleteAll()
 	FindUserByEmail(email string) (*User, error)
+	FindUserById(id string) (*User, error)
 	Delete(id string) error
 }
