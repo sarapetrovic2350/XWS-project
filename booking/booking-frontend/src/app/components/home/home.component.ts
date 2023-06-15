@@ -116,8 +116,8 @@ export class HomeComponent implements OnInit {
             }
           }
 
-          this.filterAccommodations();
-          this.dataSource.data = this.filteredAccommodations;
+          //this.filterAccommodations();
+          this.dataSource.data = this.accommodations;
           
 
         },
@@ -139,24 +139,28 @@ export class HomeComponent implements OnInit {
     this.endDate = new Date()
     this.isSearched = false;
     this.notFound = false;
+    this.isSearched = false;
   }
 
   filterAccommodations() {
-    this.filteredAccommodations = this.accommodations.filter((acc: any) => {
-      const price = acc.availabilities[0].price;
-      const selectedBenefits = this.selectedBenefits;
-
-      // Proveri da li accommodation sadrži sve selektovane benefite
-      const hasSelectedBenefits = selectedBenefits.every((benefit: string) =>
-        acc.benefits.some((accBenefit: any) => accBenefit == benefit)
-      );
-
-      return (
-        (this.minPrice === undefined || price >= this.minPrice) &&
-        (this.maxPrice === undefined || price <= this.maxPrice) &&
-        (selectedBenefits.length === 0 || hasSelectedBenefits)
-      );
-    });
+    if(this.isSearched){
+      this.filteredAccommodations = this.accommodations.filter((acc: any) => {
+        const price = acc.availabilities[0].price;
+        const selectedBenefits = this.selectedBenefits;
+  
+        // Proveri da li accommodation sadrži sve selektovane benefite
+        const hasSelectedBenefits = selectedBenefits.every((benefit: string) =>
+          acc.benefits.some((accBenefit: any) => accBenefit == benefit)
+        );
+  
+        return (
+          (this.minPrice === undefined || price >= this.minPrice) &&
+          (this.maxPrice === undefined || price <= this.maxPrice) &&
+          (selectedBenefits.length === 0 || hasSelectedBenefits)
+        );
+      });
+      this.dataSource.data = this.filteredAccommodations;
+    }
   }
 
   toggleBenefitSelection(benefit: string) {

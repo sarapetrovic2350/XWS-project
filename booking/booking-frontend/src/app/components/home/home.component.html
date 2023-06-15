@@ -24,26 +24,31 @@
     <input type="number" matInput [(ngModel)]="numberOfGuests" placeholder="Number of Guests"/>
     <mat-icon matPrefix>search</mat-icon>
   </mat-form-field >
-  <mat-form-field class="ml" appearance="outline">
-    <mat-label>Min Price</mat-label>
-    <input type="number" matInput [(ngModel)]="minPrice" placeholder="Min Price"/>
-    <mat-icon matPrefix>search</mat-icon>
-  </mat-form-field >
-  <mat-form-field class="ml" appearance="outline">
-    <mat-label>Max Price</mat-label>
-    <input type="number" matInput [(ngModel)]="maxPrice" placeholder="Max Price"/>
-    <mat-icon matPrefix>search</mat-icon>
-  </mat-form-field >
-  <mat-form-field appearance="outline">
-    <mat-label>Choose Benefits:</mat-label>
-    <mat-select  [(ngModel)]="benefits" name="benefits" multiple>
-      <mat-option *ngFor="let ben of benefits" [value]="ben">{{ben}} 
-       </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="filter-container" *ngIf="isSearched">
+    <mat-form-field class="ml" appearance="outline">
+      <mat-label>Min Price</mat-label>
+      <input type="number" matInput [(ngModel)]="minPrice" placeholder="Min Price"/>
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field >
+    <mat-form-field class="ml" appearance="outline">
+      <mat-label>Max Price</mat-label>
+      <input type="number" matInput [(ngModel)]="maxPrice" placeholder="Max Price"/>
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field >
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Benefits:</mat-label>
+      <mat-select  [(ngModel)]="selectedBenefits" name="benefits" multiple>
+        <mat-option *ngFor="let ben of benefits" [value]="ben">{{ben}} 
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <button class="btn" mat-mini-fab color="primary" (click)="searchAccommodations()">Search</button>
   <button *ngIf="isSearched" mat-button mat-ripple (click)="clearSearch()">
     <mat-icon color= "primary" matTooltip="clear search"> cancel_presentation</mat-icon>
+  </button>
+  <button class="btn" mat-mini-fab color="primary" [disabled]="!isSearched" (click)="filterAccommodations()" >
+    Filter
   </button>
   <!-- <button (click)="filterAccommodations()" class="btn btn-primary" style="display: inline-block">
     Filter
