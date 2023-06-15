@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RatingHost } from '../model/rating-host.model';
 import { Observable } from 'rxjs';
+import { RatingAccommodation } from '../model/rating-accommodation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,10 @@ export class RatingService {
 
   createRatingForHost(ratingHost: RatingHost): Observable<any> {
     return this.http.post<RatingHost>(this.apiHost + 'createRatingForHost', ratingHost, {headers: this.headers2});
+  }
+
+  createRatingForAccommodation(ratingAccommodation: RatingAccommodation): Observable<any> {
+    return this.http.post<RatingHost>(this.apiHost + 'createRatingForAccommodation', ratingAccommodation, {headers: this.headers2});
   }
 
 }

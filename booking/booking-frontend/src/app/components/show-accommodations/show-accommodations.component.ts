@@ -12,7 +12,7 @@ import { AccommodationService } from 'src/app/service/accommodation.service';
 export class ShowAccommodationsComponent implements OnInit {
 
   public dataSource = new MatTableDataSource<Accommodation>();
-  public displayedColumns = ['Name', 'Benefits', 'Address'];
+  public displayedColumns = ['Name', 'Benefits', 'Address', 'rate'];
   public accommodations: Accommodation[] = [];
   public accommodation: Accommodation | undefined = undefined;
 
@@ -30,6 +30,10 @@ export class ShowAccommodationsComponent implements OnInit {
       this.dataSource.data = this.accommodations;
       console.log(this.dataSource.data);
     })
+  }
+
+  rateAccommodation(id:string){
+    this.router.navigate(['rating-accommodation/' + id ]);
   }
 
 }

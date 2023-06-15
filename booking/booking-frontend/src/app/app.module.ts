@@ -25,6 +25,7 @@ import { CreateRateHostComponent } from './components/create-rate-host/create-ra
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { ShowAccommodationsComponent } from './components/show-accommodations/show-accommodations.component';
+import { CreateRateAccommodationComponent } from './components/create-rate-accommodation/create-rate-accommodation.component';
 
 
 
@@ -46,7 +47,8 @@ import { ShowAccommodationsComponent } from './components/show-accommodations/sh
     ViewPendingReservationsComponent,
     ShowHostsComponent,
     CreateRateHostComponent,
-    ShowAccommodationsComponent
+    ShowAccommodationsComponent,
+    CreateRateAccommodationComponent
   ],
     imports: [
         BrowserModule,
