@@ -70,6 +70,9 @@ export class UserService {
   getUserByEmail(email: string): Observable<any> {
     return this.http.get<any>(this.apiHost + '/' + email);
   }
+  getUserById(id: string): Observable<any> {
+    return this.http.get<any>(this.apiHost2 + '/userById/' + id);
+  }
 
   updateUser(user: User): Observable<any> {
     console.log(user);

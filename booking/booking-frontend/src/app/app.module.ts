@@ -26,6 +26,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { ShowAccommodationsComponent } from './components/show-accommodations/show-accommodations.component';
 import { CreateRateAccommodationComponent } from './components/create-rate-accommodation/create-rate-accommodation.component';
+import { RatingsHostByGuestComponent } from './components/ratings-host-by-guest/ratings-host-by-guest.component';
+import { EditRatingHostComponent } from './components/edit-rating-host/edit-rating-host.component';
+import { ShowRatingsForHostComponent } from './components/show-ratings-for-host/show-ratings-for-host.component';
 
 
 
@@ -48,7 +51,10 @@ import { CreateRateAccommodationComponent } from './components/create-rate-accom
     ShowHostsComponent,
     CreateRateHostComponent,
     ShowAccommodationsComponent,
-    CreateRateAccommodationComponent
+    CreateRateAccommodationComponent,
+    RatingsHostByGuestComponent,
+    EditRatingHostComponent,
+    ShowRatingsForHostComponent
   ],
     imports: [
         BrowserModule,

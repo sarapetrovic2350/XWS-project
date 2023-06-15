@@ -25,6 +25,7 @@ type UserServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	GetAllHosts(ctx context.Context, in *GetAllHostsRequest, opts ...grpc.CallOption) (*GetAllHostsResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserByEmailResponse, error)
+	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	DeleteGuestUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
@@ -62,6 +63,15 @@ func (c *userServiceClient) GetAllHosts(ctx context.Context, in *GetAllHostsRequ
 func (c *userServiceClient) GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserByEmailResponse, error) {
 	out := new(GetUserByEmailResponse)
 	err := c.cc.Invoke(ctx, "/user.UserService/GetUserByEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error) {
+	out := new(GetUserByIdResponse)
+	err := c.cc.Invoke(ctx, "/user.UserService/GetUserById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +139,7 @@ type UserServiceServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	GetAllHosts(context.Context, *GetAllHostsRequest) (*GetAllHostsResponse, error)
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error)
+	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	DeleteGuestUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
@@ -150,6 +161,9 @@ func (UnimplementedUserServiceServer) GetAllHosts(context.Context, *GetAllHostsR
 }
 func (UnimplementedUserServiceServer) GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
 }
 func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -232,6 +246,24 @@ func _UserService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUserByEmail(ctx, req.(*GetUserByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/GetUserById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserById(ctx, req.(*GetUserByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -362,6 +394,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserByEmail",
 			Handler:    _UserService_GetUserByEmail_Handler,
+		},
+		{
+			MethodName: "GetUserById",
+			Handler:    _UserService_GetUserById_Handler,
 		},
 		{
 			MethodName: "CreateUser",

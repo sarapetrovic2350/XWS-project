@@ -129,6 +129,17 @@ func (handler *UserHandler) GetUserByEmail(ctx context.Context, request *user.Ge
 	}, nil
 }
 
+func (handler *UserHandler) GetUserById(ctx context.Context, request *user.GetUserByIdRequest) (*user.GetUserByIdResponse, error) {
+	fmt.Println("In GetUserById grpc api")
+	modelUser, err := handler.userService.FindUserById(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user.GetUserByIdResponse{
+		User: mapUser(modelUser),
+	}, nil
+}
+
 func (handler *UserHandler) UpdateUser(ctx context.Context, request *user.UpdateUserRequest) (*user.UpdateUserResponse, error) {
 	fmt.Println("In UpdateUser grpc api")
 	fmt.Print("Request.User: ")

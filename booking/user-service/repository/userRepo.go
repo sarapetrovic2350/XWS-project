@@ -68,7 +68,7 @@ func (repo *UserRepo) Insert(user *model.User) error {
 	return nil
 }
 
-func (repo *UserRepo) GetById(id string) (*model.User, error) {
+func (repo *UserRepo) FindUserById(id string) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
