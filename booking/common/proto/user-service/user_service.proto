@@ -134,6 +134,7 @@ message User {
   string email = 5;
   string password = 6;
   AddressDTO address = 7;
+  bool isSuperHost = 8;
 }
 message GetUserByIdRequest{
   string id = 1;

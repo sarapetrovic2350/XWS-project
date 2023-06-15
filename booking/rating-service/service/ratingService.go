@@ -88,6 +88,7 @@ func (service *RatingService) GetAllRatingHostByGuestId(id string) (model.Rating
 }
 
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
+	fmt.Println("usao u CreateRatingForHost")
 	areValidPastReservationsForGuest := service.CheckPastReservationsForGuest(ratingHost.HostId, ratingHost.GuestId)
 	if areValidPastReservationsForGuest {
 		ratingHost.Date = time.Now()
@@ -95,26 +96,44 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 		if err != nil {
 			return nil, err
 		}
-		return ratingHost, nil
-	}
 
-	avgRate, _ := service.GetAvgRatingForHost(ratingHost.HostId)
+		avgRate, _ := service.GetAvgRatingForHost(ratingHost.HostId)
 
-	userClient := repository.NewUserClient(service.UserClientAddress)
-	fmt.Println("user client created")
-	//
+		userClient := repository.NewUserClient(service.UserClientAddress)
+		fmt.Println("user client created")
 
-	if avgRate > 4.7 {
-		getIfHostIsSuperHostRequest := user.GetIfHostIsSuperHostRequest{Id: ratingHost.HostId}
-		getIfHostIsSuperHostResponse, err := userClient.GetIfHostIsSuperHost(context.TODO(), &getIfHostIsSuperHostRequest)
+		getUserByIdRequest := user.GetUserByIdRequest{Id: ratingHost.HostId}
+		getUserByIdResponse, err := userClient.GetUserById(context.TODO(), &getUserByIdRequest)
 		fmt.Println(err)
-		if getIfHostIsSuperHostResponse.IsSuperHost == true {
+		fmt.Println("Pronalazi usera")
+		fmt.Println(getUserByIdResponse)
 
+		if avgRate > 4.7 {
+			fmt.Println("Usao u if da je ocena veca od 4.7 ")
+			getIfHostIsSuperHostRequest := user.GetIfHostIsSuperHostRequest{Id: ratingHost.HostId}
+			getIfHostIsSuperHostResponse, err := userClient.GetIfHostIsSuperHost(context.TODO(), &getIfHostIsSuperHostRequest)
+			fmt.Println(err)
+			fmt.Println(getIfHostIsSuperHostResponse)
+			if getIfHostIsSuperHostResponse.IsSuperHost == true {
+				if getUserByIdResponse.User.IsSuperHost != true {
+					getUserByIdResponse.User.IsSuperHost = true
+					userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: getUserByIdResponse.User})
+				}
+			} else {
+				if getUserByIdResponse.User.IsSuperHost != false {
+					getUserByIdResponse.User.IsSuperHost = false
+					userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: getUserByIdResponse.User})
+				}
+			}
 		} else {
-
+			fmt.Println("Usao u if da je ocena manja od 4.7 ")
+			if getUserByIdResponse.User.IsSuperHost != false {
+				getUserByIdResponse.User.IsSuperHost = false
+				userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: getUserByIdResponse.User})
+			}
 		}
-	} else {
 
+		return ratingHost, nil
 	}
 
 	return nil, errors.New("guest does not have a reservation in past that is not canceled")

@@ -36,6 +36,7 @@ func (service *UserService) CreateUser(user *model.User) error {
 	if existingUser != nil {
 		return errors.New("email already exists")
 	}
+	user.IsSuperHost = false
 	err := service.UserRepo.Insert(user)
 	if err != nil {
 		return err

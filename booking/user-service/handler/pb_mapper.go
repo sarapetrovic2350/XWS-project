@@ -40,6 +40,7 @@ func mapUpdatedUser(userPb *user.User) *model.User {
 			Street:       userPb.Address.Street,
 			StreetNumber: userPb.Address.Number,
 		},
+		IsSuperHost: userPb.IsSuperHost,
 	}
 	return user
 }
@@ -58,6 +59,7 @@ func mapUser(modelUser *model.User) *user.User {
 			Street:  modelUser.Address.Street,
 			Number:  modelUser.Address.StreetNumber,
 		},
+		IsSuperHost: modelUser.IsSuperHost,
 	}
 	return userPb
 }

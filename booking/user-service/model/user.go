@@ -19,7 +19,7 @@ type User struct {
 	Password    string             `json:"password" bson:"password"`
 	Role        string             `json:"role" bson:"role"`
 	Address     Address            `bson:"inline"`
-	IsSuperhost bool               `json:"isSuperhost" bson:"is_superhost"`
+	IsSuperHost bool               `json:"isSuperHost" bson:"is_super_host"`
 }
 
 type Users []*User
