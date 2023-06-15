@@ -100,6 +100,28 @@ func (service *RatingService) GetAllRatingAccommodationByGuestId(id string) (mod
 	}
 	return ratingsByGuest, nil
 }
+func (service *RatingService) GetAllRatingAccommodationByHostId(hostId string) (model.RatingsAccommodation, error) {
+	fmt.Println("in GetAllRatingAccommodationByHostId service")
+	ratingsAccommodation, err := service.RatingRepo.GetAllRatingsAccommodation()
+	if err != nil {
+		return nil, err
+	}
+	accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+	fmt.Println("accommodation client created")
+	var ratingsAccommodationByHost model.RatingsAccommodation
+	for _, itr := range ratingsAccommodation {
+		getAccommodationByIdRequest := accommodation.GetAccommodationByIdRequest{Id: itr.AccommodationId}
+		accommodationInRating, _ := accommodationClient.GetAccommodationById(context.TODO(), &getAccommodationByIdRequest)
+		fmt.Println(accommodationInRating)
+		if accommodationInRating == nil {
+			continue
+		}
+		if accommodationInRating.Accommodation.HostID == hostId {
+			ratingsAccommodationByHost = append(ratingsAccommodationByHost, itr)
+		}
+	}
+	return ratingsAccommodationByHost, nil
+}
 
 func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) (*model.RatingHost, error) {
 	fmt.Println("usao u CreateRatingForHost")

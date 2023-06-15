@@ -26,6 +26,11 @@ service RatingService {
       get: "/ratingsAccommodation/{guestId}"
     };
   }
+  rpc GetRatingsAccommodationsByHost(GetRatingsAccommodationsByHostRequest) returns (GetRatingsAccommodationsByHostResponse) {
+    option (google.api.http) = {
+      get: "/getRatingsAccommodationsByHost/{hostId}"
+    };
+  }
   rpc GetRatingsForHost(GetRatingsForHostRequest) returns (GetRatingsForHostResponse) {
     option (google.api.http) = {
       get: "/getRatingsForHost/{id}"
@@ -180,4 +185,10 @@ message GetRatingAccommodationByIdResponse {
 }
 message GetAllRatingsAccommodationByGuestIdRequest {
   string guestId = 1;
+}
+message GetRatingsAccommodationsByHostRequest {
+  string hostId = 1;
+}
+message GetRatingsAccommodationsByHostResponse {
+  repeated RatingAccommodation ratingsAccommodation = 1;
 }
