@@ -232,3 +232,20 @@ func (service *ReservationService) RejectReservation(id string) (*model.Reservat
 	}
 	return reservation, nil
 }
+
+func (service *ReservationService) GetNumberOfPastReservationsByHostId(hostId string) (float32, error) {
+	reservationsByHostId, err := service.GetReservationsForHost(hostId)
+	if err != nil {
+		return 0.0, err
+	}
+	var totalReservations float32
+	for _, itr := range reservationsByHostId {
+		//endDate, _ := time.Parse("2006-02-01", itr.EndDate)
+		print(itr)
+		if itr.EndDate.Before(time.Now()) && itr.ReservationStatus == 1 {
+			totalReservations = totalReservations + 1
+			println(totalReservations)
+		}
+	}
+	return totalReservations, nil
+}

@@ -177,3 +177,16 @@ func (handler *ReservationHandler) AcceptPendingReservationByHost(ctx context.Co
 	return &reservation.ReservationResponse{
 		Reservation: mapReservation(acceptedReservation)}, nil
 }
+
+func (handler *ReservationHandler) GetNumberOfPastReservationsByHostId(ctx context.Context, request *reservation.GetNumberOfPastReservationsByHostRequest) (*reservation.GetNumberOfPastReservationsByHostResponse, error) {
+	fmt.Println("In GetAll grpc api")
+	numberOfReservations, err := handler.reservationService.GetNumberOfPastReservationsByHostId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetNumberOfPastReservationsByHostResponse{
+		NumReservations: numberOfReservations,
+	}
+
+	return response, nil
+}
