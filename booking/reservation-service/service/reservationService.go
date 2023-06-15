@@ -249,3 +249,20 @@ func (service *ReservationService) GetNumberOfPastReservationsByHostId(hostId st
 	}
 	return totalReservations, nil
 }
+
+func (service *ReservationService) GetDurationOfPastReservationsByHostId(hostId string) (float32, error) {
+	reservationsByHostId, err := service.GetReservationsForHost(hostId)
+	if err != nil {
+		return 0.0, err
+	}
+	var totalDays float32
+	for _, itr := range reservationsByHostId {
+		if itr.EndDate.Before(time.Now()) && itr.ReservationStatus == 1 {
+			t1 := itr.StartDate
+			t2 := itr.EndDate
+			days := t2.Sub(t1).Hours() / 24
+			totalDays = totalDays + float32(days)
+		}
+	}
+	return totalDays, nil
+}

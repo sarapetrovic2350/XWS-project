@@ -190,3 +190,16 @@ func (handler *ReservationHandler) GetNumberOfPastReservationsByHostId(ctx conte
 
 	return response, nil
 }
+
+func (handler *ReservationHandler) GetDurationOfPastReservationsByHostId(ctx context.Context, request *reservation.GetDurationOfPastReservationsByHostIdRequest) (*reservation.GetDurationOfPastReservationsByHostIdResponse, error) {
+	fmt.Println("In GetAll grpc api Duration Days ")
+	numberOfDays, err := handler.reservationService.GetDurationOfPastReservationsByHostId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := &reservation.GetDurationOfPastReservationsByHostIdResponse{
+		NumDays: numberOfDays,
+	}
+
+	return response, nil
+}
