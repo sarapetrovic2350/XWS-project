@@ -10,6 +10,8 @@ import { CreateAvailabilityComponent } from './components/create-availability/cr
 import { UpdateUserComponent } from './components/update-user/update-user.component';
 import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
 import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
+import { ShowHostsComponent } from './components/show-hosts/show-hosts.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -46,7 +48,12 @@ const routes: Routes = [
   {
     path: 'view-pending-reservations', 
     component: ViewPendingReservationsComponent
+  },
+  {
+    path: 'show-hosts', 
+    component: ShowHostsComponent
   }
+
 
 ];
 @NgModule({
