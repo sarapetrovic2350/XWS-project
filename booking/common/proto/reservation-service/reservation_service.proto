@@ -41,6 +41,11 @@ service ReservationService {
       get: "/getReservationsForHost/{id}"
     };
   }
+  rpc GetNumberOfPastReservationsByHostId(GetNumberOfPastReservationsByHostRequest) returns (GetNumberOfPastReservationsByHostResponse) {
+    option (google.api.http) = {
+      get: "/getNumberOfPastReservationsByHostId/{id}"
+    };
+  }
   rpc RejectPendingReservationByHost(RejectPendingReservationRequest) returns(ReservationResponse) {
     option (google.api.http) = {
       post: "/reservation/rejectPendingReservation/{id}"
@@ -156,4 +161,11 @@ message GetReservationsForHostRequest {
 }
 message GetReservationsForHostResponse {
   repeated Reservation reservations = 1;
+}
+
+message GetNumberOfPastReservationsByHostRequest{
+  string id = 1;
+}
+message GetNumberOfPastReservationsByHostResponse{
+  float numReservations = 1;
 }
