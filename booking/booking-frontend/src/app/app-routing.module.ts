@@ -13,6 +13,7 @@ import { ViewPendingReservationsComponent } from './components/view-pending-rese
 import { ShowHostsComponent } from './components/show-hosts/show-hosts.component';
 import { CreateRateHostComponent } from './components/create-rate-host/create-rate-host.component';
 import { ShowAccommodationsComponent } from './components/show-accommodations/show-accommodations.component';
+import { CreateRateAccommodationComponent } from './components/create-rate-accommodation/create-rate-accommodation.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,11 @@ const routes: Routes = [
   {
     path: 'show-accommodations', 
     component: ShowAccommodationsComponent
+  },
+
+  {
+    path: 'rating-accommodation/:id', 
+    component: CreateRateAccommodationComponent
   }
 
 
