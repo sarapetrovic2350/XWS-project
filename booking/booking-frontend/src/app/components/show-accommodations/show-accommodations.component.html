@@ -1,31 +1,27 @@
 <div class="container">
     <div class="table-header">
-        <p class="table-title">Hosts</p>
+        <p class="table-title">Accommodations</p>
     </div>
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="Name">
             <th mat-header-cell *matHeaderCellDef class="cell-center"> First name</th>
-            <td mat-cell *matCellDef="let user" class="cell-center">{{user.firstName}}</td>
+            <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.name}}</td>
         </ng-container>
-        <ng-container matColumnDef="Surname">
-            <th mat-header-cell *matHeaderCellDef class="cell-center"> Last name</th>
-            <td mat-cell *matCellDef="let user" class="cell-center">{{user.lastName}}</td>
+        <ng-container matColumnDef="Benefits">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Benefits </th>
+            <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.benefits}}</td>
         </ng-container>
-      <ng-container matColumnDef="Email">
-        <th mat-header-cell *matHeaderCellDef class="cell-center"> Email </th>
-        <td mat-cell *matCellDef="let user" class="cell-center">{{user.email}}</td>
-      </ng-container>
       <ng-container matColumnDef="Address">
         <th mat-header-cell *matHeaderCellDef class="cell-center"> Address</th>
-        <td mat-cell *matCellDef="let user" class="cell-center">{{user.address.street}} {{user.address.number}},
-          {{user.address.city}}<br>
-          {{user.address.country}}</td>
+        <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.address.street}} {{accommodation.address.number}},
+          {{accommodation.address.city}}<br>
+          {{accommodation.address.country}}</td>
       </ng-container>
       <ng-container matColumnDef="rate">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let user">
+            <td mat-cell *matCellDef="let accommodation">
                 <div class="commands">
-                    <button (click)="rateHost(user.email)">
+                    <button (click)="rateAccommodation(accommodation.id)">
                         <mat-icon color= "primary" matTooltip="rate">add</mat-icon>
                     </button>
                 </div>
@@ -45,4 +41,5 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>
+
 
