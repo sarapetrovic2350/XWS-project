@@ -20,6 +20,7 @@ import { UpdateUserComponent } from './components/update-user/update-user.compon
 import { GuestReservationsComponent } from './components/guest-reservations/guest-reservations.component';
 import { ViewReservationsComponent } from './components/view-reservations/view-reservations.component';
 import { ViewPendingReservationsComponent } from './components/view-pending-reservations/view-pending-reservations.component';
+import { ShowHostsComponent } from './components/show-hosts/show-hosts.component';
 
 
 
@@ -38,7 +39,8 @@ import { ViewPendingReservationsComponent } from './components/view-pending-rese
     UpdateUserComponent,
     GuestReservationsComponent,
     ViewReservationsComponent,
-    ViewPendingReservationsComponent
+    ViewPendingReservationsComponent,
+    ShowHostsComponent
   ],
     imports: [
         BrowserModule,

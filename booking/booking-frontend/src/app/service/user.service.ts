@@ -10,6 +10,7 @@ import {Flight} from "../model/flight.model";
 })
 export class UserService {
   apiHost: string = 'http://localhost:8000/user';
+  apiHost2: string = 'http://localhost:8000';
   headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin' : '*',
     'Access-Control-Allow-Methods' : 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization' }  );
   headers2: HttpHeaders = new HttpHeaders({
@@ -87,4 +88,9 @@ export class UserService {
   deleteHostAccount(id: any): Observable<any> {
     return this.http.post<any>(this.apiHost + '/deleteHost/' + id, {headers: this.headers});
   }
+
+  getAllHosts():Observable<any>{
+      return this.http.get<any>(this.apiHost2 + '/getAllHosts');
+  }
+
 }
