@@ -3,6 +3,7 @@ package service
 import (
 	accommodation "common/proto/accommodation-service/pb"
 	reservation "common/proto/reservation-service/pb"
+	user "common/proto/user-service/pb"
 	"context"
 	"errors"
 	"fmt"
@@ -16,13 +17,15 @@ type RatingService struct {
 	RatingRepo                 model.RatingStore
 	ReservationClientAddress   string
 	AccommodationClientAddress string
+	UserClientAddress          string
 }
 
-func NewRatingService(r model.RatingStore, rca string, aca string) *RatingService {
+func NewRatingService(r model.RatingStore, rca string, aca string, uca string) *RatingService {
 	return &RatingService{
 		RatingRepo:                 r,
 		ReservationClientAddress:   rca,
 		AccommodationClientAddress: aca,
+		UserClientAddress:          uca,
 	}
 }
 
@@ -80,6 +83,26 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 		}
 		return ratingHost, nil
 	}
+
+	avgRate, _ := service.GetAvgRatingForHost(ratingHost.HostId)
+
+	userClient := repository.NewUserClient(service.UserClientAddress)
+	fmt.Println("user client created")
+	//
+
+	if avgRate > 4.7 {
+		getIfHostIsSuperHostRequest := user.GetIfHostIsSuperHostRequest{Id: ratingHost.HostId}
+		getIfHostIsSuperHostResponse, err := userClient.GetIfHostIsSuperHost(context.TODO(), &getIfHostIsSuperHostRequest)
+		fmt.Println(err)
+		if getIfHostIsSuperHostResponse.IsSuperHost == true {
+
+		} else {
+
+		}
+	} else {
+
+	}
+
 	return nil, errors.New("guest does not have a reservation in past that is not canceled")
 
 }

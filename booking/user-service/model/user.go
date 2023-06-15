@@ -12,13 +12,14 @@ const (
 )
 
 type User struct {
-	Id        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	FirstName string             `json:"firstName" bson:"first_name"`
-	LastName  string             `json:"lastName" bson:"last_name"`
-	Email     string             `json:"email" bson:"email"`
-	Password  string             `json:"password" bson:"password"`
-	Role      string             `json:"role" bson:"role"`
-	Address   Address            `bson:"inline"`
+	Id          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	FirstName   string             `json:"firstName" bson:"first_name"`
+	LastName    string             `json:"lastName" bson:"last_name"`
+	Email       string             `json:"email" bson:"email"`
+	Password    string             `json:"password" bson:"password"`
+	Role        string             `json:"role" bson:"role"`
+	Address     Address            `bson:"inline"`
+	IsSuperhost bool               `json:"isSuperhost" bson:"is_superhost"`
 }
 
 type Users []*User
