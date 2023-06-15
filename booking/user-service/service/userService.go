@@ -2,6 +2,7 @@ package service
 
 import (
 	accommodation "common/proto/accommodation-service/pb"
+	rating "common/proto/rating-service/pb"
 	reservation "common/proto/reservation-service/pb"
 	user "common/proto/user-service/pb"
 	"context"
@@ -19,13 +20,15 @@ type UserService struct {
 	UserRepo                   model.UserStore
 	ReservationClientAddress   string
 	AccommodationClientAddress string
+	RatingClientAddress        string
 }
 
-func NewUserService(r model.UserStore, rca string, aca string) *UserService {
+func NewUserService(r model.UserStore, rca string, aca string, rtca string) *UserService {
 	return &UserService{
 		UserRepo:                   r,
 		ReservationClientAddress:   rca,
 		AccommodationClientAddress: aca,
+		RatingClientAddress:        rtca,
 	}
 }
 
@@ -180,9 +183,18 @@ func (service *UserService) GetIfHostIsSuperHost(id string) (bool, error) {
 	getDurationOfPastReservationsByHostIdRequest := reservation.GetDurationOfPastReservationsByHostIdRequest{Id: id}
 	durationOfPastReservationsByHostResponse, err := reservationClient.GetDurationOfPastReservationsByHostId(context.TODO(), &getDurationOfPastReservationsByHostIdRequest)
 
+	//provera avg rating ocene hosta
+	ratingClient := repository.NewRatingClient(service.RatingClientAddress)
+	fmt.Println("rating client created")
+
+	getAvgRatingForHostRequest := rating.GetAvgRatingForHostRequest{HostId: id}
+	getAvgRatingForHostResponse, err := ratingClient.GetAvgRatingForHost(context.TODO(), &getAvgRatingForHostRequest)
+
 	if numberOfPastReservationsByHostResponse.NumReservations < 5 {
 		return false, err
-	} else if durationOfPastReservationsByHostResponse.NumDays < 5 {
+	} else if durationOfPastReservationsByHostResponse.NumDays < 50 {
+		return false, err
+	} else if getAvgRatingForHostResponse.AvgRating < 4.7 {
 		return false, err
 	}
 
