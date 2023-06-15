@@ -128,6 +128,7 @@ func (handler *RatingHandler) GetAvgRatingForHost(ctx context.Context, request *
 
 	return response, nil
 }
+
 func (handler *RatingHandler) GetRatingsForHost(ctx context.Context, request *rating.GetRatingsForHostRequest) (*rating.GetRatingsForHostResponse, error) {
 	fmt.Println("In GetRatingsForHost grpc api")
 	fmt.Println(request)
@@ -144,4 +145,44 @@ func (handler *RatingHandler) GetRatingsForHost(ctx context.Context, request *ra
 		response.RatingsHost = append(response.RatingsHost, current)
 	}
 	return response, nil
+}
+
+func (handler *RatingHandler) GetAllRatingsHostByGuestId(ctx context.Context, request *rating.GetAllRatingsHostByGuestIdRequest) (*rating.GetAllRatingsHostResponse, error) {
+	fmt.Println("In GetAllRatingsHostByGuestId grpc api")
+	fmt.Println(request)
+	ratingsHostByGuest, err := handler.ratingService.GetAllRatingHostByGuestId(request.GuestId)
+	fmt.Println(ratingsHostByGuest)
+	if err != nil {
+		return nil, err
+	}
+	response := &rating.GetAllRatingsHostResponse{
+		RatingsHost: []*rating.RatingHost{},
+	}
+	for _, modelRatingHost := range ratingsHostByGuest {
+		current := mapRatingHost(modelRatingHost)
+		response.RatingsHost = append(response.RatingsHost, current)
+	}
+	return response, nil
+}
+
+func (handler *RatingHandler) GetRatingHostById(ctx context.Context, request *rating.GetRatingByIdRequest) (*rating.GetRatingHostByIdResponse, error) {
+	fmt.Println("In GetRatingHostById grpc api")
+	modelRatingHost, err := handler.ratingService.GetRatingHostById(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.GetRatingHostByIdResponse{
+		RatingHost: mapRatingHost(modelRatingHost),
+	}, nil
+}
+
+func (handler *RatingHandler) GetRatingAccommodationById(ctx context.Context, request *rating.GetRatingByIdRequest) (*rating.GetRatingAccommodationByIdResponse, error) {
+	fmt.Println("In GetRatingAccommodationById grpc api")
+	modelRatingAccommodation, err := handler.ratingService.GetRatingAccommodationById(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &rating.GetRatingAccommodationByIdResponse{
+		RatingAccommodation: mapRatingAccommodation(modelRatingAccommodation),
+	}, nil
 }

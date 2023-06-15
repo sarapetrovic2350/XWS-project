@@ -14,6 +14,8 @@ import { ShowHostsComponent } from './components/show-hosts/show-hosts.component
 import { CreateRateHostComponent } from './components/create-rate-host/create-rate-host.component';
 import { ShowAccommodationsComponent } from './components/show-accommodations/show-accommodations.component';
 import { CreateRateAccommodationComponent } from './components/create-rate-accommodation/create-rate-accommodation.component';
+import { RatingsHostByGuestComponent } from './components/ratings-host-by-guest/ratings-host-by-guest.component';
+import {EditRatingHostComponent} from "./components/edit-rating-host/edit-rating-host.component";
 
 const routes: Routes = [
   {
@@ -37,37 +39,45 @@ const routes: Routes = [
     component: ViewHostAccommodationComponent
   },
   {
-    path: 'createAvailability/:id', 
+    path: 'createAvailability/:id',
     component: CreateAvailabilityComponent
   },
   {
-    path: 'update-user', 
+    path: 'update-user',
     component: UpdateUserComponent
-  }, 
+  },
   {
-    path: 'view-reservations', 
+    path: 'view-reservations',
     component: ViewReservationsComponent
-  }, 
+  },
   {
-    path: 'view-pending-reservations', 
+    path: 'view-pending-reservations',
     component: ViewPendingReservationsComponent
   },
   {
-    path: 'show-hosts', 
+    path: 'show-hosts',
     component: ShowHostsComponent
   },
   {
-    path: 'rating-host/:email', 
+    path: 'rating-host/:email',
     component: CreateRateHostComponent
   },
   {
-    path: 'show-accommodations', 
+    path: 'show-accommodations',
     component: ShowAccommodationsComponent
   },
 
   {
-    path: 'rating-accommodation/:id', 
+    path: 'rating-accommodation/:id',
     component: CreateRateAccommodationComponent
+  },
+  {
+    path: 'ratings-host-by-guest',
+    component: RatingsHostByGuestComponent
+  },
+  {
+    path: 'edit-rating-host/:id',
+    component: EditRatingHostComponent
   }
 
 
