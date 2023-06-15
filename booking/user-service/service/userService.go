@@ -189,20 +189,17 @@ func (service *UserService) GetIfHostIsSuperHost(id string) (bool, error) {
 	getDurationOfPastReservationsByHostIdRequest := reservation.GetDurationOfPastReservationsByHostIdRequest{Id: id}
 	durationOfPastReservationsByHostResponse, err := reservationClient.GetDurationOfPastReservationsByHostId(context.TODO(), &getDurationOfPastReservationsByHostIdRequest)
 
-	//provera avg rating ocene hosta
-	//ratingClient := repository.NewRatingClient(service.RatingClientAddress)
-	//fmt.Println("rating client created")
-	//
-	//getAvgRatingForHostRequest := rating.GetAvgRatingForHostRequest{HostId: id}
-	//getAvgRatingForHostResponse, err := ratingClient.GetAvgRatingForHost(context.TODO(), &getAvgRatingForHostRequest)
+	//provera da je canceled manje od 5%
+	getAcceptanceRateByHostIdRequest := reservation.GetAcceptanceRateByHostIdRequest{Id: id}
+	getAcceptanceRateByHostIdResponse, err := reservationClient.GetAcceptanceRateByHostId(context.TODO(), &getAcceptanceRateByHostIdRequest)
 
 	if numberOfPastReservationsByHostResponse.NumReservations < 5 {
 		return false, err
 	} else if durationOfPastReservationsByHostResponse.NumDays < 50 {
 		return false, err
-	} //else if getAvgRatingForHostResponse.AvgRating < 4.7 {
-	//	return false, err
-	//}
+	} else if getAcceptanceRateByHostIdResponse.Percentage > 5 {
+		return false, err
+	}
 
 	return true, err
 }
