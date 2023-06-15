@@ -164,6 +164,31 @@ func (service *UserService) GetActiveReservationsForHostUser(request *user.Delet
 	return reservationsResponse, err
 }
 
+func (service *UserService) GetIfHostIsSuperHost(id string) (bool, error) {
+	fmt.Println("In GetActiveReservationsForHostUser User service")
+	fmt.Println(id)
+	fmt.Println(id)
+	reservationClient := repository.NewReservationClient(service.ReservationClientAddress)
+	fmt.Println("reservation client created")
+
+	// proveramo da li je imao 5 ili vise rezervacija
+	getNumberOfPastReservationsByHostRequest := reservation.GetNumberOfPastReservationsByHostRequest{Id: id}
+	numberOfPastReservationsByHostResponse, err := reservationClient.GetNumberOfPastReservationsByHostId(context.TODO(), &getNumberOfPastReservationsByHostRequest)
+
+	// proveravamo da li je trajanje rezervacije trjalo 50 ili duze dana
+	// treba 50 danaaaaaa
+	getDurationOfPastReservationsByHostIdRequest := reservation.GetDurationOfPastReservationsByHostIdRequest{Id: id}
+	durationOfPastReservationsByHostResponse, err := reservationClient.GetDurationOfPastReservationsByHostId(context.TODO(), &getDurationOfPastReservationsByHostIdRequest)
+
+	if numberOfPastReservationsByHostResponse.NumReservations < 5 {
+		return false, err
+	} else if durationOfPastReservationsByHostResponse.NumDays < 5 {
+		return false, err
+	}
+
+	return true, err
+}
+
 func (service *UserService) Get(id primitive.ObjectID) (*model.User, error) {
 	return service.UserRepo.Get(id)
 }
