@@ -26,6 +26,7 @@ export class ShowRatingsForHostComponent implements OnInit {
     this.ratingService.getAverageRatingForHost(userId).subscribe({
       next: (res) => {
         this.averageRating = res.avgRating;
+        this.averageRating = Number(this.averageRating.toFixed(3))
       }
     })
 

@@ -31,6 +31,7 @@ import { EditRatingHostComponent } from './components/edit-rating-host/edit-rati
 import { ShowRatingsForHostComponent } from './components/show-ratings-for-host/show-ratings-for-host.component';
 import { RatingsAccommodationByGuestComponent } from './components/ratings-accommodation-by-guest/ratings-accommodation-by-guest.component';
 import { EditRatingAccommodationComponent } from './components/edit-rating-accommodation/edit-rating-accommodation.component';
+import { ShowRatingsAccommodationsHostComponent } from './components/show-ratings-accommodations-host/show-ratings-accommodations-host.component';
 
 
 
@@ -58,7 +59,8 @@ import { EditRatingAccommodationComponent } from './components/edit-rating-accom
     EditRatingHostComponent,
     ShowRatingsForHostComponent,
     RatingsAccommodationByGuestComponent,
-    EditRatingAccommodationComponent
+    EditRatingAccommodationComponent,
+    ShowRatingsAccommodationsHostComponent
   ],
     imports: [
         BrowserModule,
