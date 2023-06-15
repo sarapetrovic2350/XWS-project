@@ -28,8 +28,9 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	reservationEndpoint := fmt.Sprintf("%s:%s", server.config.ReservationDomain, server.config.ReservationPort)
 	accommodationEndpoint := fmt.Sprintf("%s:%s", server.config.AccommodationDomain, server.config.AccommodationPort)
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserDomain, server.config.UserPort)
 	ratingRepo := server.initRatingRepository(mongoClient)
-	ratingService := server.initRatingService(ratingRepo, reservationEndpoint, accommodationEndpoint)
+	ratingService := server.initRatingService(ratingRepo, reservationEndpoint, accommodationEndpoint, userEndpoint)
 	ratingHandler := server.initRatingHandler(ratingService)
 	server.startGrpcServer(ratingHandler)
 
@@ -60,8 +61,8 @@ func (server *Server) initRatingRepository(client *mongo.Client) model.RatingSto
 	return store
 }
 
-func (server *Server) initRatingService(store model.RatingStore, reservationClientAddress string, accommodationClientAddress string) *service.RatingService {
-	return service.NewRatingService(store, reservationClientAddress, accommodationClientAddress)
+func (server *Server) initRatingService(store model.RatingStore, reservationClientAddress string, accommodationClientAddress string, userClientAddress string) *service.RatingService {
+	return service.NewRatingService(store, reservationClientAddress, accommodationClientAddress, userClientAddress)
 }
 
 // func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscribe

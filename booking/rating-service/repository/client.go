@@ -3,6 +3,7 @@ package repository
 import (
 	accommodation "common/proto/accommodation-service/pb"
 	reservation "common/proto/reservation-service/pb"
+	user "common/proto/user-service/pb"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -32,6 +33,15 @@ func NewAccommodationClient(address string) accommodation.AccommodationServiceCl
 	}
 	return accommodation.NewAccommodationServiceClient(conn)
 }
+
+func NewUserClient(address string) user.UserServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to User service: %v", err)
+	}
+	return user.NewUserServiceClient(conn)
+}
+
 func getConnection(address string) (*grpc.ClientConn, error) {
 	return grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
