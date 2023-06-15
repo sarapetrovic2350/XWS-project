@@ -39,4 +39,8 @@ export class AccommodationService {
     console.log(searchAccommodations);
     return this.http.post<any>(this.apiHost + '/search', searchAccommodations);
   }
+
+  GetAllAccommodations():Observable<any> {
+    return this.http.get<any>(this.apiHost);
+  }
 }
