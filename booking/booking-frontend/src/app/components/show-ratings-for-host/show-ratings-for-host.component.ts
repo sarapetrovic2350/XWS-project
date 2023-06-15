@@ -18,11 +18,17 @@ export class ShowRatingsForHostComponent implements OnInit {
   public ratingsHost: RatingHostByGuest[] = [];
   public rating: RatingHostByGuest | undefined = undefined;
   public users: User[] = [];
+  public averageRating: number = 0
   constructor(private ratingService : RatingService, private userService : UserService, private router: Router) { }
 
   ngOnInit(): void {
-
     let userId = this.userService.getLoggedInUserId()
+    this.ratingService.getAverageRatingForHost(userId).subscribe({
+      next: (res) => {
+        this.averageRating = res.avgRating;
+      }
+    })
+
     this.ratingService.getRatingsForHost(userId).subscribe((data: any) => {
       this.ratingsHost = data.ratingsHost;
       for (let i = 0; i < this.ratingsHost.length; i++) {

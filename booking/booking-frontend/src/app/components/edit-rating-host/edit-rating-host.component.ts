@@ -45,7 +45,7 @@ export class EditRatingHostComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: 'Successfully update rate for host!',
+            text: 'Successfully updated rate for host!',
           })
         },
         error: (e) => {
