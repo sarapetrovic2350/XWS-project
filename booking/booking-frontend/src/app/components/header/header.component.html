@@ -31,6 +31,9 @@
     <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/show-accommodations">
       <span>Rate accommodations</span>
     </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/ratings-accommodation-by-guest">
+      <span>My ratings for accommodations</span>
+    </button>
     <span class="example-spacer"></span>
     <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">
       <mat-icon>account_circle</mat-icon>

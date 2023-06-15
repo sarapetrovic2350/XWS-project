@@ -25,6 +25,7 @@ type RatingServiceClient interface {
 	GetAllRatingsHost(ctx context.Context, in *GetAllRatingsHostRequest, opts ...grpc.CallOption) (*GetAllRatingsHostResponse, error)
 	GetAllRatingsHostByGuestId(ctx context.Context, in *GetAllRatingsHostByGuestIdRequest, opts ...grpc.CallOption) (*GetAllRatingsHostResponse, error)
 	GetAllRatingsAccommodation(ctx context.Context, in *GetAllRatingsAccommodationRequest, opts ...grpc.CallOption) (*GetAllRatingsAccommodationResponse, error)
+	GetAllRatingsAccommodationByGuestId(ctx context.Context, in *GetAllRatingsAccommodationByGuestIdRequest, opts ...grpc.CallOption) (*GetAllRatingsAccommodationResponse, error)
 	GetRatingsForHost(ctx context.Context, in *GetRatingsForHostRequest, opts ...grpc.CallOption) (*GetRatingsForHostResponse, error)
 	CreateRatingForHost(ctx context.Context, in *CreateRatingForHostRequest, opts ...grpc.CallOption) (*CreateRatingForHostResponse, error)
 	CreateRatingForAccommodation(ctx context.Context, in *CreateRatingForAccommodationRequest, opts ...grpc.CallOption) (*CreateRatingForAccommodationResponse, error)
@@ -66,6 +67,15 @@ func (c *ratingServiceClient) GetAllRatingsHostByGuestId(ctx context.Context, in
 func (c *ratingServiceClient) GetAllRatingsAccommodation(ctx context.Context, in *GetAllRatingsAccommodationRequest, opts ...grpc.CallOption) (*GetAllRatingsAccommodationResponse, error) {
 	out := new(GetAllRatingsAccommodationResponse)
 	err := c.cc.Invoke(ctx, "/rating.RatingService/GetAllRatingsAccommodation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ratingServiceClient) GetAllRatingsAccommodationByGuestId(ctx context.Context, in *GetAllRatingsAccommodationByGuestIdRequest, opts ...grpc.CallOption) (*GetAllRatingsAccommodationResponse, error) {
+	out := new(GetAllRatingsAccommodationResponse)
+	err := c.cc.Invoke(ctx, "/rating.RatingService/GetAllRatingsAccommodationByGuestId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,6 +179,7 @@ type RatingServiceServer interface {
 	GetAllRatingsHost(context.Context, *GetAllRatingsHostRequest) (*GetAllRatingsHostResponse, error)
 	GetAllRatingsHostByGuestId(context.Context, *GetAllRatingsHostByGuestIdRequest) (*GetAllRatingsHostResponse, error)
 	GetAllRatingsAccommodation(context.Context, *GetAllRatingsAccommodationRequest) (*GetAllRatingsAccommodationResponse, error)
+	GetAllRatingsAccommodationByGuestId(context.Context, *GetAllRatingsAccommodationByGuestIdRequest) (*GetAllRatingsAccommodationResponse, error)
 	GetRatingsForHost(context.Context, *GetRatingsForHostRequest) (*GetRatingsForHostResponse, error)
 	CreateRatingForHost(context.Context, *CreateRatingForHostRequest) (*CreateRatingForHostResponse, error)
 	CreateRatingForAccommodation(context.Context, *CreateRatingForAccommodationRequest) (*CreateRatingForAccommodationResponse, error)
@@ -194,6 +205,9 @@ func (UnimplementedRatingServiceServer) GetAllRatingsHostByGuestId(context.Conte
 }
 func (UnimplementedRatingServiceServer) GetAllRatingsAccommodation(context.Context, *GetAllRatingsAccommodationRequest) (*GetAllRatingsAccommodationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllRatingsAccommodation not implemented")
+}
+func (UnimplementedRatingServiceServer) GetAllRatingsAccommodationByGuestId(context.Context, *GetAllRatingsAccommodationByGuestIdRequest) (*GetAllRatingsAccommodationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllRatingsAccommodationByGuestId not implemented")
 }
 func (UnimplementedRatingServiceServer) GetRatingsForHost(context.Context, *GetRatingsForHostRequest) (*GetRatingsForHostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRatingsForHost not implemented")
@@ -288,6 +302,24 @@ func _RatingService_GetAllRatingsAccommodation_Handler(srv interface{}, ctx cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RatingServiceServer).GetAllRatingsAccommodation(ctx, req.(*GetAllRatingsAccommodationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RatingService_GetAllRatingsAccommodationByGuestId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllRatingsAccommodationByGuestIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RatingServiceServer).GetAllRatingsAccommodationByGuestId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rating.RatingService/GetAllRatingsAccommodationByGuestId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RatingServiceServer).GetAllRatingsAccommodationByGuestId(ctx, req.(*GetAllRatingsAccommodationByGuestIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -490,6 +522,10 @@ var RatingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllRatingsAccommodation",
 			Handler:    _RatingService_GetAllRatingsAccommodation_Handler,
+		},
+		{
+			MethodName: "GetAllRatingsAccommodationByGuestId",
+			Handler:    _RatingService_GetAllRatingsAccommodationByGuestId_Handler,
 		},
 		{
 			MethodName: "GetRatingsForHost",

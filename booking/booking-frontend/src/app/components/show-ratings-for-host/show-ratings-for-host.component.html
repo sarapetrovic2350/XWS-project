@@ -1,14 +1,15 @@
 <div class="container">
     <div class="table-header">
       <p class="table-title">Ratings</p>
+      <p class="avg">Average rating: {{averageRating}}</p>
     </div>
     <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef class="cell-center"> Host name</th>
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Guest name</th>
         <td mat-cell *matCellDef="let ratingHost" class="cell-center">{{ratingHost.hostName}}</td>
       </ng-container>
       <ng-container matColumnDef="Surname">
-        <th mat-header-cell *matHeaderCellDef class="cell-center"> Host surname</th>
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Guest surname</th>
         <td mat-cell *matCellDef="let ratingHost" class="cell-center">{{ratingHost.hostSurname}}</td>
       </ng-container>
       <ng-container matColumnDef="Rate">
@@ -23,6 +24,5 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-  
-  
-  
+
+

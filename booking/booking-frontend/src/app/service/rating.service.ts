@@ -29,18 +29,32 @@ export class RatingService {
   getRatingsHostByGuestId(guestId: any): Observable<any[]> {
     return this.http.get<any[]>(this.apiHost + 'ratingsHost/' + guestId, {headers: this.headers2});
   }
+  getRatingsAccommodationByGuestId(guestId: any): Observable<any[]> {
+    return this.http.get<any[]>(this.apiHost + 'ratingsAccommodation/' + guestId, {headers: this.headers2});
+  }
   updateRatingForHost(ratingHost: RatingHost): Observable<any> {
     return this.http.post<any>(this.apiHost + 'updateRatingForHost', ratingHost, {headers: this.headers2})
+  }
+  updateRatingForAccommodation(ratingAccommodation: RatingAccommodation): Observable<any> {
+    return this.http.post<any>(this.apiHost + 'updateRatingForAccommodation', ratingAccommodation, {headers: this.headers2})
   }
   getRatingHostById(id: string): Observable<any> {
     return this.http.get<any>(this.apiHost + 'ratingHostById/' + id);
   }
+  getRatingAccommodationById(id: string): Observable<any> {
+    return this.http.get<any>(this.apiHost + 'ratingAccommodationById/' + id);
+  }
   DeleteRatingForHost(id: string) {
     return this.http.post<RatingHost>(this.apiHost + 'deleteRatingForHost/' + id, {headers: this.headers2});
-}
+  }
+  DeleteRatingForAccommodation(id: string) {
+    return this.http.post<RatingHost>(this.apiHost + 'deleteRatingForAccommodation/' + id, {headers: this.headers2});
+  }
   getRatingsForHost(hostId : any): Observable<any[]>{
     return this.http.get<any[]>(this.apiHost + 'getRatingsForHost/' + hostId, {headers: this.headers2});
   }
-
+  getAverageRatingForHost(hostId: string): Observable<any> {
+    return this.http.get<any>(this.apiHost + 'getAvgRatingForHost/' + hostId, {headers: this.headers2});
+  }
 
 }

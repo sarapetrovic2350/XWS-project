@@ -19,13 +19,15 @@ type UserService struct {
 	UserRepo                   model.UserStore
 	ReservationClientAddress   string
 	AccommodationClientAddress string
+	RatingClientAddress        string
 }
 
-func NewUserService(r model.UserStore, rca string, aca string) *UserService {
+func NewUserService(r model.UserStore, rca string, aca string, rtca string) *UserService {
 	return &UserService{
 		UserRepo:                   r,
 		ReservationClientAddress:   rca,
 		AccommodationClientAddress: aca,
+		RatingClientAddress:        rtca,
 	}
 }
 
@@ -34,6 +36,7 @@ func (service *UserService) CreateUser(user *model.User) error {
 	if existingUser != nil {
 		return errors.New("email already exists")
 	}
+	user.IsSuperHost = false
 	err := service.UserRepo.Insert(user)
 	if err != nil {
 		return err
@@ -186,9 +189,15 @@ func (service *UserService) GetIfHostIsSuperHost(id string) (bool, error) {
 	getDurationOfPastReservationsByHostIdRequest := reservation.GetDurationOfPastReservationsByHostIdRequest{Id: id}
 	durationOfPastReservationsByHostResponse, err := reservationClient.GetDurationOfPastReservationsByHostId(context.TODO(), &getDurationOfPastReservationsByHostIdRequest)
 
+	//provera da je canceled manje od 5%
+	getAcceptanceRateByHostIdRequest := reservation.GetAcceptanceRateByHostIdRequest{Id: id}
+	getAcceptanceRateByHostIdResponse, err := reservationClient.GetAcceptanceRateByHostId(context.TODO(), &getAcceptanceRateByHostIdRequest)
+
 	if numberOfPastReservationsByHostResponse.NumReservations < 5 {
 		return false, err
-	} else if durationOfPastReservationsByHostResponse.NumDays < 5 {
+	} else if durationOfPastReservationsByHostResponse.NumDays < 50 {
+		return false, err
+	} else if getAcceptanceRateByHostIdResponse.Percentage > 5 {
 		return false, err
 	}
 
