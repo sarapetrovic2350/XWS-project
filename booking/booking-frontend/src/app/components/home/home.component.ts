@@ -43,6 +43,8 @@ export class HomeComponent implements OnInit {
   public priceSelection: string = '';
   public availabilities: Availability[] = [];
 
+  public userHost: User = new User();
+
   isLoggedIn: boolean = false;
   isHost: boolean = false;
   isGuest: boolean = false;
@@ -152,11 +154,24 @@ export class HomeComponent implements OnInit {
         const hasSelectedBenefits = selectedBenefits.every((benefit: string) =>
           acc.benefits.some((accBenefit: any) => accBenefit == benefit)
         );
+
+        this.userService.getUserById(acc.hostId).subscribe({
+          next: (res) => {
+            console.log(res)
+            this.userHost = res;
+            console.log(this.userHost)
+          }
+        })
+        console.log(this.userHost)
+        console.log(this.userHost.isSuperHost)
+        const isSuperhost = this.userHost.isSuperHost
+        console.log(isSuperhost)
   
         return (
           (this.minPrice === undefined || price >= this.minPrice) &&
           (this.maxPrice === undefined || price <= this.maxPrice) &&
-          (selectedBenefits.length === 0 || hasSelectedBenefits)
+          (selectedBenefits.length === 0 || hasSelectedBenefits) &&
+          isSuperhost
         );
       });
       this.dataSource.data = this.filteredAccommodations;
