@@ -19,6 +19,8 @@ export class UpdateUserComponent implements OnInit {
   passwordRepeated: string= "";
   submitted = false;
 
+  isSuper = false; 
+
   ngOnInit(): void {
     let userRole = this.userService.getLoggedInUserRole()
     let userEmail = this.userService.getLoggedInUserEmail()
@@ -26,6 +28,7 @@ export class UpdateUserComponent implements OnInit {
     this.userService.getUserByEmail(userEmail).subscribe(res => {
       this.user = res.user;
       this.passwordRepeated = this.user.password
+      this.isSuper = this.user.isSuperHost; 
       console.log(res)
     })
   }
