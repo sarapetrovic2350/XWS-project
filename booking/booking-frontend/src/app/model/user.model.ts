@@ -8,7 +8,8 @@ export class User {
     public email: string = '',
     public password: string = '',
     public role: string = '',
-    public address: Address = new Address()
+    public address: Address = new Address(), 
+    public isSuperHost: boolean = false 
   ) {}
 }
 

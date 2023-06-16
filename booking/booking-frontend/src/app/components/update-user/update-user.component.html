@@ -1,6 +1,10 @@
 <mat-card elevation="5" fxFlex class="content">
     <mat-card-title>
       <h2>{{title}}</h2>
+                  
+      <mat-label *ngIf="isSuper === true">You are a SUPERHOST</mat-label>
+      <mat-label *ngIf="isSuper === false">You are a HOST</mat-label>
+   
     </mat-card-title>
     <mat-card-content>
       <p></p>
