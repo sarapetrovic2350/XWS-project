@@ -138,6 +138,9 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 		userClient := repository.NewUserClient(service.UserClientAddress)
 		fmt.Println("user client created")
 
+		accommodationClient := repository.NewAccommodationClient(service.AccommodationClientAddress)
+		fmt.Println("accommodation client created")
+
 		getUserByIdRequest := user.GetUserByIdRequest{Id: ratingHost.HostId}
 		getUserByIdResponse, err := userClient.GetUserById(context.TODO(), &getUserByIdRequest)
 		fmt.Println(err)
@@ -154,6 +157,16 @@ func (service *RatingService) CreateRatingForHost(ratingHost *model.RatingHost) 
 				if getUserByIdResponse.User.IsSuperHost != true {
 					getUserByIdResponse.User.IsSuperHost = true
 					userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: getUserByIdResponse.User})
+
+					getAccommodationsByHostIdRequest := accommodation.GetAccommodationsByHostIdRequest{HostId: ratingHost.HostId}
+					getAccommodationsByHostIdResponse, err := accommodationClient.GetAccommodationsByHostId(context.TODO(), &getAccommodationsByHostIdRequest)
+					fmt.Println(err)
+					for _, itr := range getAccommodationsByHostIdResponse.Accommodations {
+						itr.IsSuperHost = true
+						updateAccommodationRequest := accommodation.UpdateAccommodationRequest{Accommodation: itr}
+						accommodationClient.UpdateAccommodation(context.TODO(), &updateAccommodationRequest)
+						fmt.Println(err)
+					}
 				}
 			} else {
 				if getUserByIdResponse.User.IsSuperHost != false {

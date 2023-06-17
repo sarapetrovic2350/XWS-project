@@ -16,6 +16,7 @@ export class Accommodation {
         public totalPrice: number  = 0,
         public priceSelection: string = '',
         public availabilities: Availability[] = [],
+        public isSuperHost: boolean = false, 
 
       ) {}
 }

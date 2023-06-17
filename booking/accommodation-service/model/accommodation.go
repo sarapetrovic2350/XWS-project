@@ -16,6 +16,7 @@ type Accommodation struct {
 	Images            []Image            `json:"images" bson:"images;"`
 	HostID            string             `json:"hostID" bson:"hostID;"`
 	Benefits          []string           `json:"benefits" bson:"benefits;"`
+	IsSuperHost       bool               `json:"isSuperHost" bson:"is_super_host;"`
 }
 
 type Image struct {

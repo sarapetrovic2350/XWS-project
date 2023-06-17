@@ -26,8 +26,9 @@ func mapAccommodation(modelAccommodation *model.Accommodation) *accommodation.Ac
 			Street:  modelAccommodation.Address.Street,
 			Number:  modelAccommodation.Address.StreetNumber,
 		},
-		HostID:   modelAccommodation.HostID,
-		Benefits: modelAccommodation.Benefits,
+		HostID:      modelAccommodation.HostID,
+		Benefits:    modelAccommodation.Benefits,
+		IsSuperHost: modelAccommodation.IsSuperHost,
 	}
 	return accommodationPb
 }
@@ -51,6 +52,34 @@ func mapNewAccommodation(accommodationPb *accommodation.NewAccommodation) *model
 		},
 		HostID:   accommodationPb.HostID,
 		Benefits: accommodationPb.Benefits,
+	}
+
+	return accommodation
+}
+
+func mapUpdateAccommodationPb(accommodationPb *accommodation.Accommodation) *model.Accommodation {
+	AccommodationId, _ := primitive.ObjectIDFromHex(accommodationPb.Id)
+
+	var modelAvailabilities []*model.Availability
+	for _, availability := range accommodationPb.Availabilities {
+		modelAvailabilities = append(modelAvailabilities, mapAvailabilityPbToModel(availability))
+	}
+
+	accommodation := &model.Accommodation{
+		Id:                AccommodationId,
+		Availabilities:    modelAvailabilities,
+		Name:              accommodationPb.Name,
+		MinNumberOfGuests: int(accommodationPb.MinNumberOfGuests),
+		MaxNumberOfGuests: int(accommodationPb.MaxNumberOfGuests),
+		Address: model.Address{
+			Country:      accommodationPb.Address.Country,
+			City:         accommodationPb.Address.City,
+			Street:       accommodationPb.Address.Street,
+			StreetNumber: accommodationPb.Address.Number,
+		},
+		HostID:      accommodationPb.HostID,
+		Benefits:    accommodationPb.Benefits,
+		IsSuperHost: accommodationPb.IsSuperHost,
 	}
 
 	return accommodation

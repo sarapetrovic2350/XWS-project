@@ -51,6 +51,19 @@ service AccommodationService {
       body: "*"
     };
   }
+  rpc UpdateAccommodation(UpdateAccommodationRequest) returns (UpdateAccommodationResponse){
+    option (google.api.http) = {
+      post: "/accommodation/update"
+      body: "accommodation"
+    };
+  }
+}
+
+message UpdateAccommodationRequest {
+  Accommodation accommodation = 1;
+}
+message UpdateAccommodationResponse{
+  Accommodation accommodation = 1;
 }
 
 message GetAllRequest{
@@ -101,6 +114,7 @@ message Accommodation {
   string hostID = 6;
   repeated string benefits = 7;
   repeated Availability availabilities = 8;
+  bool isSuperHost = 9;
 }
 
 message CreateAvailabilityRequest{

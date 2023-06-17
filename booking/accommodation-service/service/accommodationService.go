@@ -27,6 +27,7 @@ func NewAccommodationService(accommodationRepository model.AccommodationStore, r
 }
 
 func (service *AccommodationService) CreateAccommodation(accommodation *model.Accommodation) error {
+	//accommodation.IsSuperHost = false
 	err := service.AccommodationRepo.Insert(accommodation)
 	if err != nil {
 		return err
@@ -149,6 +150,27 @@ func (service AccommodationService) SearchAccommodation(searchAccommodations *ac
 }
 func (service *AccommodationService) Delete(id string) error {
 	err := service.AccommodationRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *AccommodationService) Update(acc *model.Accommodation) error {
+	stringObjectID1 := (acc.Id).Hex()
+	checkAcc, err := service.AccommodationRepo.GetById(stringObjectID1)
+	if err != nil && err.Error() != "mongo: no documents in result" {
+		return err
+	}
+	fmt.Print("Get user by email: ")
+	fmt.Println(checkAcc)
+	stringObjectID := (acc.Id).Hex()
+	fmt.Print(stringObjectID)
+	err = service.AccommodationRepo.Delete(stringObjectID)
+	if err != nil {
+		return err
+	}
+	err = service.AccommodationRepo.Insert(acc)
 	if err != nil {
 		return err
 	}
