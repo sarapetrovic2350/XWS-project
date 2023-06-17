@@ -149,19 +149,19 @@ export class HomeComponent implements OnInit {
       this.filteredAccommodations = this.accommodations.filter((acc: any) => {
         const price = acc.availabilities[0].price;
         const selectedBenefits = this.selectedBenefits;
-  
+        const isSuperHost = acc.isSuperHost
         // Proveri da li accommodation sadrži sve selektovane benefite
         const hasSelectedBenefits = selectedBenefits.every((benefit: string) =>
           acc.benefits.some((accBenefit: any) => accBenefit == benefit)
         );
 
-        this.userService.getUserById(acc.hostId).subscribe({
-          next: (res) => {
-            console.log(res)
-            this.userHost = res;
-            console.log(this.userHost)
-          }
-        })
+        // this.userService.getUserById(acc.hostId).subscribe({
+        //   next: (res) => {
+        //     console.log(res)
+        //     this.userHost = res;
+        //     console.log(this.userHost)
+        //   }
+        //  })
         console.log(this.userHost)
         console.log(this.userHost.isSuperHost)
         const isSuperhost = this.userHost.isSuperHost
@@ -171,7 +171,7 @@ export class HomeComponent implements OnInit {
           (this.minPrice === undefined || price >= this.minPrice) &&
           (this.maxPrice === undefined || price <= this.maxPrice) &&
           (selectedBenefits.length === 0 || hasSelectedBenefits) &&
-          isSuperhost
+          isSuperHost
         );
       });
       this.dataSource.data = this.filteredAccommodations;

@@ -152,3 +152,19 @@ func (handler AccommodationHandler) Search(ctx context.Context, request *accommo
 
 	return response, nil
 }
+
+func (handler *AccommodationHandler) UpdateAccommodation(ctx context.Context, request *accommodation.UpdateAccommodationRequest) (*accommodation.UpdateAccommodationResponse, error) {
+	fmt.Println("In CreateAccommodation grpc api")
+	fmt.Print("Request.Accommodation: ")
+	fmt.Println(request.Accommodation)
+	modelAccommodation := mapUpdateAccommodationPb(request.Accommodation)
+	fmt.Print("accommodation after mapping: ")
+	fmt.Println(modelAccommodation)
+	err := handler.accommodationService.Update(modelAccommodation)
+	if err != nil {
+		return nil, err
+	}
+	return &accommodation.UpdateAccommodationResponse{
+		Accommodation: mapAccommodation(modelAccommodation),
+	}, nil
+}
