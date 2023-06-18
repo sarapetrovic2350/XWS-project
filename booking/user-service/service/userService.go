@@ -20,14 +20,16 @@ type UserService struct {
 	ReservationClientAddress   string
 	AccommodationClientAddress string
 	RatingClientAddress        string
+	orchestrator               *DeleteUserOrchestrator
 }
 
-func NewUserService(r model.UserStore, rca string, aca string, rtca string) *UserService {
+func NewUserService(r model.UserStore, rca string, aca string, rtca string, orchestrator *DeleteUserOrchestrator) *UserService {
 	return &UserService{
 		UserRepo:                   r,
 		ReservationClientAddress:   rca,
 		AccommodationClientAddress: aca,
 		RatingClientAddress:        rtca,
+		orchestrator:               orchestrator,
 	}
 }
 
@@ -105,6 +107,20 @@ func GenerateJWT(email string, role string, id string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString(sampleSecretKey)
+}
+func (service *UserService) DeleteUser(id primitive.ObjectID) error {
+	fmt.Println("In DeleteUser User service")
+	fmt.Println(id)
+	user, err := service.Get(id)
+	if err != nil {
+		return err
+	}
+	err = service.orchestrator.Start(user)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
 
 func (service *UserService) DeleteGuestUser(request *user.DeleteUserRequest) error {
@@ -222,6 +238,13 @@ func (service *UserService) Update(user *model.User) error {
 		return err
 	}
 	err = service.UserRepo.Insert(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (service *UserService) Delete(id string) error {
+	err := service.UserRepo.Delete(id)
 	if err != nil {
 		return err
 	}

@@ -2,6 +2,7 @@ package service
 
 import (
 	accommodation "common/proto/accommodation-service/pb"
+	events "common/saga/delete_user"
 	"context"
 	"errors"
 	"fmt"
@@ -119,6 +120,13 @@ func (service *ReservationService) GetReservationsForHost(hostId string) (model.
 		return nil, err
 	}
 	return hostReservations, nil
+}
+func (service *ReservationService) GetActiveReservationsByUserId(user events.User) (model.Reservations, error) {
+	if user.Role == "GUEST" {
+		return service.GetActiveReservationsByGuestId(user.Id.Hex())
+	} else {
+		return service.GetActiveReservationsByHostId(user.Id.Hex())
+	}
 }
 func (service *ReservationService) GetActiveReservationsByGuestId(userId string) (model.Reservations, error) {
 	fmt.Println(userId)

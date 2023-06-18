@@ -38,15 +38,9 @@ service UserService {
       body: "login"
     };
   }
-  rpc DeleteGuestUser(DeleteUserRequest) returns(DeleteUserResponse){
+  rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse){
     option (google.api.http) = {
-      post: "/user/deleteGuest/{id}"
-      body: "*"
-    };
-  }
-  rpc DeleteHostUser(DeleteUserRequest) returns(DeleteUserResponse){
-    option (google.api.http) = {
-      post: "/user/deleteHost/{id}"
+      post: "/user/delete/{id}"
       body: "*"
     };
   }
@@ -84,7 +78,6 @@ message DeleteUserRequest{
   string id = 1;
 }
 message DeleteUserResponse{
-  User user = 1;
 }
 message UpdateUserRequest {
   User user = 1;
