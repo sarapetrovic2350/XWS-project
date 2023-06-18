@@ -33,8 +33,9 @@ const (
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	reservationEndpoint := fmt.Sprintf("%s:%s", server.config.ReservationDomain, server.config.ReservationPort)
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserDomain, server.config.UserPort)
 	accommodationRepo := server.initAccommodationRepository(mongoClient)
-	accommodationService := server.initAccommodationService(accommodationRepo, reservationEndpoint)
+	accommodationService := server.initAccommodationService(accommodationRepo, reservationEndpoint, userEndpoint)
 	accommodationHandler := server.initAccommodationHandler(accommodationService)
 
 	commandSubscriber := server.initSubscriber(server.config.DeleteUserCommandSubject, QueueGroup)
@@ -64,8 +65,8 @@ func (server *Server) initAccommodationRepository(client *mongo.Client) model.Ac
 	return store
 }
 
-func (server *Server) initAccommodationService(store model.AccommodationStore, reservationClientAddress string) *service.AccommodationService {
-	return service.NewAccommodationService(store, reservationClientAddress)
+func (server *Server) initAccommodationService(store model.AccommodationStore, reservationClientAddress string, userClientAddress string) *service.AccommodationService {
+	return service.NewAccommodationService(store, reservationClientAddress, userClientAddress)
 }
 
 func (server *Server) initAccommodationHandler(service *service.AccommodationService) *handler.AccommodationHandler {

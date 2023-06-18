@@ -5,6 +5,7 @@ import (
 	"accommodation-service/repository"
 	accommodation "common/proto/accommodation-service/pb"
 	reservation "common/proto/reservation-service/pb"
+	user "common/proto/user-service/pb"
 	"context"
 	"errors"
 	"fmt"
@@ -17,19 +18,37 @@ type AccommodationService struct {
 	AccommodationRepo model.AccommodationStore
 	//AvailabilityRepo  *repository.AvailabilityRepo
 	ReservationClientAddress string
+	UserClientAddress        string
 }
 
-func NewAccommodationService(accommodationRepository model.AccommodationStore, rca string) *AccommodationService {
+func NewAccommodationService(accommodationRepository model.AccommodationStore, rca string, uca string) *AccommodationService {
 	return &AccommodationService{
 		AccommodationRepo:        accommodationRepository,
 		ReservationClientAddress: rca,
+		UserClientAddress:        uca,
 	}
 }
 
 func (service *AccommodationService) CreateAccommodation(accommodation *model.Accommodation) error {
 	//accommodation.IsSuperHost = false
-	err := service.AccommodationRepo.Insert(accommodation)
-	if err != nil {
+
+	userClient := repository.NewUserClient(service.UserClientAddress)
+	fmt.Println("user client created")
+
+	getUserByIdRequest := user.GetUserByIdRequest{Id: accommodation.HostID}
+	hostUser, err := userClient.GetUserById(context.TODO(), &getUserByIdRequest)
+	fmt.Println(err)
+	fmt.Println("Pronalazi usera")
+	fmt.Println(hostUser)
+
+	if hostUser.User.IsSuperHost {
+		accommodation.IsSuperHost = true
+	} else {
+		accommodation.IsSuperHost = false
+	}
+
+	err1 := service.AccommodationRepo.Insert(accommodation)
+	if err1 != nil {
 		return err
 	}
 	return nil

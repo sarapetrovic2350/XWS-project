@@ -2,6 +2,7 @@ package repository
 
 import (
 	reservation "common/proto/reservation-service/pb"
+	user "common/proto/user-service/pb"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,6 +23,14 @@ func NewReservationClient(address string) reservation.ReservationServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Reservation service: %v", err)
 	}
 	return reservation.NewReservationServiceClient(conn)
+}
+
+func NewUserClient(address string) user.UserServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Reservation service: %v", err)
+	}
+	return user.NewUserServiceClient(conn)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {
