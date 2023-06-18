@@ -1,10 +1,10 @@
 <mat-card elevation="5" fxFlex class="content">
     <mat-card-title>
       <h2>{{title}}</h2>
-                  
+      <div *ngIf="isHostLoggedIn" class="host">
       <mat-label *ngIf="isSuper === true">You are a SUPERHOST</mat-label>
       <mat-label *ngIf="isSuper === false">You are a HOST</mat-label>
-   
+      </div>
     </mat-card-title>
     <mat-card-content>
       <p></p>
@@ -26,7 +26,7 @@
               <input name ="email" [(ngModel)]="user.email" matInput [formControl]="email" required>
               <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
             </mat-form-field>
-  
+
             <mat-form-field appearance="outline">
               <mat-label>Password: </mat-label>
               <input name ="password" [(ngModel)]="user.password" matInput required type="password" [formControl]="password" required>
@@ -78,6 +78,6 @@
       <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
     </mat-card-content>
   </mat-card>
-  
-  
-  
+
+
+

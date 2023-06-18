@@ -18,17 +18,20 @@ export class UpdateUserComponent implements OnInit {
   user = new User()
   passwordRepeated: string= "";
   submitted = false;
-
-  isSuper = false; 
+  isHostLoggedIn: boolean = false;
+  isSuper = false;
 
   ngOnInit(): void {
     let userRole = this.userService.getLoggedInUserRole()
+    if (userRole == "HOST") {
+      this.isHostLoggedIn = true;
+    }
     let userEmail = this.userService.getLoggedInUserEmail()
     let userId = this.userService.getLoggedInUserId()
     this.userService.getUserByEmail(userEmail).subscribe(res => {
       this.user = res.user;
       this.passwordRepeated = this.user.password
-      this.isSuper = this.user.isSuperHost; 
+      this.isSuper = this.user.isSuperHost;
       console.log(res)
     })
   }
@@ -75,60 +78,18 @@ export class UpdateUserComponent implements OnInit {
   }
 
   deleteAccount(){
-    let userRole = this.userService.getLoggedInUserRole()
     let userId = this.userService.getLoggedInUserId()
-    if (userRole == "GUEST") {
-      this.userService.deleteGuestAccount(userId).subscribe(
+      this.userService.deleteAccount(userId).subscribe(
         {
           next: (res) => {
-            localStorage.clear()
-            //this.router.navigate(['/register-user']);
-            window.location.href = 'register-user';
-            Swal.fire({
-              icon: 'success',
-              title: 'Success!',
-              text: 'Successfully deleted account!',
-            })
-
-          },
-          error: (e) => {
-            this.submitted = false;
-            console.log(e);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'You have active reservations.',
-            })
+            //localStorage.clear()
+            //this.router.navigate(['/login']);
+            window.location.href = 'login'
 
           }
 
         });
-    } else {
-      this.userService.deleteHostAccount(userId).subscribe(
-        {
-          next: (res) => {
-            localStorage.clear()
-            //this.router.navigate(['/register-user']);
-            window.location.href = 'register-user';
-            Swal.fire({
-              icon: 'success',
-              title: 'Success!',
-              text: 'Successfully deleted account!',
-            })
 
-          },
-          error: (e) => {
-            this.submitted = false;
-            console.log(e);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'You have active reservations.',
-            })
-          }
-
-        });
-    }
   }
 
 }
