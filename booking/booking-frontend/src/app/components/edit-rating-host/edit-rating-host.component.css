@@ -59,4 +59,23 @@ a {
 html, body {
   height: 100%;
 }
+.rating-list li {
+  float: right;
+  color: #ddd;
+  font-size: 25px;
+
+}
+
+.rating-list li:hover,
+.rating-list li:hover ~ li {
+  color: #ffd700;
+}
+.rating-list li.selected {
+  color: #ffd700;
+}
+
+.rating-list {
+  display: inline-block;
+  list-style: none;
+}
 

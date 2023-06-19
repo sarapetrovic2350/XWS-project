@@ -20,6 +20,8 @@ export class CreateRateHostComponent implements OnInit {
 
   title = 'Rate host';
   submitted = false;
+  stars: number[] = [1, 2, 3, 4, 5];
+  selectedValue: number = 0;
 
   user: User = new User();
   guest: User = new User();
@@ -36,7 +38,6 @@ export class CreateRateHostComponent implements OnInit {
       })
     });
 
-    let userRole = this.userService.getLoggedInUserRole()
     let userEmail = this.userService.getLoggedInUserEmail()
     this.userService.getUserByEmail(userEmail).subscribe(res => {
       this.guest = res.user;
@@ -49,6 +50,7 @@ export class CreateRateHostComponent implements OnInit {
 
     this.ratingHost.guestId = this.guest.id;
     this.ratingHost.hostId = this.user.id;
+    this.ratingHost.rate = this.selectedValue;
     console.log(this.ratingHost)
 
     this.ratinService.createRatingForHost(this.ratingHost).subscribe(
@@ -75,9 +77,26 @@ export class CreateRateHostComponent implements OnInit {
 
       });
 
-
-
-
+  }
+  countStar(star: number) {
+    console.log('Value of star', star);
+    this.selectedValue = star;
+  }
+  addClass(star: number) {
+    let ab = "";
+    for (let i = 0; i < star; i++) {
+      ab = "starId" + i;
+      // @ts-ignore
+      document.getElementById(ab).classList.add("selected");
+    }
+  }
+  removeClass(star: number) {
+    let ab = "";
+    for (let i = star-1; i >= this.selectedValue; i--) {
+      ab = "starId" + i;
+      // @ts-ignore
+      document.getElementById(ab).classList.remove("selected");
+    }
   }
 
 }

@@ -21,7 +21,7 @@ export class CreateRateAccommodationComponent implements OnInit {
     private accommodationService : AccommodationService,
     private route: ActivatedRoute,
     private userService: UserService,
-    private ratinService: RatingService
+    private ratingService: RatingService
   ) { }
 
   title = 'Rate accommodation';
@@ -30,6 +30,8 @@ export class CreateRateAccommodationComponent implements OnInit {
   accommodation: Accommodation = new Accommodation();
   user: User = new User();
   ratingAccommodation: RatingAccommodation = new RatingAccommodation();
+  stars: number[] = [1, 2, 3, 4, 5];
+  selectedValue: number = 0;
 
   ngOnInit(): void {
 
@@ -55,9 +57,10 @@ export class CreateRateAccommodationComponent implements OnInit {
 
     this.ratingAccommodation.guestId = this.user.id;
     this.ratingAccommodation.accommodationId = this.accommodation.id;
+    this.ratingAccommodation.rate = this.selectedValue;
     console.log(this.ratingAccommodation)
 
-    this.ratinService.createRatingForAccommodation(this.ratingAccommodation).subscribe(
+    this.ratingService.createRatingForAccommodation(this.ratingAccommodation).subscribe(
       {
         next: (res) => {
           this.router.navigate(['/ratings-accommodation-by-guest']);
@@ -81,6 +84,27 @@ export class CreateRateAccommodationComponent implements OnInit {
 
       });
 
+  }
+
+  countStar(star: number) {
+    console.log('Value of star', star);
+    this.selectedValue = star;
+  }
+  addClass(star: number) {
+    let ab = "";
+    for (let i = 0; i < star; i++) {
+      ab = "starId" + i;
+      // @ts-ignore
+      document.getElementById(ab).classList.add("selected");
+    }
+  }
+  removeClass(star: number) {
+    let ab = "";
+    for (let i = star-1; i >= this.selectedValue; i--) {
+      ab = "starId" + i;
+      // @ts-ignore
+      document.getElementById(ab).classList.remove("selected");
+    }
   }
 
 }
