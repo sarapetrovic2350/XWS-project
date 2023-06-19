@@ -59,8 +59,8 @@ func (handler *FlightHandler) UpdateFlight(rw http.ResponseWriter, h *http.Reque
 	vars := mux.Vars(h)
 	id := vars["id"]
 
-	flight := h.Context().Value(KeyProduct{}).(*model.Flight)
-
+	//flight := h.Context().Value(KeyProduct{}).(*model.Flight)
+	flight, _ := handler.flightService.GetById(id)
 	if err := handler.flightService.UpdateFlight(id, flight); err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
@@ -117,6 +117,21 @@ func (handler *FlightHandler) GetFlightById(rw http.ResponseWriter, h *http.Requ
 		handler.logger.Fatal("Unable to convert to json :", err)
 		return
 	}
+}
+
+func (handler *FlightHandler) CancelFlight(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+	fmt.Println("usao u handler!!!!!!!!!!!!!!!!!!!!!!!!")
+	fmt.Println(id)
+	//flight := h.Context().Value(KeyProduct{}).(*model.Flight)
+	flight, _ := handler.flightService.GetById(id)
+
+	if err := handler.flightService.CancelFlight(id, flight); err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusCreated)
 }
 
 func (handler *FlightHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {

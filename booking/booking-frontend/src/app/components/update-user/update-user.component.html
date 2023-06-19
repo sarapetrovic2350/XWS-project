@@ -1,0 +1,83 @@
+<mat-card elevation="5" fxFlex class="content">
+    <mat-card-title>
+      <h2>{{title}}</h2>
+      <div *ngIf="isHostLoggedIn" class="host">
+      <mat-label *ngIf="isSuper === true">You are a SUPERHOST</mat-label>
+      <mat-label *ngIf="isSuper === false">You are a HOST</mat-label>
+      </div>
+    </mat-card-title>
+    <mat-card-content>
+      <p></p>
+      <form (ngSubmit)="onSubmit()" *ngIf="!submitted">
+        <div class="row" *ngIf="user">
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>First name: </mat-label>
+              <input matInput name="firstName" [(ngModel)]="user.firstName" [formControl]="name" required>
+              <mat-error *ngIf="name.invalid">You must enter first name</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Last name: </mat-label>
+              <input matInput name="lastName" [(ngModel)]="user.lastName" [formControl]="lastName" required>
+              <mat-error *ngIf="name.invalid">You must enter last name</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Email: </mat-label>
+              <input name ="email" [(ngModel)]="user.email" matInput [formControl]="email" required>
+              <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Password: </mat-label>
+              <input name ="password" [(ngModel)]="user.password" matInput required type="password" [formControl]="password" required>
+              <mat-error *ngIf="password.invalid">You must enter password with at least 6 characters</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Repeat password: </mat-label>
+              <input name ="repeatedPassword" [(ngModel)]="passwordRepeated" matInput required type="password" [formControl]="passwordConfirm" required>
+              <mat-error *ngIf="passwordConfirm.invalid" >You must enter a repeated password</mat-error>
+            </mat-form-field>
+            <label *ngIf="!passwordMatchValidator()" style="color: red;">Passwords do not match</label>
+          </div>
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>Street: </mat-label>
+              <input name ="street" [(ngModel)]="user.address.street" matInput [formControl]="streetFormControl" required>
+              <mat-error *ngIf="name.invalid">You must enter street</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Street number: </mat-label>
+              <input name ="streetNumber" [(ngModel)]="user.address.number" [formControl]="streetNumberFormControl" matInput required>
+              <mat-error *ngIf="name.invalid">You must enter street number</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>City: </mat-label>
+              <input name ="city" [(ngModel)]="user.address.city" matInput [formControl]="cityFormControl" required>
+              <mat-error *ngIf="name.invalid">You must enter city</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Country: </mat-label>
+              <input name ="country" [(ngModel)]="user.address.country" matInput [formControl]="countryFormControl" required>
+              <mat-error *ngIf="name.invalid">You must enter country</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Account type</mat-label>
+              <mat-select name ="role" matNativeControl [(ngModel)]="user.role" [formControl]="roleFormControl" required>
+                <mat-option value="GUEST">Guest</mat-option>
+                <mat-option value="HOST">Host</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <br><br>
+        <button color="primary" [disabled]="email.invalid || name.invalid || lastName.invalid || password.invalid || passwordConfirm.invalid
+                || streetFormControl.invalid || streetNumberFormControl.invalid || cityFormControl.invalid || countryFormControl.invalid || roleFormControl.invalid"
+                style="width: 45%; margin-left: 27%;" mat-raised-button type="submit">Update</button><br>
+                <button color="primary" style="width: 45%; margin-left: 27%;" mat-raised-button type="submit" (click)="deleteAccount()">Delete account</button><br>
+      </form>
+      <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+    </mat-card-content>
+  </mat-card>
+
+
+

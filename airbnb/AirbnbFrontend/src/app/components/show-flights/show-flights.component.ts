@@ -14,7 +14,7 @@ import {ShowFlight} from "../../model/show-flight.model";
 export class ShowFlightsComponent implements OnInit {
 
   public dataSource = new MatTableDataSource<ShowFlight>();
-  public displayedColumns = ['Departure', 'Arrival', 'DateTimeDeparture', 'DateTimeArrival', 'Price', 'TotalNumberOfSeats','AvailableSeats', 'commands'];
+  public displayedColumns = ['Departure', 'Arrival', 'DateTimeDeparture', 'DateTimeArrival', 'Price', 'TotalNumberOfSeats','AvailableSeats', 'FlightStatus', 'commands'];
   public flights: ShowFlight[] = [];
   public flight: Flight | undefined = undefined;
 
@@ -45,6 +45,20 @@ export class ShowFlightsComponent implements OnInit {
   public deleteFlight(id: string) {
     console.log(id)
     this.flightService.deleteFlight(id).subscribe(res =>
+      {
+        this.flightService.getAllFlights().subscribe(res => {
+          this.flights = res;
+          this.dataSource.data = this.flights;
+        })
+        //window.location.reload();
+
+
+      });
+  }
+
+  public cancelFlight(id: any){
+    console.log(id)
+    this.flightService.cancelFlight(id).subscribe(res =>
       {
         this.flightService.getAllFlights().subscribe(res => {
           this.flights = res;

@@ -100,6 +100,9 @@ func main() {
 	searchFlightsRouter := router.Methods(http.MethodPost).Subrouter()
 	searchFlightsRouter.HandleFunc("/flights/searchFlights", handlers.FlightHandler.SearchFlights)
 
+	cancelFlightRouter := router.Methods(http.MethodPut).Subrouter()
+	cancelFlightRouter.HandleFunc("/flights/cancelFlight/{id}", handlers.FlightHandler.CancelFlight)
+
 	//tickets
 
 	createTicketRouter := router.Methods(http.MethodPost).Subrouter()

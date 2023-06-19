@@ -1,0 +1,53 @@
+<p>
+  <mat-toolbar color="primary">
+    <button mat-icon-button class="example-icon" routerLink="/">
+      <mat-icon>home</mat-icon>
+    </button>
+    <span>Airbnb</span>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/show-host-accommodations">
+      <span>My accommodations</span>
+    </button>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/create-accommodation">
+      <span>Create accommodation</span>
+    </button>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/view-pending-reservations">
+      <span>Pending reservations</span>
+    </button>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/show-ratings">
+      <span>My ratings</span>
+    </button>
+    <button *ngIf="isHost" mat-button mat-ripple routerLink="/show-ratings-accommodations">
+      <span>Ratings of my accommodations</span>
+    </button>
+    <button *ngIf="isLoggedIn"  mat-button mat-ripple routerLink="/update-user">
+      <span>My informations</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/view-reservations">
+      <span>My reservations</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/show-hosts">
+      <span>Rate hosts</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/ratings-host-by-guest">
+      <span>My ratings for hosts</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/show-accommodations">
+      <span>Rate accommodations</span>
+    </button>
+    <button *ngIf="isGuest"  mat-button mat-ripple routerLink="/ratings-accommodation-by-guest">
+      <span>My ratings for accommodations</span>
+    </button>
+    <span class="example-spacer"></span>
+    <button  *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/register-user">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <!--<span ngIf="!isLoggedIn">Sign up</span>-->
+    <button *ngIf="!isLoggedIn" mat-icon-button class="example-icon favorite-icon" routerLink="/login">
+      <mat-icon>lock</mat-icon>
+    </button>
+   <!-- <span ngIf="!isLoggedIn">Login</span>-->
+    <button *ngIf="isLoggedIn" mat-button mat-ripple (click)="logout()">
+      <span>Logout</span>
+    </button>
+  </mat-toolbar>
+</p>

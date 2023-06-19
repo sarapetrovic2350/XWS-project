@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="table-header">
+        <p class="table-title">Hosts</p>
+    </div>
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> First name</th>
+            <td mat-cell *matCellDef="let user" class="cell-center">{{user.firstName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="Surname">
+            <th mat-header-cell *matHeaderCellDef class="cell-center"> Last name</th>
+            <td mat-cell *matCellDef="let user" class="cell-center">{{user.lastName}}</td>
+        </ng-container>
+      <ng-container matColumnDef="Email">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Email </th>
+        <td mat-cell *matCellDef="let user" class="cell-center">{{user.email}}</td>
+      </ng-container>
+      <ng-container matColumnDef="Address">
+        <th mat-header-cell *matHeaderCellDef class="cell-center"> Address</th>
+        <td mat-cell *matCellDef="let user" class="cell-center">{{user.address.street}} {{user.address.number}},
+          {{user.address.city}}<br>
+          {{user.address.country}}</td>
+      </ng-container>
+      <ng-container matColumnDef="rate">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let user">
+                <div class="commands">
+                    <button (click)="rateHost(user.email)">
+                        <mat-icon color= "primary" matTooltip="add rate">star</mat-icon>
+                    </button>
+                </div>
+            </td>
+      </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+

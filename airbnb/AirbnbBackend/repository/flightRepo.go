@@ -101,6 +101,7 @@ func (repo *FlightRepo) Update(id string, flight *model.Flight) error {
 		"price":                 flight.Price,
 		"total_number_of_seats": flight.TotalNumberOfSeats,
 		"available_seats":       flight.AvailableSeats,
+		"flight_status":         flight.FlightStatus,
 	}}
 	result, err := flightsCollection.UpdateOne(ctx, filter, update)
 	repo.logger.Printf("Documents matched: %v\n", result.MatchedCount)
@@ -136,7 +137,8 @@ func (repo *FlightRepo) SearchFlights(searchCriteria dto.SearchDTO) model.Flight
 
 	end := time.Date(searchCriteria.Date.Year(), searchCriteria.Date.Month(), searchCriteria.Date.Day(), 23, 59, 59, 999999999, time.UTC)
 	fmt.Println(end)
-	filter := bson.M{"departure": searchCriteria.Departure, "arrival": searchCriteria.Arrival, "departure_date_time": bson.M{"$gte": searchCriteria.Date, "$lt": end}, "available_seats": bson.M{"$gte": searchCriteria.AvailableSeats}}
+	filter := bson.M{"departure": searchCriteria.Departure, "arrival": searchCriteria.Arrival, "departure_date_time": bson.M{"$gte": searchCriteria.Date, "$lt": end}, "available_seats": bson.M{"$gte": searchCriteria.AvailableSeats},
+		"flight_status": model.ONTIME}
 
 	var flights model.Flights
 	flightsCollection := repo.getCollection()

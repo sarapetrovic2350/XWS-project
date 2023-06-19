@@ -17,7 +17,15 @@ type Flight struct {
 	Price              int                `json:"price" bson:"price"`
 	TotalNumberOfSeats int                `json:"totalNumberOfSeats" bson:"total_number_of_seats"`
 	AvailableSeats     int                `json:"availableSeats" bson:"available_seats"`
+	FlightStatus       FlightStatus       `json:"flightStatus" bson:"flight_status"`
 }
+
+type FlightStatus string
+
+const (
+	ONTIME    FlightStatus = "ONTIME"
+	CANCELLED FlightStatus = "CANCELLED"
+)
 
 type Flights []*Flight
 

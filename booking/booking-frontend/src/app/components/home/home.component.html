@@ -1,0 +1,144 @@
+<mat-card>
+<mat-form-field appearance="outline">
+  <mat-label>Search accommodations by Start date</mat-label>
+  <input type="date" matInput [(ngModel)]=" startDate"/>
+  <mat-icon matPrefix>search</mat-icon>
+</mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>End date</mat-label>
+    <input type="date" matInput [(ngModel)]=" endDate"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <mat-form-field class="ml" appearance="outline">
+    <mat-label>Country</mat-label>
+    <input type="text" matInput [(ngModel)]="country" placeholder="Country"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <mat-form-field class="ml" appearance="outline">
+    <mat-label>City</mat-label>
+    <input type="text" matInput [(ngModel)]="city" placeholder="City"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <mat-form-field class="ml" appearance="outline">
+    <mat-label>Number of guests</mat-label>
+    <input type="number" matInput [(ngModel)]="numberOfGuests" placeholder="Number of Guests"/>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field >
+
+  <button class="btn" mat-mini-fab color="primary" (click)="searchAccommodations()">Search</button>
+  <button *ngIf="isSearched" mat-button mat-ripple (click)="clearSearch()">
+    <mat-icon color= "primary" matTooltip="clear search"> cancel_presentation</mat-icon>
+  </button>
+  <div class="filter-container" *ngIf="isSearched">
+    <mat-form-field class="ml" appearance="outline">
+      <mat-label>Min Price</mat-label>
+      <input type="number" matInput [(ngModel)]="minPrice" placeholder="Min Price"/>
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field >
+    <mat-form-field class="ml" appearance="outline">
+      <mat-label>Max Price</mat-label>
+      <input type="number" matInput [(ngModel)]="maxPrice" placeholder="Max Price"/>
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field >
+    <mat-form-field class="ml" appearance="outline">
+      <mat-label>Choose Benefits:</mat-label>
+      <mat-select  [(ngModel)]="selectedBenefits" name="benefits" multiple>
+        <mat-option *ngFor="let ben of benefits" [value]="ben">{{ben}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button class="btn" mat-mini-fab color="primary" (click)="filterAccommodations()" >
+      Filter
+    </button>
+  </div>
+
+  <!-- <button (click)="filterAccommodations()" class="btn btn-primary" style="display: inline-block">
+    Filter
+  </button> -->
+</mat-card>
+
+<div class="search-container">
+  <!-- <div class="form-group" style="display: inline-block; margin-right: 10px">
+    <label for="min-price" style="display: block; margin-bottom: 5px">Min Price:</label>
+    <input type="number" class="form-control" id="min-price" style="display: block; width: 100%"
+      [(ngModel)]="minPrice" />
+  </div> -->
+  <!-- <div class="form-group" style="display: inline-block; margin-right: 10px">
+    <label for="max-price" style="display: block; margin-bottom: 5px">Max Price:</label>
+    <input type="number" class="form-control" id="max-price" style="display: block; width: 100%"
+      [(ngModel)]="maxPrice" />
+  </div> -->
+  <!-- <h6>Benefits:</h6> -->
+  <!-- <div class="form-check" *ngFor="let benefit of benefits">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" [value]="benefit" [checked]="selectedBenefits.includes(benefit)"
+        (change)="toggleBenefitSelection(benefit)" />
+      {{ benefit }}
+    </label>
+  </div> -->
+  <button (click)="filterAccommodations()" class="btn btn-primary" style="display: inline-block">
+    Filter
+  </button>
+</div>
+
+<div class="container" *ngIf="isSearched">
+<div class="table-header" *ngIf="isSearched">
+  <p class="table-title">Accommodations</p>
+  <p *ngIf="notFound" class="table-title"> No Accommodations found for your search criteria!</p>
+</div>
+<table *ngIf="isSearched" mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="Name">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Name</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.name}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Address">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Address</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.address.street}} {{accommodation.address.number}},
+      {{accommodation.address.city}}<br>
+      {{accommodation.address.country}}</td>
+  </ng-container>
+  <ng-container matColumnDef="MinNumberOfGuests">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Min number of guests</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.minNumberOfGuests}}</td>
+  </ng-container>
+  <ng-container matColumnDef="MaxNumberOfGuests">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Max number of guests</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.maxNumberOfGuests}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Benefits">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Benefits</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.benefits}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Status">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Status</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.priceSelection}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Price">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Price</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.price}}</td>
+  </ng-container>
+  <ng-container matColumnDef="Total Price">
+    <th mat-header-cell *matHeaderCellDef class="cell-center">Total Price</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{accommodation.totalPrice}}</td>
+  </ng-container>
+  <ng-container matColumnDef="commands">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let accommodation">
+      <div class="commands">
+        <button *ngIf="isGuest" (click)="reserve(accommodation.id)">
+          <mat-icon color= "primary" matTooltip="create reservation">assignment_turned_in</mat-icon>
+        </button>
+      </div>
+    </td>
+  </ng-container>
+  <!--<ng-container matColumnDef="TotalPrice">
+    <th mat-header-cell *matHeaderCellDef class="cell-center"> Total price</th>
+    <td mat-cell *matCellDef="let accommodation" class="cell-center">{{totalPrice}}</td>
+  </ng-container>-->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>
+
+<!--<img class="home-img" [src]="path" [alt]="alttext">-->
+

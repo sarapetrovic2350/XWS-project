@@ -17,7 +17,7 @@ import { FlightService } from 'src/app/service/flight.service';
 export class ShowUsersTicketsComponent implements OnInit {
 
   public dataSource = new MatTableDataSource<ShowTicket>();
-  public displayedColumns = ['DateOfPurchase', 'Departure', 'Arrival', 'DateOfDeparture', 'NumberOfTickets', 'TotalPrice'];
+  public displayedColumns = ['DateOfPurchase', 'Departure', 'Arrival', 'DateOfDeparture', 'NumberOfTickets', 'TotalPrice', 'FlightStatus'];
   public tickets: ShowTicket[] = [];
   public ticket: ShowTicket | undefined = undefined;
 
