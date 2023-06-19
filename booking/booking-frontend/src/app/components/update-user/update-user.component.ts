@@ -27,7 +27,7 @@ export class UpdateUserComponent implements OnInit {
       this.isHostLoggedIn = true;
     }
     let userEmail = this.userService.getLoggedInUserEmail()
-    let userId = this.userService.getLoggedInUserId()
+    this.userService.getLoggedInUserId();
     this.userService.getUserByEmail(userEmail).subscribe(res => {
       this.user = res.user;
       this.passwordRepeated = this.user.password
@@ -61,7 +61,7 @@ export class UpdateUserComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: 'Sucessfully updated!',
+            text: 'Successfully updated!',
           })
       },
       error: (e) => {
@@ -82,10 +82,8 @@ export class UpdateUserComponent implements OnInit {
       this.userService.deleteAccount(userId).subscribe(
         {
           next: (res) => {
-            //localStorage.clear()
-            //this.router.navigate(['/login']);
+            localStorage.clear()
             window.location.href = 'login'
-
           }
 
         });

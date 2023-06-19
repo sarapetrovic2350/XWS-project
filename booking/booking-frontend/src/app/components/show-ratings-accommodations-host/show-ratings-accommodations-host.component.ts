@@ -23,9 +23,8 @@ export class ShowRatingsAccommodationsHostComponent implements OnInit {
   constructor(
     private accommodationService: AccommodationService,
     private ratingService : RatingService,
-    private userService : UserService,
-    private router: Router
-  ) { }
+    private userService : UserService
+  ) {}
 
   ngOnInit(): void {
     let userId = this.userService.getLoggedInUserId()

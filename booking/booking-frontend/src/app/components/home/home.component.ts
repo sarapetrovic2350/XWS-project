@@ -29,22 +29,18 @@ export class HomeComponent implements OnInit {
   numberOfGuests: number = 1
   public dataSource = new MatTableDataSource<Accommodation>();
 
-  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits', 'Status', 'Price', 'commands'];
+  public displayedColumns = ['Name', 'MinNumberOfGuests', 'MaxNumberOfGuests', 'Address', 'Benefits', 'Status', 'Price', 'Total Price', 'commands'];
 
   public accommodations: Accommodation[] = [];
   public notFoundAccommodations: Accommodation[] = [];
   public accommodation: Accommodation = new Accommodation();
   isSearched: boolean = false;
   notFound: boolean = false;
-  public totalPrice: number = 0;
   public user: User = new User();
   role: string = "";
   public price: number = 0;
   public priceSelection: string = '';
-  public availabilities: Availability[] = [];
-
-  public userHost: User = new User();
-
+  public availabilities: any[] = [];
   isLoggedIn: boolean = false;
   isHost: boolean = false;
   isGuest: boolean = false;
@@ -61,10 +57,6 @@ export class HomeComponent implements OnInit {
     let userRole = this.userService.getLoggedInUserRole()
     let userEmail = this.userService.getLoggedInUserEmail()
     console.log(userEmail)
-    //this.userService.getUserByEmail(userEmail).subscribe(res => {
-      //this.user = res;
-      //console.log(this.user)
-    //})
 
     if(userRole === "") {
       this.isLoggedIn = false;
@@ -86,8 +78,6 @@ export class HomeComponent implements OnInit {
     console.log(this.city)
     console.log(this.numberOfGuests)
 
-
-    var searchParams
     var searchAccommodations = {
       searchParams: {
         country: this.country,
@@ -99,28 +89,38 @@ export class HomeComponent implements OnInit {
     }
     console.log(searchAccommodations)
 
+    let startDateString = this.startDate.toString()
+    let endDateString = this.endDate.toString()
+    let startDate = new Date(Date.parse(startDateString))
+    let endDate = new Date(Date.parse(endDateString))
 
     this.accommodationService.searchAccommodations(searchAccommodations).subscribe(
       {
         next: (res) => {
-          console.log(res)
           this.isSearched = true;
           this.notFound = false;
           this.accommodations = res.accommodations;
           for (let i = 0; i < this.accommodations.length; i++) {
-            this.availabilities = this.accommodations[i].availabilities
-            var startDate1 = this.startDate;
-            var endDate1 = this.endDate;
-            for (let i = 0; i < this.availabilities.length; i++){
-              this.price  = this.availabilities[i].price
-              this.priceSelection = this.availabilities[i].priceSelection.toString()
+            this.availabilities.push(this.accommodations[i].availabilities)
+          }
+          console.log(this.availabilities)
+          for (let i = 0; i < this.accommodations.length; i++) {
+            for (let i = 0; i < this.availabilities.length; i++) {
+              this.accommodations[i].price = this.availabilities[i][0].price
+              this.accommodations[i].priceSelection = this.availabilities[i][0].priceSelection
+              let days = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+              console.log(days)
+              if (this.accommodations[i].priceSelection == "PER_PERSON") {
 
+                this.accommodations[i].totalPrice = days * this.accommodations[i].price * this.numberOfGuests
+              } else {
+                this.accommodations[i].totalPrice = days * this.accommodations[i].price
+              }
             }
+
           }
 
-          //this.filterAccommodations();
           this.dataSource.data = this.accommodations;
-          
 
         },
 
@@ -142,6 +142,7 @@ export class HomeComponent implements OnInit {
     this.isSearched = false;
     this.notFound = false;
     this.isSearched = false;
+    this.availabilities = [];
   }
 
   filterAccommodations() {
@@ -155,18 +156,6 @@ export class HomeComponent implements OnInit {
           acc.benefits.some((accBenefit: any) => accBenefit == benefit)
         );
 
-        // this.userService.getUserById(acc.hostId).subscribe({
-        //   next: (res) => {
-        //     console.log(res)
-        //     this.userHost = res;
-        //     console.log(this.userHost)
-        //   }
-        //  })
-        console.log(this.userHost)
-        console.log(this.userHost.isSuperHost)
-        const isSuperhost = this.userHost.isSuperHost
-        console.log(isSuperhost)
-  
         return (
           (this.minPrice === undefined || price >= this.minPrice) &&
           (this.maxPrice === undefined || price <= this.maxPrice) &&
@@ -175,17 +164,6 @@ export class HomeComponent implements OnInit {
         );
       });
       this.dataSource.data = this.filteredAccommodations;
-    }
-  }
-
-  toggleBenefitSelection(benefit: string) {
-    const index = this.selectedBenefits.indexOf(benefit);
-    if (index > -1) {
-      // Ako je benefit već selektovan, ukloni ga iz niza selectedBenefits
-      this.selectedBenefits.splice(index, 1);
-    } else {
-      // Ako benefit nije selektovan, dodaj ga u niz selectedBenefits
-      this.selectedBenefits.push(benefit);
     }
   }
 
@@ -199,9 +177,6 @@ export class HomeComponent implements OnInit {
       userId: userId,
       accommodationId: id
     }
-
-    console.log(this.startDate);
-    console.log(this.endDate);
 
     this.reservationService.createReservation(NewReservation).subscribe(
       {
